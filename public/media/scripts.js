@@ -65,8 +65,54 @@ $(document).ready(function () {
         return tasks;
     }
 
-    $("#phones").append("<li class=\"list-group-item\"> asdasd</li>");
-    $("#phones").append("<li class=\"list-group-item\">asdasd2</li>");
+    let mathTasks = JSON.parse(localStorage.getItem('mathTasks')); // Get mathTasks from local storage
+
+    if (mathTasks && Array.isArray(mathTasks) && mathTasks.length > 0) {
+        displayMathTasks(mathTasks);
+    }
+
+    $(document).on("click", "#deleteTasksBtn", function (e) {
+        const confirmation = confirm("Are you sure you want to delete all tasks?"); // Display confirmation popup
+        if (confirmation) {
+            localStorage.removeItem("mathTasks"); // Remove mathTasks from local storage
+            $("#generatedTasks").html(""); // Clear the math tasks list on the page
+            $("#deleteTasksBtn").hide();
+        }
+    });
+
+    $("#generatedTasks").on("focusout", ".task-result", function (e) {
+        var result = $(this).val();
+        if (result != null && result !== "") {
+            var task = $(this).data("task").replace(/[^-()\d/*+.]/g, '');
+            if(parseInt(result) === eval(task)){
+                $(this).removeClass("border border-3 border-danger");
+                $(this).addClass("border border-3 border-success");
+            }else {
+                $(this).removeClass("border border-3 border-success");
+                $(this).addClass("border border-3 border-danger");
+            }
+        }
+
+    });
+
+    $('body').on('keydown', 'input', function(e) {
+        if (e.which === 13) {
+            var self = $(this), form = self.parents('#generatedTasks:eq(0)'), focusable, next;
+            focusable = form.find('input').filter(':visible');
+            next = focusable.eq(focusable.index(this)+1);
+            if (next.length) {
+                next.focus();
+            }
+            return false;
+        }
+    });
+
+    $("#generatedTasks").on("focusin", ".task-result", function (e) {
+        //$(this).parent().addClass("border border-1");
+
+
+    });
+
     $(document).on("click", "#generateTasks", function (e) {
         e.preventDefault();
 
@@ -77,22 +123,33 @@ $(document).ready(function () {
             return $(this).val();
         }).get();
 // Example usage:
-        const mathTasks = generateMathTasks(taskCount, maxSum, checkedValues); // Generate 10 tasks with a maximum sum of 10
-        console.log(mathTasks);
-        // Loop through the mathTasks array and append each item as an <li> element with the class "list-group-item"
-        mathTasks.forEach((task, index) => {
-            console.log(task)
-            var item = "<div class=\"row g-3 align-items-center mb-1\">\n" +
+        const newMathTasks = generateMathTasks(taskCount, maxSum, checkedValues); // Generate 10 tasks with a maximum sum of 10
+        displayMathTasks(newMathTasks);
+        if (mathTasks && Array.isArray(mathTasks) && mathTasks.length > 0) {
+            mathTasks = [...mathTasks, ...newMathTasks]; // Merge existing math tasks with newly generated tasks
+        } else {
+            mathTasks = newMathTasks;
+        }
+
+        localStorage.setItem('mathTasks', JSON.stringify(mathTasks)); // Store merged math tasks array in local storage
+    });
+
+    function displayMathTasks(tasks) {
+        if ($("#deleteTasksBtn").is(":hidden")) {
+            $("#deleteTasksBtn").show();
+        }
+        tasks.forEach((task, index) => {
+            var item = "<div class=\"row g-3 task-box align-items-center mb-1\">\n" +
                 "                <div class=\"col-auto\">\n" +
-                "                    <label for=\"inputTask" + index + "\" style=\"width: 60px\" class=\"col-form-label\">"+task+"</label>\n" +
+                "                    <label for=\"inputTask" + index + "\" style=\"width: 60px\" class=\"col-form-label\">" + task + "</label>\n" +
                 "                </div>\n" +
                 "                <div class=\"col-auto\">\n" +
-                "                    <input type=\"text\" id=\"inputTask" + index + "\" style=\"width: 50px\" class=\"form-control\">\n" +
+                "                    <input type=\"text\" data-task=\"" + task + "\"  id=\"inputTask" + index + "\" style=\"width: 50px\" class=\"form-control task-result text-center\">\n" +
                 "                </div>\n" +
                 "            </div>";
             $("#generatedTasks").append(item);
         });
-    });
+    }
 
 
 });
