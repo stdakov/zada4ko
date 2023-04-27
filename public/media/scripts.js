@@ -179,6 +179,39 @@ $(document).ready(function () {
             }
         }
 
+        if (splitUp[1] === "*") {
+            for (let i = 0; i < splitUp[0]; i++) {
+                $("#hint-modal .task-left").append("<span class=\"dot dot-blue\"></span>");
+            }
+            for (let i = 0; i < splitUp[2]; i++) {
+                $("#hint-modal .task-right").append("<span class=\"dot dot-green\"></span>");
+            }
+
+            for (let i = 0; i < splitUp[2]; i++) {
+                for (let k = 0; k < splitUp[0]; k++) {
+                    $("#hint-modal .hint-result").append("<span class=\"dot dot-blue\"></span>");
+                }
+                $("#hint-modal .hint-result").append("<br />");
+            }
+        }
+
+        if (splitUp[1] === "/") {
+            for (let i = 0; i < splitUp[0]; i++) {
+                $("#hint-modal .task-left").append("<span class=\"dot dot-blue\"></span>");
+            }
+            for (let i = 0; i < splitUp[2]; i++) {
+                $("#hint-modal .task-right").append("<span class=\"dot dot-green\"></span>");
+            }
+
+            for (let k = 0; k < splitUp[0] / splitUp[2]; k++) {
+                for (let i = 0; i < splitUp[2]; i++) {
+                    $("#hint-modal .hint-result").append("<span class=\"dot dot-blue\"></span>");
+
+                }
+                $("#hint-modal .hint-result").append("<br />");
+            }
+        }
+
         $("#hint-modal .task-operation span").html(splitUp[1]);
 
         $("#hint-modal").modal('show');
