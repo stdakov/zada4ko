@@ -2,14 +2,80 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>zada4ko</title>
+    <title>Задачи за деца</title>
     <link type="text/css" href="media/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .task-box {
+            font-size: 18px;
+        }
+
+        .task-label {
+            padding: 10px;
+            width: 85px;
+        }
+
+        .task-result {
+            font-size: 22px;
+            width: 100px;
+            padding: 10px;
+            margin: 4px 0;
+            box-sizing: border-box;
+            border: 2px solid #86b7fe;
+            border-radius: 4px;
+        }
+
+        .task-label-active {
+            border-radius: 25px;
+            background: #a8f0ff;
+        }
+
+        .task-hint {
+            /*display: none;*/
+        }
+
+        .wave {
+            animation-name: wave-animation; /* Refers to the name of your @keyframes element below */
+            animation-duration: 2.5s; /* Change to speed up or slow down */
+            animation-iteration-count: infinite; /* Never stop waving :) */
+            transform-origin: 70% 70%; /* Pivot around the bottom-left palm */
+            display: inline-block;
+        }
+
+        @keyframes wave-animation {
+            0% {
+                transform: rotate(0.0deg)
+            }
+            10% {
+                transform: rotate(14.0deg)
+            }
+            /* The following five values can be played with to make the waving more or less extreme */
+            20% {
+                transform: rotate(-8.0deg)
+            }
+            30% {
+                transform: rotate(14.0deg)
+            }
+            40% {
+                transform: rotate(-4.0deg)
+            }
+            50% {
+                transform: rotate(10.0deg)
+            }
+            60% {
+                transform: rotate(0.0deg)
+            }
+            /* Reset for the last half to pause */
+            100% {
+                transform: rotate(0.0deg)
+            }
+        }
+    </style>
 </head>
 <body>
 <main class="flex-shrink-0">
     <div class="container">
 
-        <h1 class="mt-5">zada4ko.com</h1>
+        <h1 class="mt-5">zada4ko.com - Задачи за деца</h1>
         <hr>
         <form class="form-inline" action="#">
             <div class="mb-3 row">
@@ -60,21 +126,22 @@
             <div class="col-auto mb-5">
                 <div class="d-grid gap-2 d-md-block">
                     <button type="submit" id="generateTasks" class="btn btn-warning">Генерирай задачки</button>
-                    <button id="deleteTasksBtn" style="display: none" class="btn btn-danger">Delete Tasks</button> <!-- Add a "Delete Tasks" button -->
+                    <button id="deleteTasksBtn" style="display: none" class="btn btn-danger">Изтрий задачки</button>
+                    <!-- Add a "Delete Tasks" button -->
                 </div>
             </div>
         </form>
 
         <div id="generatedTasks">
 
-<!--            <div class="row g-3 align-items-center mb-1">-->
-<!--                <div class="col-auto">-->
-<!--                    <label for="inputTask" style="width: 60px" class="col-form-label">Password</label>-->
-<!--                </div>-->
-<!--                <div class="col-auto">-->
-<!--                    <input type="text" id="inputTask" style="width: 50px" class="form-control" aria-labelledby="passwordHelpInline">-->
-<!--                </div>-->
-<!--            </div>-->
+            <!--            <div class="row g-3 align-items-center mb-1">-->
+            <!--                <div class="col-auto">-->
+            <!--                    <label for="inputTask" style="width: 60px" class="col-form-label">Password</label>-->
+            <!--                </div>-->
+            <!--                <div class="col-auto">-->
+            <!--                    <input type="text" id="inputTask" style="width: 50px" class="form-control" aria-labelledby="passwordHelpInline">-->
+            <!--                </div>-->
+            <!--            </div>-->
 
         </div>
     </div>

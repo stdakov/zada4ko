@@ -26,10 +26,20 @@ $(document).ready(function () {
         return Array.from(tasks); // Convert the set to an array and return
     }
 
+    let mathTasks = JSON.parse(localStorage.getItem('mathTasks')); // Get mathTasks from local storage
+    let mathTaskAnswers = JSON.parse(localStorage.getItem("mathTaskAnswers")) || {};
+    if (mathTasks && Array.isArray(mathTasks) && mathTasks.length > 0) {
+        displayMathTasks(mathTasks, mathTaskAnswers);
+    }
+
     function generateMathTasks(size, maxSum, operations = null) {
         //const defaultOperations = ['+', '-', '*', '/']; // Default array of available operations
         const defaultOperations = ['+', '-']; // Default array of available operations
         const tasks = [];
+        var allTasks = [];
+        if (mathTasks && Array.isArray(mathTasks) && mathTasks.length > 0) {
+            allTasks = mathTasks;
+        }
 
         // Use the specified operations array, or use the default operations array if not provided
         const availableOperations = operations && operations.length > 0 ? operations : defaultOperations;
@@ -57,7 +67,8 @@ $(document).ready(function () {
             }
 
             const task = `${num1} ${op} ${num2} = `; // Create the task string
-            if (!tasks.includes(task)) {
+            if (!allTasks.includes(task)) {
+                allTasks.push(task);
                 tasks.push(task); // Add the task to the tasks array if it doesn't already exist
             }
         }
@@ -65,41 +76,60 @@ $(document).ready(function () {
         return tasks;
     }
 
-    let mathTasks = JSON.parse(localStorage.getItem('mathTasks')); // Get mathTasks from local storage
 
-    if (mathTasks && Array.isArray(mathTasks) && mathTasks.length > 0) {
-        displayMathTasks(mathTasks);
-    }
 
     $(document).on("click", "#deleteTasksBtn", function (e) {
-        const confirmation = confirm("Are you sure you want to delete all tasks?"); // Display confirmation popup
+        e.preventDefault();
+        const confirmation = confirm("Сигурни ли сте, че искате да изтрийте всичките задачи?"); // Display confirmation popup
         if (confirmation) {
             localStorage.removeItem("mathTasks"); // Remove mathTasks from local storage
+            localStorage.removeItem("mathTaskAnswers"); // Remove mathTasks from local storage
             $("#generatedTasks").html(""); // Clear the math tasks list on the page
             $("#deleteTasksBtn").hide();
         }
     });
 
     $("#generatedTasks").on("focusout", ".task-result", function (e) {
+        e.preventDefault();
+        $(this).parents(".task-box").find(".task-label").removeClass("task-label-active");
         var result = $(this).val();
         if (result != null && result !== "") {
             var task = $(this).data("task").replace(/[^-()\d/*+.]/g, '');
-            if(parseInt(result) === eval(task)){
+
+            const mathTaskAnswers = JSON.parse(localStorage.getItem("mathTaskAnswers")) || {};
+            mathTaskAnswers[task] = result;
+            localStorage.setItem("mathTaskAnswers", JSON.stringify(mathTaskAnswers));
+
+            if (parseInt(result) === eval(task)) {
                 $(this).removeClass("border border-3 border-danger");
                 $(this).addClass("border border-3 border-success");
-            }else {
+                $(this).parents(".task-box").find(".task-hint").hide();
+            } else {
                 $(this).removeClass("border border-3 border-success");
                 $(this).addClass("border border-3 border-danger");
+                $(this).parents(".task-box").find(".task-hint").show();
             }
         }
 
     });
 
-    $('body').on('keydown', 'input', function(e) {
-        if (e.which === 13) {
+    $('body').on('keydown', 'input.task-result', function (e) {
+        // e.preventDefault();
+        console.log(e.which);
+        if (e.which === 13 || e.which === 40) {
             var self = $(this), form = self.parents('#generatedTasks:eq(0)'), focusable, next;
             focusable = form.find('input').filter(':visible');
-            next = focusable.eq(focusable.index(this)+1);
+            next = focusable.eq(focusable.index(this) + 1);
+            if (next.length) {
+                next.focus();
+            }
+            return false;
+        }
+
+        if (e.which === 38) {
+            var self = $(this), form = self.parents('#generatedTasks:eq(0)'), focusable, next;
+            focusable = form.find('input').filter(':visible');
+            next = focusable.eq(focusable.index(this) - 1);
             if (next.length) {
                 next.focus();
             }
@@ -108,9 +138,8 @@ $(document).ready(function () {
     });
 
     $("#generatedTasks").on("focusin", ".task-result", function (e) {
-        //$(this).parent().addClass("border border-1");
-
-
+        e.preventDefault();
+        $(this).parents(".task-box").find(".task-label").addClass("task-label-active");
     });
 
     $(document).on("click", "#generateTasks", function (e) {
@@ -134,20 +163,37 @@ $(document).ready(function () {
         localStorage.setItem('mathTasks', JSON.stringify(mathTasks)); // Store merged math tasks array in local storage
     });
 
-    function displayMathTasks(tasks) {
+    function displayMathTasks(tasks, mathTaskAnswers = null) {
         if ($("#deleteTasksBtn").is(":hidden")) {
             $("#deleteTasksBtn").show();
         }
         tasks.forEach((task, index) => {
+            var taskClean = task.replace(/[^-()\d/*+.]/g, '');
+            const answer = mathTaskAnswers !== null && mathTaskAnswers[taskClean] !== undefined ? mathTaskAnswers[taskClean] : "";
+            var classVer = "";
+            var correctAnswer = true;
+            if (answer !== "") {
+                if (parseInt(answer) === eval(taskClean)) {
+                    classVer = "border border-3 border-success";
+                } else {
+                    classVer = "border border-3 border-danger";
+                    correctAnswer = false;
+                }
+            }
+
             var item = "<div class=\"row g-3 task-box align-items-center mb-1\">\n" +
                 "                <div class=\"col-auto\">\n" +
-                "                    <label for=\"inputTask" + index + "\" style=\"width: 60px\" class=\"col-form-label\">" + task + "</label>\n" +
+                "                    <label for=\"inputTask" + index + "\" class=\"task-label col-form-label\">" + task + "</label>\n" +
                 "                </div>\n" +
                 "                <div class=\"col-auto\">\n" +
-                "                    <input type=\"text\" data-task=\"" + task + "\"  id=\"inputTask" + index + "\" style=\"width: 50px\" class=\"form-control task-result text-center\">\n" +
+                "                    <input type=\"text\" data-task=\"" + task + "\"  value=\"" + answer + "\" id=\"inputTask" + index + "\" class=\"form-control task-result text-center " + classVer + "\">\n" +
+                "                </div>\n" +
+                "                <div class=\"col-auto\">\n" +
+                "                    <button data-task=\"" + task + "\" class=\"form-control task-hint hide text-center " + (correctAnswer ? "d-none" : "") + "\"><span class='wave'>👋</span></button>\n" +
                 "                </div>\n" +
                 "            </div>";
             $("#generatedTasks").append(item);
+
         });
     }
 
