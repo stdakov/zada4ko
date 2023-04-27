@@ -43,7 +43,7 @@ $(document).ready(function () {
 
         // Use the specified operations array, or use the default operations array if not provided
         const availableOperations = operations && operations.length > 0 ? operations : defaultOperations;
-
+        var tries = 0;
         while (tasks.length < size) {
             const num1 = Math.floor(Math.random() * (maxSum - 1)) + 2; // Random number between 2 and maxSum
             const op = availableOperations[Math.floor(Math.random() * availableOperations.length)]; // Randomly select an operation from the available operations
@@ -70,12 +70,17 @@ $(document).ready(function () {
             if (!allTasks.includes(task)) {
                 allTasks.push(task);
                 tasks.push(task); // Add the task to the tasks array if it doesn't already exist
+            } else {
+                tries++;
+            }
+
+            if (tries === allTasks.length) {
+                break;
             }
         }
 
         return tasks;
     }
-
 
 
     $(document).on("click", "#deleteTasksBtn", function (e) {
@@ -115,7 +120,6 @@ $(document).ready(function () {
 
     $('body').on('keydown', 'input.task-result', function (e) {
         // e.preventDefault();
-        console.log(e.which);
         if (e.which === 13 || e.which === 40) {
             var self = $(this), form = self.parents('#generatedTasks:eq(0)'), focusable, next;
             focusable = form.find('input').filter(':visible');
@@ -140,6 +144,44 @@ $(document).ready(function () {
     $("#generatedTasks").on("focusin", ".task-result", function (e) {
         e.preventDefault();
         $(this).parents(".task-box").find(".task-label").addClass("task-label-active");
+    });
+
+    $("#generatedTasks").on("click", ".task-hint", function (e) {
+        $("#hint-modal .task-task-operation span").html("");
+        $("#hint-modal .task-left").html("");
+        $("#hint-modal .task-right").html("");
+        $("#hint-modal .hint-result").html("");
+        var task = $(this).data("task").replace(/[^-()\d/*+.]/g, '');
+        var splitUp = task.match(/[^\d()]+|[\d.]+/g);
+        if (splitUp[1] === "+") {
+            for (let i = 0; i < splitUp[0]; i++) {
+                $("#hint-modal .task-left").append("<span class=\"dot dot-blue\"></span>");
+                $("#hint-modal .hint-result").append("<span class=\"dot dot-blue\"></span>");
+            }
+            for (let i = 0; i < splitUp[2]; i++) {
+                $("#hint-modal .task-right").append("<span class=\"dot dot-green\"></span>");
+                $("#hint-modal .hint-result").append("<span class=\"dot dot-green\"></span>");
+
+            }
+        }
+
+        if (splitUp[1] === "-") {
+            for (let i = 0; i < splitUp[0]; i++) {
+                $("#hint-modal .task-left").append("<span class=\"dot dot-blue\"></span>");
+                if (i >= (splitUp[0] - splitUp[2])) {
+                    $("#hint-modal .hint-result").append("<span class=\"dot\"></span>");
+                } else {
+                    $("#hint-modal .hint-result").append("<span class=\"dot dot-blue\"></span>");
+                }
+            }
+            for (let i = 0; i < splitUp[2]; i++) {
+                $("#hint-modal .task-right").append("<span class=\"dot dot-green\"></span>");
+            }
+        }
+
+        $("#hint-modal .task-operation span").html(splitUp[1]);
+
+        $("#hint-modal").modal('show');
     });
 
     $(document).on("click", "#generateTasks", function (e) {
@@ -189,7 +231,7 @@ $(document).ready(function () {
                 "                    <input type=\"text\" data-task=\"" + task + "\"  value=\"" + answer + "\" id=\"inputTask" + index + "\" class=\"form-control task-result text-center " + classVer + "\">\n" +
                 "                </div>\n" +
                 "                <div class=\"col-auto\">\n" +
-                "                    <button data-task=\"" + task + "\" class=\"form-control task-hint hide text-center " + (correctAnswer ? "d-none" : "") + "\"><span class='wave'>👋</span></button>\n" +
+                "                    <button data-task=\"" + task + "\" data-task=\"" + task + "\" class=\"form-control task-hint hide text-center " + (correctAnswer ? "hidden" : "") + "\"><span class='wave'>👋</span></button>\n" +
                 "                </div>\n" +
                 "            </div>";
             $("#generatedTasks").append(item);

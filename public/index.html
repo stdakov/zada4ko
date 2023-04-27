@@ -5,6 +5,27 @@
     <title>Задачи за деца</title>
     <link type="text/css" href="media/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        .dot {
+            height: 25px;
+            width: 25px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 2px;
+        }
+
+        .dot-blue {
+            background-color: #006FFFFF;
+        }
+
+        .dot-green {
+            background-color: #3FB030FF;
+        }
+
+        .hidden {
+            display: none;
+        }
+
         .task-box {
             font-size: 18px;
         }
@@ -75,6 +96,32 @@
 <main class="flex-shrink-0">
     <div class="container">
 
+        <!-- Modal -->
+        <div class="modal fade " id="hint-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Подсказване</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="task-left">
+                        </div>
+                        <div class="task-operation">
+                            <span>+</span>
+                        </div>
+                        <div class="task-right">
+                        </div>
+                        <hr/>
+                        <div class="hint-result">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Затвори</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <h1 class="mt-5">zada4ko.com - Задачи за деца</h1>
         <hr>
         <form class="form-inline" action="#">
