@@ -360,7 +360,7 @@ $(document).ready(function () {
                 "                    <label for=\"inputTask" + index + "\" class=\"task-label col-form-label\">" + task + "</label>\n" +
                 "                </div>\n" +
                 "                <div class=\"col-auto\">\n" +
-                "                    <input type=\"text\" " + disabled + " data-task=\"" + task + "\"  value=\"" + answer + "\" id=\"inputTask" + index + "\" class=\"form-control task-result text-center " + classVer + "\">\n" +
+                "                    <input type=\"text\" autocomplete=\"off\" " + disabled + " data-task=\"" + task + "\"  value=\"" + answer + "\" id=\"inputTask" + index + "\" class=\"form-control task-result text-center " + classVer + "\">\n" +
                 "                </div>\n" +
                 "                <div class=\"col-auto\">\n" +
                 "                    <button data-task=\"" + task + "\"  data-task=\"" + task + "\" class=\"form-control task-hint hide text-center " + (correctAnswer ? "hidden" : "") + "\"><span class='wave'>👋</span></button>\n" +
