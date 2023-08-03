@@ -71,6 +71,11 @@ $(() => {
     return tasks;
   }
 
+  $(document).on("click", "#printTasksBtn", function (e) {
+    e.preventDefault();
+    window.print();
+  });
+
   const generateTasksSelector = $("#generateTasks");
 
   $(document).on("click", "#deleteTasksBtn", function (e) {
