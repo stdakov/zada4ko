@@ -6,108 +6,19 @@
     <meta name="description" content="Сайт за детски задачки">
     <meta name="author" content="Stanislav Dakov">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link type="text/css" href="media/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../src/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../src/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../src/images/favicon-16x16.png">
     <link rel="manifest" href="site.webmanifest">
-    <link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="mask-icon" href="../src/images/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
-    <style>
-        .dot {
-            height: 25px;
-            width: 25px;
-            background-color: #bbb;
-            border-radius: 50%;
-            display: inline-block;
-            margin-left: 2px;
-        }
-
-        .dot-blue {
-            background-color: #006FFFFF;
-        }
-
-        .dot-green {
-            background-color: #3FB030FF;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .task-box {
-            font-size: 18px;
-        }
-
-        .task-label {
-            padding: 10px;
-            width: 90px;
-        }
-
-        .task-result {
-            font-size: 22px;
-            width: 100px;
-            padding: 10px;
-            margin: 4px 0;
-            box-sizing: border-box;
-            border: 2px solid #86b7fe;
-            border-radius: 4px;
-        }
-
-        .task-label-active {
-            border-radius: 25px;
-            background: #a8f0ff;
-        }
-
-        .task-hint {
-            /*display: none;*/
-        }
-
-        .wave {
-            animation-name: wave-animation; /* Refers to the name of your @keyframes element below */
-            animation-duration: 2.5s; /* Change to speed up or slow down */
-            animation-iteration-count: infinite; /* Never stop waving :) */
-            transform-origin: 70% 70%; /* Pivot around the bottom-left palm */
-            display: inline-block;
-        }
-
-        @keyframes wave-animation {
-            0% {
-                transform: rotate(0.0deg)
-            }
-            10% {
-                transform: rotate(14.0deg)
-            }
-            /* The following five values can be played with to make the waving more or less extreme */
-            20% {
-                transform: rotate(-8.0deg)
-            }
-            30% {
-                transform: rotate(14.0deg)
-            }
-            40% {
-                transform: rotate(-4.0deg)
-            }
-            50% {
-                transform: rotate(10.0deg)
-            }
-            60% {
-                transform: rotate(0.0deg)
-            }
-            /* Reset for the last half to pause */
-            100% {
-                transform: rotate(0.0deg)
-            }
-        }
-    </style>
-    <script async defer data-website-id="8cc30ea9-5fc2-4304-a970-fdd14aafc052" src="https://st.dakovdev.com/umami.js"></script>
 </head>
 <body>
 <main class="flex-shrink-0">
     <div class="container">
         <!-- Modal -->
-        <div class="modal fade " id="hint-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="hint-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -189,25 +100,10 @@
             </div>
         </form>
 
-        <div id="generatedTasks">
-
-            <!--            <div class="row g-3 align-items-center mb-1">-->
-            <!--                <div class="col-auto">-->
-            <!--                    <label for="inputTask" style="width: 60px" class="col-form-label">Password</label>-->
-            <!--                </div>-->
-            <!--                <div class="col-auto">-->
-            <!--                    <input type="text" id="inputTask" style="width: 50px" class="form-control" aria-labelledby="passwordHelpInline">-->
-            <!--                </div>-->
-            <!--            </div>-->
-
-        </div>
+        <div id="generatedTasks"></div>
     </div>
 </main>
 </body>
-<script type="text/javascript" src="media/jquery-3.6.4.min.js"></script>
-<script type="text/javascript" src="media/dist/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="media/confetti.browser.min.js"></script>
-<script type="text/javascript" src="media/scripts.js"></script>
-<!--<script type="text/javascript" src="media/confetti.js"></script>-->
+<script type="text/javascript" src="assets/js/main.js"></script>
 
 </html>
