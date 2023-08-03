@@ -2,9 +2,9 @@ import $ from 'jquery';
 import 'bootstrap';
 
 import JSConfetti from 'js-confetti';
-const jsConfetti = new JSConfetti();
-
 import '../scss/main.scss';
+
+const jsConfetti = new JSConfetti();
 
 declare global {
   interface Window {
@@ -86,6 +86,7 @@ $(() => {
       localStorage.removeItem("mathTaskAnswers"); // Remove mathTasks from local storage
       generateTasksSelector.html(""); // Clear the math tasks list on the page
       $("#deleteTasksBtn").hide();
+      $("#printTasksBtn").hide();
       location.reload()
     }
   });
@@ -342,10 +343,15 @@ $(() => {
 
   function displayMathTasks(tasks: any[], mathTaskAnswers: string | null = null) {
     const deleteTaskBtnSelector = $("#deleteTasksBtn");
+    const printTaskBtnSelector = $("#printTasksBtn");
     if (deleteTaskBtnSelector.is(":hidden")) {
       deleteTaskBtnSelector.show();
     }
-    tasks.forEach((task, index) => {
+    if (printTaskBtnSelector.is(":hidden")) {
+      printTaskBtnSelector.show();
+    }
+
+    tasks.forEach((task, index: number) => {
       const taskClean = task.replace(/[^-()\d/*+.]/g, '');
       const answer = mathTaskAnswers !== null && mathTaskAnswers[taskClean] !== undefined ? mathTaskAnswers[taskClean] : "";
       let classVer = "";
@@ -361,19 +367,61 @@ $(() => {
         }
       }
 
-      const item = "<div class=\"row g-3 task-box align-items-center mb-1\">\n" +
-        "                <div class=\"col-auto\">\n" +
-        "                    <label for=\"inputTask" + index + "\" class=\"task-label col-form-label\">" + task + "</label>\n" +
-        "                </div>\n" +
-        "                <div class=\"col-auto\">\n" +
-        "                    <input type=\"text\" autocomplete=\"off\" inputmode=\"numeric\" " + disabled + " data-task=\"" + task + "\"  value=\"" + answer + "\" id=\"inputTask" + index + "\" class=\"form-control task-result text-center " + classVer + "\">\n" +
-        "                </div>\n" +
-        "                <div class=\"col-auto\">\n" +
-        "                    <button data-task=\"" + task + "\"  data-task=\"" + task + "\" class=\"form-control task-hint hide text-center " + (correctAnswer ? "hidden" : "") + "\"><span class='wave'>👋</span></button>\n" +
-        "                </div>\n" +
-        "            </div>";
-      $("#generatedTasks").append(item);
+      const itemContainer: HTMLDivElement = document.createElement("div");
+      itemContainer.classList.add("col-12", "col-md-6", "col-lg-4", "col-xl-3", "g-3", "task-box", "align-items-center", "mb-1");
 
+      const item: HTMLDivElement = document.createElement("div");
+      item.classList.add("row", "align-items-center");
+
+      const labelContainer: HTMLDivElement = document.createElement("div");
+      labelContainer.classList.add("col-auto");
+
+      const label: HTMLLabelElement = document.createElement("label");
+      label.setAttribute("for", "inputTask" + index);
+      label.classList.add("task-label", "col-form-label");
+      label.innerHTML = task;
+
+      labelContainer.append(label);
+
+      const inputContainer: HTMLDivElement = document.createElement("div");
+      inputContainer.classList.add("col-auto");
+
+      const input: HTMLInputElement = document.createElement("input");
+      input.setAttribute("type", "text");
+      input.setAttribute("autocomplete", "off");
+      input.setAttribute("inputmode", "numeric");
+      input.setAttribute("data-task", task);
+      input.setAttribute("value", answer);
+      input.setAttribute("id", "inputTask" + index);
+      input.classList.add("form-control", "task-result", "text-center", "border", "border-3");
+
+      if(classVer) {
+        input.classList.add(classVer);
+      }
+
+      inputContainer.append(input);
+
+      const buttonContainer: HTMLDivElement = document.createElement("div");
+      buttonContainer.classList.add("col-auto");
+
+      const button: HTMLButtonElement = document.createElement("button");
+      button.setAttribute("data-task", task);
+      button.classList.add("form-control", "task-hint", "hide", "text-center");
+
+      if (correctAnswer) {
+        button.classList.add("hidden");
+      }
+      button.innerHTML = "<span class='wave'>👋</span>";
+
+      buttonContainer.append(button);
+
+      item.append(labelContainer);
+      item.append(inputContainer);
+      item.append(buttonContainer);
+
+      itemContainer.append(item);
+
+      document.getElementById("generatedTasks")?.append(itemContainer);
     });
   }
 });

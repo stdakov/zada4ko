@@ -83,17 +83,3 @@
     transform: rotate(0.0deg)
   }
 }
-
-@media print {
-  /* Hide elements not to be printed */
-  h1, form {
-    display: none;
-  }
-
-  /* Adjust styles for content when printing */
-  #generatedTasks {
-    /* Add any specific styles for content when printing */
-  }
-
-  /* Add more styles for other elements if needed */
-}
