@@ -1,5 +1,4 @@
 "use strict";
-
 $(document).ready(function () {
 
     function generateMathTasksOld(size, maxSum, operation) {
@@ -83,6 +82,10 @@ $(document).ready(function () {
         return tasks;
     }
 
+    $(document).on("click", "#printTasksBtn", function (e) {
+        e.preventDefault();
+        window.print();
+    });
 
     $(document).on("click", "#deleteTasksBtn", function (e) {
         e.preventDefault();
