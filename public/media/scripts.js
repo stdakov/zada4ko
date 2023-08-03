@@ -95,6 +95,7 @@ $(document).ready(function () {
             localStorage.removeItem("mathTaskAnswers"); // Remove mathTasks from local storage
             $("#generatedTasks").html(""); // Clear the math tasks list on the page
             $("#deleteTasksBtn").hide();
+            $("#printTasksBtn").hide();
             location.reload()
         }
     });
@@ -341,6 +342,9 @@ $(document).ready(function () {
     function displayMathTasks(tasks, mathTaskAnswers = null) {
         if ($("#deleteTasksBtn").is(":hidden")) {
             $("#deleteTasksBtn").show();
+        }
+        if ($("#printTasksBtn").is(":hidden")) {
+            $("#printTasksBtn").show();
         }
         tasks.forEach((task, index) => {
             var taskClean = task.replace(/[^-()\d/*+.]/g, '');
