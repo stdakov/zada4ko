@@ -136,14 +136,15 @@ $(document).ready(function () {
         return (parseFloat(result) === parseFloat(eval(task)));
     }
 
-    function checkAll(tasks) {
+    function checkAll() {
         var numItems = $('.border-success').length;
         let mathTasksTemplates = JSON.parse(localStorage.getItem('mathTasksTemplates')); // Get mathTasksTemplates from local storage
         if (mathTasksTemplates && Array.isArray(mathTasksTemplates) && numItems === mathTasksTemplates.length) {
             startConfetti();
             startStars();
         }
-        if (numItems && Array.isArray(mathTasks) && numItems === mathTasks.length) {
+        let mathTasks2 = JSON.parse(localStorage.getItem('mathTasks'));
+        if (numItems && Array.isArray(mathTasks2) && numItems === mathTasks2.length) {
             startConfetti();
             startStars();
         }
