@@ -66,7 +66,7 @@ $(document).ready(function () {
                 continue; // Skip the iteration if result is 0 or not an integer
             }
 
-            const task = `${num1} ${op} ${num2} = `; // Create the task string
+            const task = `${num1} ${op} ${num2}`; // Create the task string
             if (!allTasks.includes(task)) {
                 allTasks.push(task);
                 tasks.push(task); // Add the task to the tasks array if it doesn't already exist
@@ -91,14 +91,20 @@ $(document).ready(function () {
         e.preventDefault();
         const confirmation = confirm("Сигурни ли сте, че искате да изтрийте всичките задачи?"); // Display confirmation popup
         if (confirmation) {
-            localStorage.removeItem("mathTasks"); // Remove mathTasks from local storage
-            localStorage.removeItem("mathTaskAnswers"); // Remove mathTasks from local storage
-            $("#generatedTasks").html(""); // Clear the math tasks list on the page
+            cleanTasks();
             $("#deleteTasksBtn").hide();
             $("#printTasksBtn").hide();
             location.reload()
         }
     });
+
+    function cleanTasks() {
+        $("#generatedTasksTable").html(""); // Clear the math tasks list on the page
+        localStorage.removeItem("mathTasks"); // Remove mathTasks from local storage
+        localStorage.removeItem("mathTasksTemplates"); // Remove mathTasks from local storage
+        localStorage.removeItem("mathTaskAnswers"); // Remove mathTasks from local storage
+    }
+
 
     $("#generatedTasks").on("focusout", ".task-result", function (e) {
         e.preventDefault();
@@ -110,15 +116,13 @@ $(document).ready(function () {
             const mathTaskAnswers = JSON.parse(localStorage.getItem("mathTaskAnswers")) || {};
             mathTaskAnswers[task] = result;
             localStorage.setItem("mathTaskAnswers", JSON.stringify(mathTaskAnswers));
-
-            if (parseInt(result) === eval(task)) {
+            if (checkAnswer(task, result)) {
                 $(this).removeClass("border border-3 border-danger");
                 $(this).addClass("border border-3 border-success");
                 $(this).attr('disabled', 'disabled');
                 $(this).parents(".task-box").find(".task-hint").hide();
 
                 checkAll();
-
             } else {
                 $(this).removeClass("border border-3 border-success");
                 $(this).addClass("border border-3 border-danger");
@@ -128,9 +132,18 @@ $(document).ready(function () {
 
     });
 
-    function checkAll(){
+    function checkAnswer(task, result) {
+        return (parseFloat(result) === parseFloat(eval(task)));
+    }
+
+    function checkAll(tasks) {
         var numItems = $('.border-success').length;
-        if (numItems === mathTasks.length) {
+        let mathTasksTemplates = JSON.parse(localStorage.getItem('mathTasksTemplates')); // Get mathTasksTemplates from local storage
+        if (mathTasksTemplates && Array.isArray(mathTasksTemplates) && numItems === mathTasksTemplates.length) {
+            startConfetti();
+            startStars();
+        }
+        if (numItems && Array.isArray(mathTasks) && numItems === mathTasks.length) {
             startConfetti();
             startStars();
         }
@@ -320,9 +333,9 @@ $(document).ready(function () {
 
     $(document).on("click", "#generateTasks", function (e) {
         e.preventDefault();
-
-        var maxSum = $("#maxSum").val();
-        var taskCount = $("#taskCount").val();
+        cleanTasks();
+        var maxSum = $("#smallChildrenForm").find('input[name="maxSum"]').val();
+        var taskCount = $("#smallChildrenForm").find('input[name="taskCount"]').val();
         const checkedCheckbox = $('input[type="checkbox"]:checked'); // Select all checked checkboxes
         const checkedValues = checkedCheckbox.map(function () { // Map to an array of values
             return $(this).val();
@@ -330,13 +343,8 @@ $(document).ready(function () {
 // Example usage:
         const newMathTasks = generateMathTasks(taskCount, maxSum, checkedValues); // Generate 10 tasks with a maximum sum of 10
         displayMathTasks(newMathTasks);
-        if (mathTasks && Array.isArray(mathTasks) && mathTasks.length > 0) {
-            mathTasks = [...mathTasks, ...newMathTasks]; // Merge existing math tasks with newly generated tasks
-        } else {
-            mathTasks = newMathTasks;
-        }
 
-        localStorage.setItem('mathTasks', JSON.stringify(mathTasks)); // Store merged math tasks array in local storage
+        localStorage.setItem('mathTasks', JSON.stringify(newMathTasks)); // Store merged math tasks array in local storage
     });
 
     function displayMathTasks(tasks, mathTaskAnswers = null) {
@@ -353,30 +361,249 @@ $(document).ready(function () {
             var disabled = "";
             var correctAnswer = true;
             if (answer !== "") {
-                if (parseInt(answer) === eval(taskClean)) {
+                if (checkAnswer(taskClean, answer)) {
                     classVer = "border border-3 border-success";
-                    disabled="disabled";
+                    disabled = "disabled";
                 } else {
                     classVer = "border border-3 border-danger";
                     correctAnswer = false;
                 }
             }
 
-            var item = "<div class=\"row g-3 task-box align-items-center mb-1\">\n" +
-                "                <div class=\"col-auto\">\n" +
-                "                    <label for=\"inputTask" + index + "\" class=\"task-label col-form-label\">" + task + "</label>\n" +
-                "                </div>\n" +
-                "                <div class=\"col-auto\">\n" +
-                "                    <input type=\"text\" autocomplete=\"off\" inputmode=\"numeric\" " + disabled + " data-task=\"" + task + "\"  value=\"" + answer + "\" id=\"inputTask" + index + "\" class=\"form-control task-result text-center " + classVer + "\">\n" +
-                "                </div>\n" +
-                "                <div class=\"col-auto\">\n" +
-                "                    <button data-task=\"" + task + "\"  data-task=\"" + task + "\" class=\"form-control task-hint hide text-center " + (correctAnswer ? "hidden" : "") + "\"><span class='wave'>👋</span></button>\n" +
-                "                </div>\n" +
-                "            </div>";
-            $("#generatedTasks").append(item);
+            var item = "<tr class=\"task-box\">\n" +
+                "                    <td style=\"text-align: center;font-size: 22px\"><span class=\"task-label col-form-label\">" + task + "</span>\n" +
+                "                    </td>\n" +
+                "                    <td>\n" +
+                "                        <span style=\"margin-right: 10px;\">=</span>\n" +
+                "                    </td>\n" +
+                "                    <td><input " + disabled + " type=\"text\" autocomplete=\"off\" inputmode=\"numeric\" value=\"" + answer + "\" data-task=\"" + task + "\"\n" +
+                "                               class=\"form-control task-result text-center " + classVer + "\">\n" +
+                "                    </td>\n" +
+                "\n" +
+                "                    <td>\n" +
+                "                        <button data-task=\"" + task + "\" class=\"form-control task-hint hide text-center " + (correctAnswer ? "hidden" : "") + "\"\n" +
+                "                                style=\"margin-left: 10px\"><span class=\"wave\">👋</span></button>\n" +
+                "                    </td>\n" +
+                "                </tr>";
+            $("#generatedTasksTable").append(item);
 
         });
     }
 
+    function displayMathTasksTemplates(tasks, mathTaskAnswers = null) {
+        if ($("#deleteTasksBtn").is(":hidden")) {
+            $("#deleteTasksBtn").show();
+        }
+        if ($("#printTasksBtn").is(":hidden")) {
+            $("#printTasksBtn").show();
+        }
+        tasks.forEach((task, index) => {
+            var taskClean = task.replace(/[^-()\d/*+.]/g, '');
+            const answer = mathTaskAnswers !== null && mathTaskAnswers[taskClean] !== undefined ? mathTaskAnswers[taskClean] : "";
+            var classVer = "";
+            var disabled = "";
+            if (answer !== "") {
+                if (checkAnswer(taskClean, answer)) {
+                    classVer = "border border-3 border-success";
+                    disabled = "disabled";
+                } else {
+                    classVer = "border border-3 border-danger";
+                }
+            }
 
+            var item = "<tr class=\"task-box\">\n" +
+                "                    <td style=\"text-align: center;font-size: 22px\"><span class=\"task-label col-form-label\">" + task + "</span>\n" +
+                "                    </td>\n" +
+                "                    <td>\n" +
+                "                        <span style=\"margin-right: 10px;\">=</span>\n" +
+                "                    </td>\n" +
+                "                    <td><input " + disabled + " type=\"text\" autocomplete=\"off\" inputmode=\"numeric\" value=\"" + answer + "\" data-task=\"" + task + "\"\n" +
+                "                               class=\"form-control task-result text-center " + classVer + "\">\n" +
+                "                    </td>\n" +
+                "                </tr>";
+            $("#generatedTasksTable").append(item);
+        });
+    }
+
+    function getRandomTask(templates, count) {
+        function getRandomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min)) + min;
+        }
+
+        function replacePlaceholders(template) {
+            return template.template.replace(/@/g, () => getRandomNumber(parseInt(template.minValue), parseInt(template.maxValue)));
+        }
+
+        function adjustForSubtraction(task, randomTemplate) {
+            const numbers = task.match(/(\d+)/g).map(Number);
+            console.log(numbers);
+            let result = eval(task);
+            while (result < 0) {
+                task = replacePlaceholders(randomTemplate);
+                result = eval(task);
+            }
+            return task;
+        }
+
+        const tasks = [];
+        for (let i = 0; i < count; i++) {
+            let randomTemplate = templates[Math.floor(Math.random() * templates.length)];
+            let task = replacePlaceholders(randomTemplate);
+            //task = adjustForSubtraction(task, randomTemplate);
+            tasks.push(task);
+        }
+
+        return tasks;
+    }
+
+    $(document).on("click", "#button-add-template", function (e) {
+        e.preventDefault();
+        var template = $(this).parents("form").find('input[name="template"]').val();
+        var minValue = $(this).parents("form").find('input[name="minValue"]').val();
+        var maxValue = $(this).parents("form").find('input[name="maxValue"]').val();
+
+        const data = getFromLocalStorage();
+        data.push({"template": template, "minValue": minValue, "maxValue": maxValue});
+        saveToLocalStorage(data);
+
+        displayTemplates();
+    });
+
+    displayTemplates();
+
+    function displayTemplates() {
+        $("#template-list").html("");
+        const data = getFromLocalStorage();
+        const tableBody = document.createElement('tbody');
+
+        data.forEach((row, index) => {
+
+            let item = "<li data-index-id=\"" + index + "\" data-template-name=\"" + row.template + "\" data-minValue=\"" + row.minValue + "\"\n" +
+                "                                        data-maxValue=\"" + row.maxValue + "\"\n" +
+                "                                        class=\"list-group-item d-flex justify-content-between align-items-center   \">\n" +
+                "                                        " + row.template + " | от: " + row.minValue + " до:" + row.maxValue + "\n" +
+                "                                        <div>\n" +
+                "                                            <!-- Button trigger modal -->\n" +
+                "                                            <button class=\"edit_record btn btn-sm btn-info\" data-bs-toggle=\"modal\"\n" +
+                "                                                    data-bs-target=\"#updateTemplateModal\">\n" +
+                "                                                <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"\n" +
+                "                                                     fill=\"currentColor\" class=\"bi bi-pencil-square\"\n" +
+                "                                                     viewBox=\"0 0 16 16\">\n" +
+                "                                                    <path d=\"M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z\"></path>\n" +
+                "                                                    <path fill-rule=\"evenodd\"\n" +
+                "                                                          d=\"M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z\"></path>\n" +
+                "                                                </svg>\n" +
+                "                                            </button>\n" +
+                "                                            <button class=\"remove_record btn btn-sm btn-danger\">\n" +
+                "                                                <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"\n" +
+                "                                                     fill=\"currentColor\" class=\"bi bi-trash\" viewBox=\"0 0 16 16\">\n" +
+                "                                                    <path d=\"M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z\"></path>\n" +
+                "                                                    <path fill-rule=\"evenodd\"\n" +
+                "                                                          d=\"M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z\"></path>\n" +
+                "                                                </svg>\n" +
+                "                                            </button>\n" +
+                "                                        </div>\n" +
+                "                                    </li>";
+
+            $("#template-list").append(item);
+        });
+    }
+
+    $(document).on("click", ".edit_record", function (e) {
+        e.preventDefault();
+        var parent = $(this).parents("li")
+        var indexId = parent.data('index-id');
+        const data = getFromLocalStorage();
+        let templateData = data[indexId];
+
+        $("#updateTemplateModal").find('input[name="index"]').val(indexId);
+        $("#updateTemplateModal").find('input[name="template"]').val(templateData.template);
+        $("#updateTemplateModal").find('input[name="minValue"]').val(templateData.minValue);
+        $("#updateTemplateModal").find('input[name="maxValue"]').val(templateData.maxValue);
+    });
+
+    $(document).on("click", "#updateTemplateModalButton", function (e) {
+        e.preventDefault();
+        var template = $("#updateTemplateModal").find('input[name="template"]').val();
+        var minValue = $("#updateTemplateModal").find('input[name="minValue"]').val();
+        var maxValue = $("#updateTemplateModal").find('input[name="maxValue"]').val();
+        var index = $("#updateTemplateModal").find('input[name="index"]').val();
+
+        updateRow(index, template, minValue, maxValue);
+        var myModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('updateTemplateModal'));
+        myModal.toggle();
+        displayTemplates();
+    });
+
+    $(document).on("click", ".remove_record", function (e) {
+        e.preventDefault();
+        const confirmation = confirm("Сигурни ли сте, че искате да изтрийте темплейта?"); // Display confirmation popup
+        if (confirmation) {
+            var parent = $(this).parents("li")
+            var indexId = parent.data('index-id');
+
+            deleteRow(indexId);
+            displayTemplates();
+        }
+    });
+
+    function saveTasks(data) {
+        localStorage.setItem('mathTasks', JSON.stringify(data));
+    }
+
+    function getTasks() {
+        const data = localStorage.getItem('mathTasks');
+        return data ? JSON.parse(data) : [];
+    }
+
+    function saveToLocalStorage(data) {
+        localStorage.setItem('templates', JSON.stringify(data));
+    }
+
+    // Function to get data from localStorage
+    function getFromLocalStorage() {
+        const data = localStorage.getItem('templates');
+        return data ? JSON.parse(data) : [];
+    }
+
+    // Function to update a row in the data list
+    function updateRow(rowIndex, template, minValue, maxValue) {
+        const data = getFromLocalStorage();
+        if (rowIndex >= 0 && rowIndex < data.length) {
+            data[rowIndex] = {"template": template, "minValue": minValue, "maxValue": maxValue};
+            saveToLocalStorage(data);
+        }
+    }
+
+    function deleteRow(rowIndex) {
+        const data = getFromLocalStorage();
+        if (rowIndex >= 0 && rowIndex < data.length) {
+            data.splice(rowIndex, 1); // Remove the row from the array
+            saveToLocalStorage(data);
+        }
+    }
+
+    $(document).on("click", "#generateTasksTemplates", function (e) {
+        e.preventDefault();
+        cleanTasks();
+        var taskCount = $("#biggerChildrenForm").find('input[name="taskCount"]').val();
+        const templates = getFromLocalStorage();
+        if (templates && Array.isArray(templates) && templates.length === 0) {
+            var template = $("#biggerChildrenForm").find('input[name="template"]').val();
+            var minValue = $("#biggerChildrenForm").find('input[name="minValue"]').val();
+            var maxValue = $("#biggerChildrenForm").find('input[name="maxValue"]').val();
+
+            templates.push({"template": template, "minValue": minValue, "maxValue": maxValue});
+        }
+        const randomTasks = getRandomTask(templates, taskCount);
+
+        displayMathTasksTemplates(randomTasks);
+        localStorage.setItem('mathTasksTemplates', JSON.stringify(randomTasks)); // Store merged math tasks array in local storage
+    });
+
+    let mathTasksTemplates = JSON.parse(localStorage.getItem('mathTasksTemplates')); // Get mathTasksTemplates from local storage
+    if (mathTasksTemplates && Array.isArray(mathTasksTemplates) && mathTasksTemplates.length > 0) {
+        displayMathTasksTemplates(mathTasksTemplates, mathTaskAnswers);
+        checkAll();
+    }
 });

@@ -1,0 +1,100 @@
+.dot {
+    height: 25px;
+    width: 25px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 2px;
+}
+
+.dot-blue {
+    background-color: #006FFFFF;
+}
+
+.dot-green {
+    background-color: #3FB030FF;
+}
+
+.hidden {
+    display: none;
+}
+
+.task-box {
+    font-size: 18px;
+}
+
+.task-label {
+    padding: 10px;
+    /*width: 90px;*/
+}
+
+.task-result {
+    font-size: 22px;
+    width: 100px;
+    padding: 10px;
+    margin: 4px 0;
+    box-sizing: border-box;
+    border: 2px solid #86b7fe;
+    border-radius: 4px;
+}
+
+.task-label-active {
+    border-radius: 25px;
+    background: #a8f0ff;
+}
+
+.task-hint {
+    /*display: none;*/
+}
+
+.wave {
+    animation-name: wave-animation; /* Refers to the name of your @keyframes element below */
+    animation-duration: 2.5s; /* Change to speed up or slow down */
+    animation-iteration-count: infinite; /* Never stop waving :) */
+    transform-origin: 70% 70%; /* Pivot around the bottom-left palm */
+    display: inline-block;
+}
+
+@keyframes wave-animation {
+    0% {
+        transform: rotate(0.0deg)
+    }
+    10% {
+        transform: rotate(14.0deg)
+    }
+    /* The following five values can be played with to make the waving more or less extreme */
+    20% {
+        transform: rotate(-8.0deg)
+    }
+    30% {
+        transform: rotate(14.0deg)
+    }
+    40% {
+        transform: rotate(-4.0deg)
+    }
+    50% {
+        transform: rotate(10.0deg)
+    }
+    60% {
+        transform: rotate(0.0deg)
+    }
+    /* Reset for the last half to pause */
+    100% {
+        transform: rotate(0.0deg)
+    }
+}
+
+/* Styles specific to printing */
+@media print {
+    /* Hide elements not to be printed */
+    h1, form, nav, button, #buttonDiv {
+        display: none;
+    }
+
+    /* Adjust styles for content when printing */
+    #generatedTasks {
+        /* Add any specific styles for content when printing */
+    }
+
+    /* Add more styles for other elements if needed */
+}
