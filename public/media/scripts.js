@@ -432,7 +432,7 @@ $(document).ready(function () {
         }
 
         function replacePlaceholders(template) {
-            return template.template.replace(/@/g, () => getRandomNumber(parseInt(template.minValue), parseInt(template.maxValue)));
+            return template.template.replace(/{(\d+),(\d+)}/g, (_, min, max) => getRandomNumber(Number(min), Number(max)));
         }
 
         function adjustForSubtraction(task, randomTemplate) {
@@ -460,11 +460,9 @@ $(document).ready(function () {
     $(document).on("click", "#button-add-template", function (e) {
         e.preventDefault();
         var template = $(this).parents("form").find('input[name="template"]').val();
-        var minValue = $(this).parents("form").find('input[name="minValue"]').val();
-        var maxValue = $(this).parents("form").find('input[name="maxValue"]').val();
 
         const data = getFromLocalStorage();
-        data.push({"template": template, "minValue": minValue, "maxValue": maxValue});
+        data.push({"template": template});
         saveToLocalStorage(data);
 
         displayTemplates();
@@ -482,7 +480,7 @@ $(document).ready(function () {
             let item = "<li data-index-id=\"" + index + "\" data-template-name=\"" + row.template + "\" data-minValue=\"" + row.minValue + "\"\n" +
                 "                                        data-maxValue=\"" + row.maxValue + "\"\n" +
                 "                                        class=\"list-group-item d-flex justify-content-between align-items-center   \">\n" +
-                "                                        " + row.template + " | от: " + row.minValue + " до:" + row.maxValue + "\n" +
+                "                                        " + row.template + "\n" +
                 "                                        <div>\n" +
                 "                                            <!-- Button trigger modal -->\n" +
                 "                                            <button class=\"edit_record btn btn-sm btn-info\" data-bs-toggle=\"modal\"\n" +
@@ -519,18 +517,14 @@ $(document).ready(function () {
 
         $("#updateTemplateModal").find('input[name="index"]').val(indexId);
         $("#updateTemplateModal").find('input[name="template"]').val(templateData.template);
-        $("#updateTemplateModal").find('input[name="minValue"]').val(templateData.minValue);
-        $("#updateTemplateModal").find('input[name="maxValue"]').val(templateData.maxValue);
     });
 
     $(document).on("click", "#updateTemplateModalButton", function (e) {
         e.preventDefault();
         var template = $("#updateTemplateModal").find('input[name="template"]').val();
-        var minValue = $("#updateTemplateModal").find('input[name="minValue"]').val();
-        var maxValue = $("#updateTemplateModal").find('input[name="maxValue"]').val();
         var index = $("#updateTemplateModal").find('input[name="index"]').val();
 
-        updateRow(index, template, minValue, maxValue);
+        updateRow(index, template);
         var myModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('updateTemplateModal'));
         myModal.toggle();
         displayTemplates();
@@ -568,10 +562,10 @@ $(document).ready(function () {
     }
 
     // Function to update a row in the data list
-    function updateRow(rowIndex, template, minValue, maxValue) {
+    function updateRow(rowIndex, template) {
         const data = getFromLocalStorage();
         if (rowIndex >= 0 && rowIndex < data.length) {
-            data[rowIndex] = {"template": template, "minValue": minValue, "maxValue": maxValue};
+            data[rowIndex] = {"template": template};
             saveToLocalStorage(data);
         }
     }
@@ -589,12 +583,16 @@ $(document).ready(function () {
         cleanTasks();
         var taskCount = $("#biggerChildrenForm").find('input[name="taskCount"]').val();
         const templates = getFromLocalStorage();
+        const checkboxTemplates = document.querySelectorAll('input.checkbox-template[type="checkbox"]');
+        checkboxTemplates.forEach(checkbox => {
+            if (checkbox.checked) {
+                templates.push({"template": checkbox.value});
+            }
+        });
         if (templates && Array.isArray(templates) && templates.length === 0) {
             var template = $("#biggerChildrenForm").find('input[name="template"]').val();
-            var minValue = $("#biggerChildrenForm").find('input[name="minValue"]').val();
-            var maxValue = $("#biggerChildrenForm").find('input[name="maxValue"]').val();
 
-            templates.push({"template": template, "minValue": minValue, "maxValue": maxValue});
+            templates.push({"template": template});
         }
         const randomTasks = getRandomTask(templates, taskCount);
 

@@ -130,35 +130,56 @@
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label for="maxSum" class="col-sm-4 col-form-label">Диапазон на стойност</label>
-                        <div class="col-sm-8">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">от</span>
-                                <input type="text" name="minValue" style="width: 50px" value="1" class="form-control">
-                                <span class="input-group-text">до</span>
-                                <input type="text" name="maxValue" style="width: 50px" value="10" class="form-control"
-                                       aria-describedby="rangeHelpBlock">
-
-                            </div>
-
-                            <div id="rangeHelpBlock" class="form-text">
-                                Диапазон на стойността на число в темплейта за @
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
                         <label class="col-sm-4 col-form-label">Темплейт</label>
                         <div class="col-sm-8">
+                            <div class="form-text" style="margin-bottom: 5px;">
+                                <strong>{1,10}</strong> може да съдържа стойност между <strong>1</strong> и <strong>10</strong>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input checkbox-template" id="template1"
+                                       value="{1,10} + ({1,10} * {1,10})">
+                                <label class="form-check-label cursor-pointer" for="template1">{1,10} +
+                                    <strong>(</strong>{1,10} *
+                                    {1,10}<strong>)</strong></label>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input checkbox-template" id="template12"
+                                       value="({1,10} * {1,10}) - {1,10}">
+                                <label class="form-check-label cursor-pointer" for="template12"><strong>(</strong>{1,10}
+                                    * {1,10}<strong>)</strong> -
+                                    {1,10}</label>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input checkbox-template" id="template2"
+                                       value="{1,20} / ({1,10} + {1,10})">
+                                <label class="form-check-label cursor-pointer" for="template2">{1,20} /
+                                    <strong>(</strong>{1,10} +
+                                    {1,10}<strong>)</strong></label>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input checkbox-template" id="template3"
+                                       value="{1,10} * ({1,10} + {1,10})">
+                                <label class="form-check-label cursor-pointer" for="template3">{1,10} *
+                                    <strong>(</strong>{1,10} +
+                                    {1,10}<strong>)</strong></label>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input checkbox-template" id="template4"
+                                       value="{1,10} * {1,10} + ({1,10} * {1,10}) / {1,10}">
+                                <label class="form-check-label cursor-pointer" for="template4">{1,10} * {1,10} +
+                                    <strong>(</strong>{1,10}
+                                    * {1,10}<strong>)</strong> / {1,10}</label>
+                            </div>
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" name="template" value="@ + (@ * @)"
+
+                                <input type="text" class="form-control" name="template"
+                                       value="{1,10} + ({1,10} * {1,10})"
                                        id="templateInput"
                                        aria-describedby="button-addon2">
                                 <button class="btn btn-outline-secondary" type="button" id="button-add-template">Добави
                                 </button>
                             </div>
                             <div>
-                                Последно добавени:
-                                <br>
                                 <ul class="list-group" id="template-list" style="margin-bottom: 20px;">
                                     <!--<li data-index-id="1126" data-record-is_planned="0"
                                         class="list-group-item d-flex justify-content-between align-items-center   ">
@@ -243,23 +264,10 @@
                 <form class="form-inline" action="#">
                     <input type="hidden" name="index">
                     <div class="mb-3 row">
-                        <label for="maxSum" class="col-sm-4 col-form-label">Диапазон на стойност</label>
-                        <div class="col-sm-8">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">от</span>
-                                <input type="text" name="minValue" style="width: 50px" value="1" class="form-control">
-                                <span class="input-group-text">до</span>
-                                <input type="text" name="maxValue" style="width: 50px" value="10" class="form-control"
-                                       aria-describedby="rangeHelpBlock">
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
                         <label class="col-sm-4 col-form-label">Темплейт</label>
                         <div class="col-sm-8">
                             <div class="input-group mb-3">
-                                <input type="text" name="template" class="form-control" value="@ + (@ * @)">
+                                <input type="text" name="template" class="form-control" value="">
                             </div>
                         </div>
                     </div>

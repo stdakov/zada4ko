@@ -59,6 +59,8 @@
     margin-bottom: 40px;
 }
 
+.cursor-pointer { cursor: pointer; }
+
 @keyframes wave-animation {
     0% {
         transform: rotate(0.0deg)
