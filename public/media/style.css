@@ -91,7 +91,7 @@
 /* Styles specific to printing */
 @media print {
     /* Hide elements not to be printed */
-    h1, form, nav, button, #buttonDiv {
+    h1, form, nav, button, footer, #buttonDiv {
         display: none;
     }
 
