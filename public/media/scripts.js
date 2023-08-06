@@ -344,7 +344,8 @@ $(document).ready(function () {
 // Example usage:
         const newMathTasks = generateMathTasks(taskCount, maxSum, checkedValues); // Generate 10 tasks with a maximum sum of 10
         displayMathTasks(newMathTasks);
-
+        const element = document.getElementById("generatedTasksTable");
+        element.scrollIntoView({behavior: "smooth", inline: "nearest"});
         localStorage.setItem('mathTasks', JSON.stringify(newMathTasks)); // Store merged math tasks array in local storage
     });
 
@@ -597,6 +598,8 @@ $(document).ready(function () {
         const randomTasks = getRandomTask(templates, taskCount);
 
         displayMathTasksTemplates(randomTasks);
+        const element = document.getElementById("generatedTasksTable");
+        element.scrollIntoView({behavior: "smooth", inline: "nearest"});
         localStorage.setItem('mathTasksTemplates', JSON.stringify(randomTasks)); // Store merged math tasks array in local storage
     });
 
