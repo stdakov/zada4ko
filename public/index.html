@@ -19,7 +19,8 @@
             src="https://st.dakovdev.com/umami.js"></script>
 </head>
 <body>
-<main class="flex-shrink-0">
+<main class="min-vh-100 d-flex flex-column
+                justify-content-between">
     <div class="container">
         <!-- Modal -->
         <div class="modal fade " id="hint-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -213,14 +214,19 @@
             </div>
         </div>
 
-        <div id="generatedTasks">
+        <div id="generatedTasks" class="full-height">
 
             <table id="generatedTasksTable">
 
             </table>
         </div>
-
-
+    </div>
+    <div class="container">
+        <footer class="justify-content-between align-items-center py-3 border-top">
+            <div class="col-md-6 d-flex align-items-center">
+                <span class="mb-md-0 text-muted">© 2023 zada4ko.com - По идея на Митко</span>
+            </div>
+        </footer>
     </div>
 </main>
 <!-- Modal -->
@@ -268,6 +274,7 @@
         </div>
     </div>
 </div>
+
 </body>
 <script type="text/javascript" src="media/jquery-3.6.4.min.js"></script>
 <script type="text/javascript" src="media/dist/js/bootstrap.min.js"></script>

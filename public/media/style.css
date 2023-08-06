@@ -55,6 +55,10 @@
     display: inline-block;
 }
 
+#generatedTasks {
+    margin-bottom: 40px;
+}
+
 @keyframes wave-animation {
     0% {
         transform: rotate(0.0deg)

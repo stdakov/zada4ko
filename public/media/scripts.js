@@ -439,7 +439,7 @@ $(document).ready(function () {
             const numbers = task.match(/(\d+)/g).map(Number);
             console.log(numbers);
             let result = eval(task);
-            while (result < 0) {
+            while (result <= 0 || result % 1 !== 0) {
                 task = replacePlaceholders(randomTemplate);
                 result = eval(task);
             }
@@ -450,7 +450,7 @@ $(document).ready(function () {
         for (let i = 0; i < count; i++) {
             let randomTemplate = templates[Math.floor(Math.random() * templates.length)];
             let task = replacePlaceholders(randomTemplate);
-            //task = adjustForSubtraction(task, randomTemplate);
+            task = adjustForSubtraction(task, randomTemplate);
             tasks.push(task);
         }
 
