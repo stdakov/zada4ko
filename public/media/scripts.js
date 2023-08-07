@@ -356,7 +356,33 @@ $(document).ready(function () {
         if ($("#printTasksBtn").is(":hidden")) {
             $("#printTasksBtn").show();
         }
+        const containerDiv = document.createElement('div');
+        containerDiv.classList.add('container');
+
+        var rowDiv = document.createElement('div');
+        rowDiv.classList.add('row');
+        containerDiv.appendChild(rowDiv);
+        var colDiv = document.createElement('div');
+        colDiv.classList.add('col-auto');
+        rowDiv.appendChild(colDiv);
+        var table = document.createElement('table');
+        colDiv.appendChild(table);
         tasks.forEach((task, index) => {
+            if (index % 28 === 0) {
+                rowDiv = document.createElement('div');
+                rowDiv.classList.add('row');
+                containerDiv.appendChild(rowDiv);
+            }
+
+            if (index % 14 === 0) {
+                colDiv = document.createElement('div');
+                colDiv.classList.add('col-auto');
+                rowDiv.appendChild(colDiv);
+                table = document.createElement('table');
+
+                colDiv.appendChild(table);
+            }
+
             var taskClean = task.replace(/[^-()\d/*+.]/g, '');
             const answer = mathTaskAnswers !== null && mathTaskAnswers[taskClean] !== undefined ? mathTaskAnswers[taskClean] : "";
             var classVer = "";
@@ -388,8 +414,9 @@ $(document).ready(function () {
                 "                    </td>\n" +
                 "                </tr>";
             $("#generatedTasksTable").append(item);
-
+            $(table).append(item);
         });
+        $("#generatedTasksPrint").html(containerDiv);
     }
 
     function displayMathTasksTemplates(tasks, mathTaskAnswers = null) {
@@ -399,7 +426,33 @@ $(document).ready(function () {
         if ($("#printTasksBtn").is(":hidden")) {
             $("#printTasksBtn").show();
         }
+        const containerDiv = document.createElement('div');
+        containerDiv.classList.add('container');
+
+        var rowDiv = document.createElement('div');
+        rowDiv.classList.add('row');
+        containerDiv.appendChild(rowDiv);
+        var colDiv = document.createElement('div');
+        colDiv.classList.add('col-auto');
+        rowDiv.appendChild(colDiv);
+        var table = document.createElement('table');
+        colDiv.appendChild(table);
         tasks.forEach((task, index) => {
+            if (index % 28 === 0) {
+                rowDiv = document.createElement('div');
+                rowDiv.classList.add('row');
+                containerDiv.appendChild(rowDiv);
+            }
+
+            if (index % 14 === 0) {
+                colDiv = document.createElement('div');
+                colDiv.classList.add('col-auto');
+                rowDiv.appendChild(colDiv);
+                table = document.createElement('table');
+
+                colDiv.appendChild(table);
+            }
+
             var taskClean = task.replace(/[^-()\d/*+.]/g, '');
             const answer = mathTaskAnswers !== null && mathTaskAnswers[taskClean] !== undefined ? mathTaskAnswers[taskClean] : "";
             var classVer = "";
@@ -424,7 +477,9 @@ $(document).ready(function () {
                 "                    </td>\n" +
                 "                </tr>";
             $("#generatedTasksTable").append(item);
+            $(table).append(item);
         });
+        $("#generatedTasksPrint").html(containerDiv);
     }
 
     function getRandomTask(templates, count) {
@@ -437,8 +492,6 @@ $(document).ready(function () {
         }
 
         function adjustForSubtraction(task, randomTemplate) {
-            const numbers = task.match(/(\d+)/g).map(Number);
-            console.log(numbers);
             let result = eval(task);
             while (result <= 0 || result % 1 !== 0) {
                 task = replacePlaceholders(randomTemplate);

@@ -89,16 +89,17 @@
         transform: rotate(0.0deg)
     }
 }
-
+#generatedTasksPrint {display: none;}
 /* Styles specific to printing */
 @media print {
     /* Hide elements not to be printed */
-    h1, form, nav, button, footer, #buttonDiv {
+    h1, form, nav, button, footer, #buttonDiv, #generatedTasks {
         display: none;
     }
 
     /* Adjust styles for content when printing */
-    #generatedTasks {
+    #generatedTasksPrint {
+        display: block;
         /* Add any specific styles for content when printing */
     }
 
