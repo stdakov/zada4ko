@@ -1,6 +1,205 @@
 "use strict";
 $(document).ready(function () {
 
+    const translations = {
+        bg: {
+            pageTitle: "Задачи по математика",
+            metaDescription: "Сайт за детски задачки. Да поиграем с малко задачи – за малки и пораснали деца. Задачи по математика",
+            heroLead: "Време е за игри с числата!",
+            heading: "zada4ko.com - Задачи за деца",
+            heroSub: "Изберете задачки според възрастта и играйте заедно с детето.",
+            tabSmall: "За най-малките",
+            tabBig: "За по-големите",
+            tabUnknown: "Открий Х",
+            labelTaskCount: "Брой задачи",
+            labelMaxValue: "Максимална стойност",
+            labelOperations: "Операции",
+            buttonGenerate: "Генерирай задачки",
+            labelTemplate: "Темплейт",
+            templateHint: "<strong>{1,10}</strong> може да съдържа стойност между <strong>1</strong> и <strong>10</strong>",
+            buttonAddTemplate: "Добави",
+            buttonDeleteTasks: "Изтрий задачки",
+            buttonPrintTasks: "Принтиране",
+            modalHintTitle: "Подсказване",
+            buttonClose: "Затвори",
+            modalTemplateTitle: "Редакция на темплейт",
+            buttonSaveChanges: "Запази промените",
+            confirmDeleteTasks: "Сигурни ли сте, че искате да изтрийте всичките задачи?",
+            confirmDeleteTemplate: "Сигурни ли сте, че искате да изтрийте темплейта?",
+            quickTitle: "Бързи предизвикателства",
+            quickSubtitle: "Изберете готово приключение и започнете решаването веднага.",
+            presetAddTitle: "Весело събиране",
+            presetAddText: "8 задачи до 15 с резултати само от събиране.",
+            presetSubTitle: "Смели изваждания",
+            presetSubText: "10 задачи до 20 без отрицателни резултати.",
+            presetMixTitle: "Смесени приключения",
+            presetMixText: "12 задачи до 30 с плюс, минус и множене.",
+            presetButton: "Старт",
+            comparisonTitle: "Игра: кой е по-голям?",
+            comparisonDesc: "Сравнете двете изразчета и изберете правилния знак.",
+            comparisonButton: "Генерирай сравнения",
+            comparisonCorrect: "Браво! Позна.",
+            comparisonTryAgain: "Опитай пак!",
+            unknownHint: "X може да е отляво или отдясно на знака. Намерете стойността, която прави равенството вярно.",
+            footerText: "© 2023 zada4ko.com - По идея на Митко"
+        },
+        en: {
+            pageTitle: "Math challenges for kids",
+            metaDescription: "Printable math worksheets and playful exercises for kids in Bulgarian and English.",
+            heroLead: "Let's play with numbers!",
+            heading: "zada4ko.com - Math for kids",
+            heroSub: "Pick the right challenge level and solve the puzzles together.",
+            tabSmall: "For the little ones",
+            tabBig: "For the big kids",
+            tabUnknown: "Find the X",
+            labelTaskCount: "Number of tasks",
+            labelMaxValue: "Maximum value",
+            labelOperations: "Operations",
+            buttonGenerate: "Generate worksheets",
+            labelTemplate: "Template",
+            templateHint: "<strong>{1,10}</strong> can contain any value between <strong>1</strong> and <strong>10</strong>",
+            buttonAddTemplate: "Add",
+            buttonDeleteTasks: "Clear tasks",
+            buttonPrintTasks: "Print",
+            modalHintTitle: "Hint",
+            buttonClose: "Close",
+            modalTemplateTitle: "Edit template",
+            buttonSaveChanges: "Save changes",
+            confirmDeleteTasks: "Are you sure you want to delete all tasks?",
+            confirmDeleteTemplate: "Are you sure you want to delete this template?",
+            quickTitle: "Quick challenges",
+            quickSubtitle: "Pick a ready-made adventure and start solving instantly.",
+            presetAddTitle: "Happy addition",
+            presetAddText: "8 tasks up to 15 focusing only on addition.",
+            presetSubTitle: "Brave subtraction",
+            presetSubText: "10 subtraction tasks up to 20 with no negative answers.",
+            presetMixTitle: "Mixed adventures",
+            presetMixText: "12 tasks up to 30 mixing +, -, and x.",
+            presetButton: "Start",
+            comparisonTitle: "Game: Which is bigger?",
+            comparisonDesc: "Compare the two expressions and pick the correct sign.",
+            comparisonButton: "Generate comparisons",
+            comparisonCorrect: "Great job!",
+            comparisonTryAgain: "Try again!",
+            unknownHint: "X can appear on either side of the equals sign. Find the value that makes the equation true.",
+            footerText: "© 2023 zada4ko.com - Inspired by Mitko"
+        }
+    };
+
+    const supportedLanguages = Object.keys(translations);
+    const comparisonStorageKey = "comparisonTasks";
+
+    function resolveInitialLanguage() {
+        const saved = localStorage.getItem("zada4ko_lang");
+        if (saved && supportedLanguages.includes(saved)) {
+            return saved;
+        }
+        const browserLang = ((navigator.language || navigator.userLanguage || "")).slice(0, 2).toLowerCase();
+        if (supportedLanguages.includes(browserLang)) {
+            return browserLang;
+        }
+        return "en";
+    }
+
+    const initialLanguage = resolveInitialLanguage();
+    let currentLanguage = initialLanguage;
+
+    function getTranslation(lang, key) {
+        if (!translations[lang] || !translations[lang][key]) {
+            return translations.bg[key] || "";
+        }
+
+        return translations[lang][key];
+    }
+
+    function applyTranslations(lang) {
+        $("[data-i18n]").each(function () {
+            const key = $(this).data("i18n");
+            const textValue = getTranslation(lang, key);
+            if (textValue) {
+                $(this).text(textValue);
+            }
+        });
+
+        $("[data-i18n-html]").each(function () {
+            const key = $(this).data("i18nHtml");
+            const htmlValue = getTranslation(lang, key);
+            if (htmlValue) {
+                $(this).html(htmlValue);
+            }
+        });
+    }
+
+    function setLanguage(lang) {
+        const targetLang = translations[lang] ? lang : "en";
+        currentLanguage = targetLang;
+        localStorage.setItem("zada4ko_lang", targetLang);
+        document.documentElement.lang = targetLang;
+        applyTranslations(targetLang);
+        const pageTitle = getTranslation(targetLang, "pageTitle");
+        if (pageTitle) {
+            document.title = pageTitle;
+        }
+        const description = getTranslation(targetLang, "metaDescription");
+        if (description) {
+            $('meta[name="description"]').attr("content", description);
+        }
+        $(".btn-language").removeClass("active");
+        $(`.btn-language[data-lang="${targetLang}"]`).addClass("active");
+    }
+
+    setLanguage(initialLanguage);
+
+    function sanitizeExpression(expr) {
+        if (expr === undefined || expr === null) {
+            return "";
+        }
+        return String(expr).replace(/[^-()\d/*+.]/g, '');
+    }
+
+    function buildTaskView(taskItem) {
+        if (typeof taskItem === "object" && taskItem !== null) {
+            const display = taskItem.display || taskItem.text || taskItem.expression || "";
+            const rawExpression = taskItem.evalExpression || taskItem.expression || display || "";
+            const evalExpressionSanitized = sanitizeExpression(rawExpression);
+            const storageKey = taskItem.storageKey !== undefined ? taskItem.storageKey : (evalExpressionSanitized || null);
+            const expectedAnswer = typeof taskItem.answer !== "undefined" ? taskItem.answer : undefined;
+            return {display, evalExpressionSanitized, storageKey, expectedAnswer};
+        }
+        const sanitized = sanitizeExpression(taskItem);
+        return {
+            display: taskItem,
+            evalExpressionSanitized: sanitized,
+            storageKey: sanitized || null,
+            expectedAnswer: undefined
+        };
+    }
+
+    function updateQuickSectionVisibility(targetTab) {
+        const isSmallKidsTab = targetTab === "#nav-home";
+        const quickSection = $("#quickChallenges");
+        if (!quickSection.length) {
+            return;
+        }
+        if (isSmallKidsTab) {
+            quickSection.show();
+        } else {
+            quickSection.hide();
+        }
+    }
+
+    updateQuickSectionVisibility("#nav-home");
+
+    $('button[data-bs-toggle="tab"]').on("shown.bs.tab", function (e) {
+        const target = $(e.target).attr("data-bs-target");
+        updateQuickSectionVisibility(target);
+    });
+
+    $(document).on("click", ".btn-language", function () {
+        const lang = $(this).data("lang");
+        setLanguage(lang);
+    });
+
     function generateMathTasksOld(size, maxSum, operation) {
         const tasks = new Set();
         var randomOpr = (operation == null);
@@ -33,50 +232,61 @@ $(document).ready(function () {
     }
 
     function generateMathTasks(size, maxSum, operations = null) {
-        //const defaultOperations = ['+', '-', '*', '/']; // Default array of available operations
-        const defaultOperations = ['+', '-']; // Default array of available operations
-        const tasks = [];
-        var allTasks = [];
-        if (mathTasks && Array.isArray(mathTasks) && mathTasks.length > 0) {
-            allTasks = mathTasks;
-        }
-
-        // Use the specified operations array, or use the default operations array if not provided
+        const defaultOperations = ['+', '-'];
         const availableOperations = operations && operations.length > 0 ? operations : defaultOperations;
-        var tries = 0;
-        while (tasks.length < size) {
-            const num1 = Math.floor(Math.random() * (maxSum - 1)) + 2; // Random number between 2 and maxSum
-            const op = availableOperations[Math.floor(Math.random() * availableOperations.length)]; // Randomly select an operation from the available operations
+        const tasks = [];
+        const seenTasks = new Set(Array.isArray(mathTasks) ? mathTasks : []);
+        const maxAttempts = size * 60;
+        let attempts = 0;
+
+        function createTask(requireIntegerResult = true) {
+            const num1 = Math.floor(Math.random() * (maxSum - 1)) + 2;
+            const op = availableOperations[Math.floor(Math.random() * availableOperations.length)];
             let num2;
 
             if (op === '+') {
-                num2 = Math.floor(Math.random() * (maxSum - num1)) + 1; // Randomly select num2 based on the chosen operation
+                num2 = Math.max(1, Math.floor(Math.random() * (maxSum - num1)) + 1);
             } else if (op === '-') {
-                num2 = Math.floor(Math.random() * num1) + 1; // Randomly select num2 based on the chosen operation
+                num2 = Math.floor(Math.random() * num1) + 1;
             } else if (op === '*') {
-                num2 = Math.floor(Math.random() * (maxSum / num1)) + 1; // Randomly select num2 based on the chosen operation
+                num2 = Math.max(1, Math.floor(Math.random() * Math.max(1, maxSum / num1)) + 1);
             } else if (op === '/') {
-                num2 = Math.floor(Math.random() * (num1 - 1)) + 1; // Randomly select num2 based on the chosen operation
+                num2 = Math.floor(Math.random() * (num1 - 1)) + 1;
             } else {
-                throw new Error('Invalid operation. Only "+", "-", "*", and "/" are allowed.'); // Throw an error for invalid operation
+                throw new Error('Invalid operation. Only "+", "-", "*", and "/" are allowed.');
             }
 
-            const result = op === '+' ? num1 + num2 : op === '-' ? num1 - num2 : op === '*' ? num1 * num2 : num1 / num2; // Calculate the result based on the operation
-            if (result === 0 || result % 1 !== 0) {
-                continue; // Skip the iteration if result is 0 or not an integer
+            const result = op === '+' ? num1 + num2 : op === '-' ? num1 - num2 : op === '*' ? num1 * num2 : num1 / num2;
+            if (requireIntegerResult && (result === 0 || result % 1 !== 0)) {
+                return null;
             }
 
-            const task = `${num1} ${op} ${num2}`; // Create the task string
-            if (!allTasks.includes(task)) {
-                allTasks.push(task);
-                tasks.push(task); // Add the task to the tasks array if it doesn't already exist
-            } else {
-                tries++;
-            }
+            return `${num1} ${op} ${num2}`;
+        }
 
-            if (tries === allTasks.length) {
-                break;
+        while (tasks.length < size && attempts < maxAttempts) {
+            attempts++;
+            const task = createTask();
+            if (!task) continue;
+            if (!seenTasks.has(task)) {
+                seenTasks.add(task);
+                tasks.push(task);
             }
+        }
+
+        let fallbackAttempts = 0;
+        const fallbackLimit = size * 20;
+        while (tasks.length < size && fallbackAttempts < fallbackLimit) {
+            fallbackAttempts++;
+            const fallbackTask = createTask();
+            if (fallbackTask) {
+                tasks.push(fallbackTask);
+            }
+        }
+
+        while (tasks.length < size) {
+            const baseNumber = tasks.length + 2;
+            tasks.push(`${baseNumber} + 0`);
         }
 
         return tasks;
@@ -89,7 +299,7 @@ $(document).ready(function () {
 
     $(document).on("click", "#deleteTasksBtn", function (e) {
         e.preventDefault();
-        const confirmation = confirm("Сигурни ли сте, че искате да изтрийте всичките задачи?"); // Display confirmation popup
+        const confirmation = confirm(getTranslation(currentLanguage, "confirmDeleteTasks")); // Display confirmation popup
         if (confirmation) {
             cleanTasks();
             $("#deleteTasksBtn").hide();
@@ -99,34 +309,61 @@ $(document).ready(function () {
     });
 
     function cleanTasks() {
-        $("#generatedTasksTable").html(""); // Clear the math tasks list on the page
+        $("#generatedTasksList").html(""); // Clear the math tasks list on the page
+        $("#generatedTasksPrint").html("");
         localStorage.removeItem("mathTasks"); // Remove mathTasks from local storage
         localStorage.removeItem("mathTasksTemplates"); // Remove mathTasks from local storage
         localStorage.removeItem("mathTaskAnswers"); // Remove mathTasks from local storage
+        localStorage.removeItem(comparisonStorageKey);
+        $("#comparisonTasksList").html("");
+        mathTasks = [];
+        mathTaskAnswers = {};
     }
 
 
     $("#generatedTasks").on("focusout", ".task-result", function (e) {
         e.preventDefault();
-        $(this).parents(".task-box").find(".task-label").removeClass("task-label-active");
-        var result = $(this).val();
+        const inputElement = $(this);
+        inputElement.parents(".task-box").find(".task-label").removeClass("task-label-active");
+        const result = inputElement.val();
         if (result != null && result !== "") {
-            var task = $(this).data("task").replace(/[^-()\d/*+.]/g, '');
+            const evalExpression = inputElement.data("eval") || "";
+            const expectedAnswerAttr = inputElement.attr("data-expected");
+            const storageKey = inputElement.data("key");
+            const sanitizedEval = sanitizeExpression(evalExpression);
 
-            const mathTaskAnswers = JSON.parse(localStorage.getItem("mathTaskAnswers")) || {};
-            mathTaskAnswers[task] = result;
-            localStorage.setItem("mathTaskAnswers", JSON.stringify(mathTaskAnswers));
-            if (checkAnswer(task, result)) {
-                $(this).removeClass("border border-3 border-danger");
-                $(this).addClass("border border-3 border-success");
-                $(this).attr('disabled', 'disabled');
-                $(this).parents(".task-box").find(".task-hint").hide();
+            let answersStore = JSON.parse(localStorage.getItem("mathTaskAnswers")) || {};
+            let shouldPersist = !expectedAnswerAttr && (storageKey || sanitizedEval);
+            const storageIdentifier = storageKey || sanitizedEval;
+
+            let isCorrect = false;
+            if (expectedAnswerAttr !== undefined) {
+                const expectedAnswer = Number(expectedAnswerAttr);
+                isCorrect = parseFloat(result) === expectedAnswer;
+            } else if (sanitizedEval) {
+                isCorrect = checkAnswer(sanitizedEval, result);
+            }
+
+            if (shouldPersist) {
+                answersStore[storageIdentifier] = result;
+                localStorage.setItem("mathTaskAnswers", JSON.stringify(answersStore));
+                mathTaskAnswers = answersStore;
+            }
+
+            if (isCorrect) {
+                inputElement.removeClass("border border-3 border-danger");
+                inputElement.addClass("border border-3 border-success");
+                inputElement.attr('disabled', 'disabled');
+                inputElement.parents(".task-box").find(".task-hint").hide();
 
                 checkAll();
             } else {
-                $(this).removeClass("border border-3 border-success");
-                $(this).addClass("border border-3 border-danger");
-                $(this).parents(".task-box").find(".task-hint").show();
+                inputElement.removeClass("border border-3 border-success");
+                inputElement.addClass("border border-3 border-danger");
+                const hintBtn = inputElement.parents(".task-box").find(".task-hint");
+                if (hintBtn.length) {
+                    hintBtn.show();
+                }
             }
         }
 
@@ -344,52 +581,82 @@ $(document).ready(function () {
 // Example usage:
         const newMathTasks = generateMathTasks(taskCount, maxSum, checkedValues); // Generate 10 tasks with a maximum sum of 10
         displayMathTasks(newMathTasks);
-        const element = document.getElementById("generatedTasksTable");
+        const element = document.getElementById("generatedTasksList");
         element.scrollIntoView({behavior: "smooth", inline: "nearest"});
+        mathTasks = newMathTasks;
         localStorage.setItem('mathTasks', JSON.stringify(newMathTasks)); // Store merged math tasks array in local storage
     });
 
-    function displayMathTasks(tasks, mathTaskAnswers = null) {
+    $(document).on("click", ".preset-btn", function (e) {
+        e.preventDefault();
+        cleanTasks();
+        const maxSum = Number($(this).data("max"));
+        const taskCount = Number($(this).data("count"));
+        const operations = $(this).data("ops").split(",").filter(Boolean);
+        $("#smallChildrenForm").find('input[name="maxSum"]').val(maxSum);
+        $("#smallChildrenForm").find('input[name="taskCount"]').val(taskCount);
+        $(".btn-check").prop("checked", false);
+        operations.forEach(op => {
+            $(`input.btn-check[value="${op}"]`).prop("checked", true);
+        });
+        const tasks = generateMathTasks(taskCount, maxSum, operations);
+        displayMathTasks(tasks);
+        const element = document.getElementById("generatedTasksList");
+        element.scrollIntoView({behavior: "smooth", inline: "nearest"});
+        mathTasks = tasks;
+        localStorage.setItem('mathTasks', JSON.stringify(tasks));
+    });
+
+    $(document).on("submit", "#unknownXForm", function (e) {
+        e.preventDefault();
+        cleanTasks();
+        const maxSum = parseInt($(this).find('input[name="maxSum"]').val(), 10) || 20;
+        const taskCount = parseInt($(this).find('input[name="taskCount"]').val(), 10) || 8;
+        const operations = $(this).find('input[name="unknownOps"]:checked').map(function () {
+            return $(this).val();
+        }).get();
+        const tasks = generateUnknownXTasks(taskCount, maxSum, operations);
+        displayMathTasks(tasks);
+        const element = document.getElementById("generatedTasksList");
+        element.scrollIntoView({behavior: "smooth", inline: "nearest"});
+    });
+
+    function displayMathTasks(tasks, storedAnswers = null) {
         if ($("#deleteTasksBtn").is(":hidden")) {
             $("#deleteTasksBtn").show();
         }
         if ($("#printTasksBtn").is(":hidden")) {
             $("#printTasksBtn").show();
         }
-        const containerDiv = document.createElement('div');
-        containerDiv.classList.add('container');
+        const grid = $("#generatedTasksList");
+        grid.html("");
 
-        var rowDiv = document.createElement('div');
-        rowDiv.classList.add('row');
-        containerDiv.appendChild(rowDiv);
-        var colDiv = document.createElement('div');
-        colDiv.classList.add('col-auto');
-        rowDiv.appendChild(colDiv);
-        var table = document.createElement('table');
-        colDiv.appendChild(table);
-        tasks.forEach((task, index) => {
-            if (index % 28 === 0) {
-                rowDiv = document.createElement('div');
-                rowDiv.classList.add('row');
-                containerDiv.appendChild(rowDiv);
-            }
+        const printList = document.createElement('ul');
+        printList.classList.add('print-task-list');
 
-            if (index % 14 === 0) {
-                colDiv = document.createElement('div');
-                colDiv.classList.add('col-auto');
-                rowDiv.appendChild(colDiv);
-                table = document.createElement('table');
+        const answers = storedAnswers || mathTaskAnswers || {};
 
-                colDiv.appendChild(table);
-            }
+        if (tasks.length > 15) {
+            printList.classList.add('print-two-columns');
+        }
 
-            var taskClean = task.replace(/[^-()\d/*+.]/g, '');
-            const answer = mathTaskAnswers !== null && mathTaskAnswers[taskClean] !== undefined ? mathTaskAnswers[taskClean] : "";
-            var classVer = "";
-            var disabled = "";
-            var correctAnswer = true;
-            if (answer !== "") {
-                if (checkAnswer(taskClean, answer)) {
+        tasks.forEach((taskItem, index) => {
+            const normalized = buildTaskView(taskItem);
+            const taskKey = normalized.storageKey;
+            const storedAnswer = taskKey && answers && answers[taskKey] !== undefined ? answers[taskKey] : "";
+            let classVer = "";
+            let disabled = "";
+            let correctAnswer = true;
+            if (storedAnswer !== "") {
+                if (normalized.expectedAnswer !== undefined) {
+                    if (parseFloat(storedAnswer) === parseFloat(normalized.expectedAnswer)) {
+                        classVer = "border border-3 border-success";
+                        disabled = "disabled";
+                    } else {
+                        classVer = "border border-3 border-danger";
+                        correctAnswer = false;
+                    }
+                } else if (normalized.evalExpressionSanitized && checkAnswer(normalized.evalExpressionSanitized, storedAnswer)) {
                     classVer = "border border-3 border-success";
                     disabled = "disabled";
                 } else {
@@ -398,67 +665,58 @@ $(document).ready(function () {
                 }
             }
 
-            var item = "<tr class=\"task-box\">\n" +
-                "                    <td style=\"text-align: center;font-size: 22px\"><span class=\"task-label col-form-label\">" + task + "</span>\n" +
-                "                    </td>\n" +
-                "                    <td>\n" +
-                "                        <span style=\"margin-right: 10px;\">=</span>\n" +
-                "                    </td>\n" +
-                "                    <td><input " + disabled + " type=\"text\" autocomplete=\"off\" inputmode=\"numeric\" value=\"" + answer + "\" data-task=\"" + task + "\"\n" +
-                "                               class=\"form-control task-result text-center " + classVer + "\">\n" +
-                "                    </td>\n" +
-                "\n" +
-                "                    <td>\n" +
-                "                        <button data-task=\"" + task + "\" class=\"form-control task-hint hide text-center " + (correctAnswer ? "hidden" : "") + "\"\n" +
-                "                                style=\"margin-left: 10px\"><span class=\"wave\">👋</span></button>\n" +
-                "                    </td>\n" +
-                "                </tr>";
-            $("#generatedTasksTable").append(item);
-            $(table).append(item);
+            const hintButton = normalized.expectedAnswer !== undefined ? "" :
+                "<button type=\"button\" data-task=\"" + normalized.display + "\" class=\"task-hint hide text-center btn btn-light " + (correctAnswer ? "hidden" : "") + "\"><span class=\"wave\">👋</span></button>";
+
+            const expectedAttr = normalized.expectedAnswer !== undefined ? " data-expected=\"" + normalized.expectedAnswer + "\"" : "";
+            const keyAttr = taskKey ? " data-key=\"" + taskKey + "\"" : "";
+            const evalAttr = normalized.evalExpressionSanitized ? " data-eval=\"" + normalized.evalExpressionSanitized + "\"" : "";
+
+            const cardMarkup = "<div class=\"task-card task-box\">\n" +
+                "    <span class=\"task-number\">#" + (index + 1) + "</span>\n" +
+                "    <div class=\"task-line\">\n" +
+                "        <span class=\"task-label\">" + normalized.display + "</span>\n" +
+                "        <span class=\"task-equals\">=</span>\n" +
+                "        <input " + disabled + " type=\"text\" autocomplete=\"off\" inputmode=\"numeric\" value=\"" + storedAnswer + "\" data-task=\"" + normalized.display + "\"" + evalAttr + keyAttr + expectedAttr + " class=\"form-control task-result text-center " + classVer + "\">\n" +
+                "        " + hintButton + "\n" +
+                "    </div>\n" +
+                "</div>";
+            grid.append(cardMarkup);
+
+            const printItem = document.createElement('li');
+            printItem.textContent = `${normalized.display} =`;
+            printList.appendChild(printItem);
         });
-        $("#generatedTasksPrint").html(containerDiv);
+        $("#generatedTasksPrint").html(printList);
     }
 
-    function displayMathTasksTemplates(tasks, mathTaskAnswers = null) {
+    function displayMathTasksTemplates(tasks, storedAnswers = null) {
         if ($("#deleteTasksBtn").is(":hidden")) {
             $("#deleteTasksBtn").show();
         }
         if ($("#printTasksBtn").is(":hidden")) {
             $("#printTasksBtn").show();
         }
-        const containerDiv = document.createElement('div');
-        containerDiv.classList.add('container');
+        const grid = $("#generatedTasksList");
+        grid.html("");
 
-        var rowDiv = document.createElement('div');
-        rowDiv.classList.add('row');
-        containerDiv.appendChild(rowDiv);
-        var colDiv = document.createElement('div');
-        colDiv.classList.add('col-auto');
-        rowDiv.appendChild(colDiv);
-        var table = document.createElement('table');
-        colDiv.appendChild(table);
-        tasks.forEach((task, index) => {
-            if (index % 28 === 0) {
-                rowDiv = document.createElement('div');
-                rowDiv.classList.add('row');
-                containerDiv.appendChild(rowDiv);
-            }
+        const printList = document.createElement('ul');
+        printList.classList.add('print-task-list');
 
-            if (index % 14 === 0) {
-                colDiv = document.createElement('div');
-                colDiv.classList.add('col-auto');
-                rowDiv.appendChild(colDiv);
-                table = document.createElement('table');
+        const answers = storedAnswers || mathTaskAnswers || {};
 
-                colDiv.appendChild(table);
-            }
+        if (tasks.length > 15) {
+            printList.classList.add('print-two-columns');
+        }
 
-            var taskClean = task.replace(/[^-()\d/*+.]/g, '');
-            const answer = mathTaskAnswers !== null && mathTaskAnswers[taskClean] !== undefined ? mathTaskAnswers[taskClean] : "";
-            var classVer = "";
-            var disabled = "";
-            if (answer !== "") {
-                if (checkAnswer(taskClean, answer)) {
+        tasks.forEach((taskItem, index) => {
+            const normalized = buildTaskView(taskItem);
+            const taskKey = normalized.storageKey;
+            const storedAnswer = taskKey && answers && answers[taskKey] !== undefined ? answers[taskKey] : "";
+            let classVer = "";
+            let disabled = "";
+            if (storedAnswer !== "") {
+                if (normalized.evalExpressionSanitized && checkAnswer(normalized.evalExpressionSanitized, storedAnswer)) {
                     classVer = "border border-3 border-success";
                     disabled = "disabled";
                 } else {
@@ -466,20 +724,218 @@ $(document).ready(function () {
                 }
             }
 
-            var item = "<tr class=\"task-box\">\n" +
-                "                    <td style=\"text-align: center;font-size: 22px\"><span class=\"task-label col-form-label\">" + task + "</span>\n" +
-                "                    </td>\n" +
-                "                    <td>\n" +
-                "                        <span style=\"margin-right: 10px;\">=</span>\n" +
-                "                    </td>\n" +
-                "                    <td><input " + disabled + " type=\"text\" autocomplete=\"off\" inputmode=\"numeric\" value=\"" + answer + "\" data-task=\"" + task + "\"\n" +
-                "                               class=\"form-control task-result text-center " + classVer + "\">\n" +
-                "                    </td>\n" +
-                "                </tr>";
-            $("#generatedTasksTable").append(item);
-            $(table).append(item);
+            const keyAttr = taskKey ? " data-key=\"" + taskKey + "\"" : "";
+            const evalAttr = normalized.evalExpressionSanitized ? " data-eval=\"" + normalized.evalExpressionSanitized + "\"" : "";
+
+            const cardMarkup = "<div class=\"task-card task-box\">\n" +
+                "    <span class=\"task-number\">#" + (index + 1) + "</span>\n" +
+                "    <div class=\"task-line\">\n" +
+                "        <span class=\"task-label\">" + normalized.display + "</span>\n" +
+                "        <span class=\"task-equals\">=</span>\n" +
+                "        <input " + disabled + " type=\"text\" autocomplete=\"off\" inputmode=\"numeric\" value=\"" + storedAnswer + "\" data-task=\"" + normalized.display + "\"" + evalAttr + keyAttr + " class=\"form-control task-result text-center " + classVer + "\">\n" +
+                "    </div>\n" +
+                "</div>";
+            grid.append(cardMarkup);
+
+            const printItem = document.createElement('li');
+            printItem.textContent = `${normalized.display} =`;
+            printList.appendChild(printItem);
         });
-        $("#generatedTasksPrint").html(containerDiv);
+        $("#generatedTasksPrint").html(printList);
+    }
+
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function buildExpression(max, operations) {
+        const allowedOps = operations && operations.length ? operations : ['+', '-'];
+        const op = allowedOps[Math.floor(Math.random() * allowedOps.length)];
+        let expression;
+        let value;
+
+        if (op === '+') {
+            const a = getRandomInt(1, max);
+            const b = getRandomInt(1, max);
+            expression = `${a} + ${b}`;
+            value = a + b;
+        } else if (op === '-') {
+            const a = getRandomInt(2, Math.max(3, max + 2));
+            const b = getRandomInt(1, a - 1);
+            expression = `${a} - ${b}`;
+            value = a - b;
+        } else if (op === '*') {
+            const factorLimit = Math.max(3, Math.floor(Math.sqrt(max * 2)));
+            const a = getRandomInt(2, factorLimit);
+            const b = getRandomInt(2, factorLimit);
+            expression = `${a} * ${b}`;
+            value = a * b;
+        } else if (op === '/') {
+            const divisor = getRandomInt(2, Math.max(3, Math.min(max, 10)));
+            const quotient = getRandomInt(1, Math.max(3, Math.floor(max / 2))); 
+            const dividend = divisor * quotient;
+            expression = `${dividend} / ${divisor}`;
+            value = quotient;
+        } else {
+            const a = getRandomInt(1, max);
+            const b = getRandomInt(1, max);
+            expression = `${a} + ${b}`;
+            value = a + b;
+        }
+
+        return {expression, value};
+    }
+
+    function generateComparisonTasks(count, maxSum, operations) {
+        const ops = operations && operations.length ? operations : ['+', '-'];
+        const tasks = [];
+        for (let i = 0; i < count; i++) {
+            const left = buildExpression(maxSum, ops);
+            const right = buildExpression(maxSum, ops);
+            tasks.push({
+                leftExpr: left.expression,
+                leftValue: left.value,
+                rightExpr: right.expression,
+                rightValue: right.value
+            });
+        }
+        return tasks;
+    }
+
+    function displayComparisonTasks(tasks) {
+        const container = $("#comparisonTasksList");
+        container.html("");
+        tasks.forEach((task, index) => {
+            const card = $(
+                `<div class="comparison-card" data-left-value="${task.leftValue}" data-right-value="${task.rightValue}">
+                    <div class="comparison-equation">
+                        <span class="comparison-expr">${task.leftExpr}</span>
+                        <select class="form-select comparison-select" aria-label="Choose comparison">
+                            <option value="" selected>?</option>
+                            <option value=">">&gt;</option>
+                            <option value="=">=</option>
+                            <option value="<">&lt;</option>
+                        </select>
+                        <span class="comparison-expr">${task.rightExpr}</span>
+                    </div>
+                    <div class="comparison-feedback" data-default=""></div>
+                </div>`
+            );
+            card.find(".comparison-select").attr("data-task-index", index);
+            container.append(card);
+        });
+    }
+
+    $(document).on("click", "#generateCompareTasks", function (e) {
+        e.preventDefault();
+        const maxSum = parseInt($("#smallChildrenForm").find('input[name="maxSum"]').val(), 10) || 20;
+        const taskCount = parseInt($("#smallChildrenForm").find('input[name="taskCount"]').val(), 10) || 6;
+        const operations = $("#smallChildrenForm .btn-check:checked").map(function () {
+            return $(this).val();
+        }).get();
+        const clampedCount = Math.min(20, Math.max(3, taskCount));
+        const comparisonTasks = generateComparisonTasks(clampedCount, Math.max(5, maxSum), operations);
+        displayComparisonTasks(comparisonTasks);
+        localStorage.setItem(comparisonStorageKey, JSON.stringify(comparisonTasks));
+    });
+
+    function evaluateComparison(left, right) {
+        if (left > right) {
+            return ">";
+        }
+        if (left < right) {
+            return "<";
+        }
+        return "=";
+    }
+
+    $(document).on("change", ".comparison-select", function () {
+        const select = $(this);
+        const card = select.closest('.comparison-card');
+        const left = Number(card.data('left-value'));
+        const right = Number(card.data('right-value'));
+        const chosen = select.val();
+        const feedback = card.find('.comparison-feedback');
+        if (!chosen) {
+            feedback.removeClass('success try-again').text('');
+            return;
+        }
+        const correctSign = evaluateComparison(left, right);
+        if (chosen === correctSign) {
+            feedback.removeClass('try-again').addClass('success').text(getTranslation(currentLanguage, 'comparisonCorrect'));
+        } else {
+            feedback.removeClass('success').addClass('try-again').text(getTranslation(currentLanguage, 'comparisonTryAgain'));
+        }
+    });
+
+    const storedComparisonTasks = JSON.parse(localStorage.getItem(comparisonStorageKey));
+    if (storedComparisonTasks && Array.isArray(storedComparisonTasks) && storedComparisonTasks.length > 0) {
+        displayComparisonTasks(storedComparisonTasks);
+    }
+
+    function generateUnknownXTasks(count, maxValue, operations = null) {
+        const availableOperations = operations && operations.length > 0 ? operations : ['+', '-'];
+        const tasks = [];
+        const maxAttempts = count * 40;
+        let attempts = 0;
+
+        function createAdditionTask() {
+            const addend = getRandomInt(1, Math.max(2, maxValue));
+            const answer = getRandomInt(1, Math.max(2, maxValue));
+            const sumLimit = Math.max(maxValue * 2, maxValue + 5);
+            const sum = addend + answer;
+            if (sum > sumLimit) {
+                return null;
+            }
+            if (Math.random() < 0.5) {
+                return {display: `X + ${addend} = ${sum}`, answer};
+            }
+            return {display: `${addend} + X = ${sum}`, answer};
+        }
+
+        function createSubtractionTask() {
+            if (Math.random() < 0.5) {
+                const answer = getRandomInt(2, Math.max(3, maxValue + 2));
+                const subtrahend = getRandomInt(1, answer - 1);
+                const result = answer - subtrahend;
+                return {display: `X - ${subtrahend} = ${result}`, answer};
+            }
+            const minuend = getRandomInt(3, Math.max(5, maxValue + 5));
+            const result = getRandomInt(0, minuend - 1);
+            const answer = minuend - result;
+            return {display: `${minuend} - X = ${result}`, answer};
+        }
+
+        while (tasks.length < count && attempts < maxAttempts) {
+            attempts++;
+            const op = availableOperations[Math.floor(Math.random() * availableOperations.length)];
+            let task;
+            if (op === '+') {
+                task = createAdditionTask();
+            } else if (op === '-') {
+                task = createSubtractionTask();
+            } else {
+                continue;
+            }
+            if (task) {
+                tasks.push({
+                    display: task.display,
+                    answer: task.answer,
+                    storageKey: null
+                });
+            }
+        }
+
+        while (tasks.length < count) {
+            const filler = tasks.length + 3;
+            tasks.push({
+                display: `X + 1 = ${filler + 1}`,
+                answer: filler,
+                storageKey: null
+            });
+        }
+
+        return tasks;
     }
 
     function getRandomTask(templates, count) {
@@ -586,7 +1042,7 @@ $(document).ready(function () {
 
     $(document).on("click", ".remove_record", function (e) {
         e.preventDefault();
-        const confirmation = confirm("Сигурни ли сте, че искате да изтрийте темплейта?"); // Display confirmation popup
+        const confirmation = confirm(getTranslation(currentLanguage, "confirmDeleteTemplate")); // Display confirmation popup
         if (confirmation) {
             var parent = $(this).parents("li")
             var indexId = parent.data('index-id');
@@ -651,7 +1107,7 @@ $(document).ready(function () {
         const randomTasks = getRandomTask(templates, taskCount);
 
         displayMathTasksTemplates(randomTasks);
-        const element = document.getElementById("generatedTasksTable");
+        const element = document.getElementById("generatedTasksList");
         element.scrollIntoView({behavior: "smooth", inline: "nearest"});
         localStorage.setItem('mathTasksTemplates', JSON.stringify(randomTasks)); // Store merged math tasks array in local storage
     });

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bg">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <link rel="canonical" href="https://zada4ko.com">
@@ -10,6 +10,9 @@
           content="задачи, задача, задачка, zadacha, zada4a, zadachki, zada4ki, задачи за деца, деца, за деца, математически, matematicheski, математика, най-малките">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link type="text/css" href="media/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="apple-touch-icon" sizes="180x180" href="media/icon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="media/icon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="media/icon/favicon-16x16.png">
@@ -21,27 +24,46 @@
     <script async defer data-website-id="8cc30ea9-5fc2-4304-a970-fdd14aafc052"
             src="https://st.dakovdev.com/umami.js"></script>
 </head>
-<body>
+<body class="playful-bg">
 <main class="min-vh-100 d-flex flex-column
                 justify-content-between">
     <div class="container">
-
-        <h1 class="mt-5">zada4ko.com - Задачи за деца</h1>
-        <nav>
-            <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
-                        type="button" role="tab" aria-controls="nav-home" aria-selected="true">За най-малките
-                </button>
-                <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile"
-                        type="button" role="tab" aria-controls="nav-profile" aria-selected="false">За по-големите
-                </button>
+        <header class="hero-card mt-5">
+            <div>
+                <p class="hero-eyebrow" data-i18n="heroLead">Време е за игри с числата!</p>
+                <h1 class="hero-title" data-i18n="heading">zada4ko.com - Задачи за деца</h1>
+                <p class="hero-subtitle" data-i18n="heroSub">Изберете задачки според възрастта и играйте заедно с детето.</p>
+                <div class="language-toggle" role="group" aria-label="Language switcher">
+                    <button type="button" class="btn btn-language active" data-lang="en">EN</button>
+                    <button type="button" class="btn btn-language" data-lang="bg">BG</button>
+                </div>
             </div>
-        </nav>
-        <div class="tab-content pt-4" id="nav-tabContent">
+            <div class="hero-art" aria-hidden="true">
+                <div class="hero-balloon balloon-one"></div>
+                <div class="hero-balloon balloon-two"></div>
+                <div class="hero-star star-one"></div>
+                <div class="hero-star star-two"></div>
+            </div>
+        </header>
+        <div class="app-card mt-4">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
+                            type="button" role="tab" aria-controls="nav-home" aria-selected="true" data-i18n="tabSmall">За най-малките
+                    </button>
+                    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile"
+                            type="button" role="tab" aria-controls="nav-profile" aria-selected="false" data-i18n="tabBig">За по-големите
+                    </button>
+                    <button class="nav-link" id="nav-unknown-tab" data-bs-toggle="tab" data-bs-target="#nav-unknown"
+                            type="button" role="tab" aria-controls="nav-unknown" aria-selected="false" data-i18n="tabUnknown">Открий Х
+                    </button>
+                </div>
+            </nav>
+            <div class="tab-content pt-4" id="nav-tabContent">
             <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                 <form class="form-inline" id="smallChildrenForm" action="#">
                     <div class="mb-3 row">
-                        <label for="taskCount" class="col-sm-4 col-form-label">Брой задачи</label>
+                        <label for="taskCount" class="col-sm-4 col-form-label" data-i18n="labelTaskCount">Брой задачи</label>
                         <div class="col-sm-8">
                             <input type="text" name="taskCount" style="width: 50px" value="10" class="form-control"
                                    id="taskCount"
@@ -49,7 +71,7 @@
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label for="maxSum" class="col-sm-4 col-form-label">Максимална стойност</label>
+                        <label for="maxSum" class="col-sm-4 col-form-label" data-i18n="labelMaxValue">Максимална стойност</label>
                         <div class="col-sm-8">
                             <input type="text" name="maxSum" style="width: 50px" value="10" class="form-control"
                                    id="maxSum"
@@ -57,7 +79,7 @@
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label class="col-sm-4 col-form-label">Операции</label>
+                        <label class="col-sm-4 col-form-label" data-i18n="labelOperations">Операции</label>
                         <div class="col-sm-8">
                             <div class="row g-3 align-items-center">
                                 <div class="col-auto">
@@ -91,26 +113,35 @@
                     </div>
                     <div class="col-auto mb-5">
                         <div class="d-grid gap-2 d-md-block">
-                            <button type="submit" id="generateTasks" class="btn btn-warning">Генерирай
-                                задачки
-                            </button>
+                            <button type="submit" id="generateTasks" class="btn btn-warning btn-kiddo" data-i18n="buttonGenerate">Генерирай задачки</button>
                         </div>
                     </div>
                 </form>
+
+                <div class="comparison-section mt-4">
+                    <div class="d-flex flex-column flex-xl-row align-items-xl-center justify-content-between gap-3">
+                        <div>
+                            <h3 class="comparison-title" data-i18n="comparisonTitle">Игра: кой е по-голям?</h3>
+                            <p class="comparison-subtitle" data-i18n="comparisonDesc">Сравнете двете изразчета и изберете правилния знак.</p>
+                        </div>
+                        <button class="btn btn-kiddo" id="generateCompareTasks" data-i18n="comparisonButton">Генерирай сравнения</button>
+                    </div>
+                    <div id="comparisonTasksList" class="comparison-grid mt-3"></div>
+                </div>
             </div>
             <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                 <form class="form-inline" id="biggerChildrenForm" action="#">
                     <div class="mb-3 row">
-                        <label for="taskCount" class="col-sm-4 col-form-label">Брой задачи</label>
+                        <label for="taskCount" class="col-sm-4 col-form-label" data-i18n="labelTaskCount">Брой задачи</label>
                         <div class="col-sm-8">
                             <input type="text" style="width: 50px" value="10" name="taskCount" class="form-control"
                                    autocomplete="off">
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label class="col-sm-4 col-form-label">Темплейт</label>
+                        <label class="col-sm-4 col-form-label" data-i18n="labelTemplate">Темплейт</label>
                         <div class="col-sm-8">
-                            <div class="form-text" style="margin-bottom: 5px;">
+                            <div class="form-text" style="margin-bottom: 5px;" data-i18n-html="templateHint">
                                 <strong>{1,10}</strong> може да съдържа стойност между <strong>1</strong> и
                                 <strong>10</strong>
                             </div>
@@ -155,8 +186,7 @@
                                        value="{1,10} + ({1,10} * {1,10})"
                                        id="templateInput"
                                        aria-describedby="button-addon2">
-                                <button class="btn btn-outline-secondary" type="button" id="button-add-template">Добави
-                                </button>
+                                <button class="btn btn-outline-secondary btn-kiddo-ghost" type="button" id="button-add-template" data-i18n="buttonAddTemplate">Добави</button>
                             </div>
                             <div>
                                 <ul class="list-group" id="template-list" style="margin-bottom: 20px;">
@@ -191,19 +221,96 @@
                     </div>
                     <div class="col-auto mb-5">
                         <div class="d-grid gap-2 d-md-block">
-                            <button type="submit" id="generateTasksTemplates" class="btn btn-warning">Генерирай
-                                задачки
-                            </button>
+                            <button type="submit" id="generateTasksTemplates" class="btn btn-warning btn-kiddo" data-i18n="buttonGenerate">Генерирай задачки</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade" id="nav-unknown" role="tabpanel" aria-labelledby="nav-unknown-tab">
+                <form class="form-inline" id="unknownXForm" action="#">
+                    <div class="mb-3 row">
+                        <label for="unknownTaskCount" class="col-sm-4 col-form-label" data-i18n="labelTaskCount">Брой задачи</label>
+                        <div class="col-sm-8">
+                            <input type="number" min="3" max="20" name="taskCount" style="width: 60px" value="8" class="form-control"
+                                   id="unknownTaskCount"
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="unknownMax" class="col-sm-4 col-form-label" data-i18n="labelMaxValue">Максимална стойност</label>
+                        <div class="col-sm-8">
+                            <input type="number" min="5" max="100" name="maxSum" style="width: 60px" value="20" class="form-control"
+                                   id="unknownMax"
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-sm-4 col-form-label" data-i18n="labelOperations">Операции</label>
+                        <div class="col-sm-8">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-auto">
+                                    <input type="checkbox" name="unknownOps" checked value="+" class="btn-check"
+                                           id="unknown-op-add" autocomplete="off">
+                                    <label class="btn btn-outline-primary" style="width: 40px"
+                                           for="unknown-op-add">+</label><br>
+                                </div>
+                                <div class="col-auto">
+                                    <input type="checkbox" name="unknownOps" checked value="-" class="btn-check"
+                                           id="unknown-op-sub" autocomplete="off">
+                                    <label class="btn btn-outline-primary" style="width: 40px"
+                                           for="unknown-op-sub">-</label><br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-muted" data-i18n="unknownHint">X може да е отляво или отдясно на знака. Намерете стойността, която прави равенството вярно.</p>
+                    <div class="col-auto mb-5">
+                        <div class="d-grid gap-2 d-md-block">
+                            <button type="submit" id="generateUnknownTasks" class="btn btn-warning btn-kiddo" data-i18n="buttonGenerate">Генерирай задачки</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
+            <div class="quick-section mt-4" id="quickChallenges">
+                <div class="quick-section__header">
+                    <h2 class="quick-title" data-i18n="quickTitle">Бързи предизвикателства</h2>
+                    <p class="quick-subtitle" data-i18n="quickSubtitle">Изберете готово приключение и започнете решаването веднага.</p>
+                </div>
+                <div class="row g-3 quick-grid">
+                    <div class="col-md-4">
+                        <div class="preset-card">
+                            <div class="preset-icon">➕</div>
+                            <h3 data-i18n="presetAddTitle">Весело събиране</h3>
+                            <p data-i18n="presetAddText">8 задачи до 15 с резултати само от събиране.</p>
+                            <button class="btn btn-kiddo preset-btn" data-preset="add" data-ops="+" data-max="15" data-count="8" data-i18n="presetButton">Старт</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="preset-card">
+                            <div class="preset-icon">➖</div>
+                            <h3 data-i18n="presetSubTitle">Смели изваждания</h3>
+                            <p data-i18n="presetSubText">10 задачи до 20, за да тренираме изваждането без отрицателни резултати.</p>
+                            <button class="btn btn-kiddo preset-btn" data-preset="sub" data-ops="-" data-max="20" data-count="10" data-i18n="presetButton">Старт</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="preset-card">
+                            <div class="preset-icon">✨</div>
+                            <h3 data-i18n="presetMixTitle">Смесени приключения</h3>
+                            <p data-i18n="presetMixText">12 задачи до 30 с плюс, минус и множене за по-големите.</p>
+                            <button class="btn btn-kiddo preset-btn" data-preset="mix" data-ops="+,-,*" data-max="30" data-count="12" data-i18n="presetButton">Старт</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="col-auto mb-5" id="buttonDiv">
             <div class="d-grid gap-2 d-md-block">
-                <button id="deleteTasksBtn" style="display: none" class="btn btn-danger">Изтрий задачки</button>
+                <button id="deleteTasksBtn" style="display: none" class="btn btn-danger" data-i18n="buttonDeleteTasks">Изтрий задачки</button>
                 <button id="printTasksBtn" style="display: none" class="btn btn-info">
+                    <span data-i18n="buttonPrintTasks" class="me-2 d-none d-sm-inline">Принтиране</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-printer" viewBox="0 0 16 16">
                         <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
@@ -215,10 +322,8 @@
         </div>
 
         <div id="generatedTasks">
-
-            <table id="generatedTasksTable">
-
-            </table>
+            <div id="generatedTasksList" class="task-grid">
+            </div>
         </div>
         <div id="generatedTasksPrint">
         </div>
@@ -228,7 +333,7 @@
     <div class="container">
         <footer class="justify-content-between align-items-center py-3 border-top">
             <div class="col-md-6 d-flex align-items-center">
-                <span class="mb-md-0 text-muted">© 2023 zada4ko.com - По идея на Митко</span>
+                <span class="mb-md-0 text-muted" data-i18n="footerText">© 2023 zada4ko.com - По идея на Митко</span>
             </div>
         </footer>
     </div>
@@ -236,9 +341,10 @@
 <!-- Modal -->
 <div class="modal fade " id="hint-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content modal-playful">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Подсказване</h1>
+                <div class="modal-icon">🧠</div>
+                <h1 class="modal-title fs-5" id="exampleModalLabel" data-i18n="modalHintTitle">Подсказване</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -254,7 +360,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Затвори</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="buttonClose">Затвори</button>
             </div>
         </div>
     </div>
@@ -263,9 +369,10 @@
 <div class="modal fade" id="updateTemplateModal" tabindex="-1" aria-labelledby="exampleModalLabel2"
      aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content modal-playful">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel2"></h1>
+                <div class="modal-icon">✏️</div>
+                <h1 class="modal-title fs-5" id="exampleModalLabel2" data-i18n="modalTemplateTitle">Редакция на темплейт</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                         aria-label="Close"></button>
             </div>
@@ -273,7 +380,7 @@
                 <form class="form-inline" action="#">
                     <input type="hidden" name="index">
                     <div class="mb-3 row">
-                        <label class="col-sm-4 col-form-label">Темплейт</label>
+                        <label class="col-sm-4 col-form-label" data-i18n="labelTemplate">Темплейт</label>
                         <div class="col-sm-8">
                             <div class="input-group mb-3">
                                 <input type="text" name="template" class="form-control" value="">
@@ -284,9 +391,9 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Затвори
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="buttonClose">Затвори
                 </button>
-                <button type="button" id="updateTemplateModalButton" class="btn btn-primary">Запази промените</button>
+                <button type="button" id="updateTemplateModalButton" class="btn btn-primary" data-i18n="buttonSaveChanges">Запази промените</button>
             </div>
         </div>
     </div>
