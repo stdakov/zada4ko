@@ -41,7 +41,8 @@ $(document).ready(function () {
             comparisonCorrect: "Браво! Позна.",
             comparisonTryAgain: "Опитай пак!",
             unknownHint: "X може да е отляво или отдясно на знака. Намерете стойността, която прави равенството вярно.",
-            footerText: "© 2023 zada4ko.com - По идея на Митко"
+            footerText: "© 2023 zada4ko.com - По идея на Митко",
+            footerCredit: "<a href=\"https://dakovdev.com\" class=\"text-muted text-decoration-none\" target=\"_blank\" rel=\"noopener\">Създадено от dakovdev.com</a>"
         },
         en: {
             pageTitle: "Math challenges for kids",
@@ -82,7 +83,8 @@ $(document).ready(function () {
             comparisonCorrect: "Great job!",
             comparisonTryAgain: "Try again!",
             unknownHint: "X can appear on either side of the equals sign. Find the value that makes the equation true.",
-            footerText: "© 2023 zada4ko.com - Inspired by Mitko"
+            footerText: "© 2023 zada4ko.com - Inspired by Mitko",
+            footerCredit: "<a href=\"https://dakovdev.com\" class=\"text-muted text-decoration-none\" target=\"_blank\" rel=\"noopener\">Crafted by dakovdev.com</a>"
         }
     };
 
@@ -619,6 +621,8 @@ $(document).ready(function () {
         displayMathTasks(tasks);
         const element = document.getElementById("generatedTasksList");
         element.scrollIntoView({behavior: "smooth", inline: "nearest"});
+        mathTasks = tasks;
+        localStorage.setItem('mathTasks', JSON.stringify(tasks));
     });
 
     function displayMathTasks(tasks, storedAnswers = null) {
@@ -676,7 +680,7 @@ $(document).ready(function () {
                 "    <span class=\"task-number\">#" + (index + 1) + "</span>\n" +
                 "    <div class=\"task-line\">\n" +
                 "        <span class=\"task-label\">" + normalized.display + "</span>\n" +
-                "        <span class=\"task-equals\">=</span>\n" +
+                "        <span class=\"task-equals\">" + (normalized.expectedAnswer !== undefined ? "X =" : "=") + "</span>\n" +
                 "        <input " + disabled + " type=\"text\" autocomplete=\"off\" inputmode=\"numeric\" value=\"" + storedAnswer + "\" data-task=\"" + normalized.display + "\"" + evalAttr + keyAttr + expectedAttr + " class=\"form-control task-result text-center " + classVer + "\">\n" +
                 "        " + hintButton + "\n" +
                 "    </div>\n" +
@@ -684,7 +688,7 @@ $(document).ready(function () {
             grid.append(cardMarkup);
 
             const printItem = document.createElement('li');
-            printItem.textContent = `${normalized.display} =`;
+            printItem.textContent = normalized.expectedAnswer !== undefined ? `${normalized.display}  X =` : `${normalized.display} =`;
             printList.appendChild(printItem);
         });
         $("#generatedTasksPrint").html(printList);
