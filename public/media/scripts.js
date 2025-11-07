@@ -337,19 +337,20 @@ $(document).ready(function () {
         cleanTasks();
         var maxSum = $("#smallChildrenForm").find('input[name="maxSum"]').val();
         var taskCount = $("#smallChildrenForm").find('input[name="taskCount"]').val();
+        var format = $("#smallChildrenForm").find('input[name="format"]:checked').val();
         const checkedCheckbox = $('input[type="checkbox"]:checked'); // Select all checked checkboxes
         const checkedValues = checkedCheckbox.map(function () { // Map to an array of values
             return $(this).val();
         }).get();
 // Example usage:
         const newMathTasks = generateMathTasks(taskCount, maxSum, checkedValues); // Generate 10 tasks with a maximum sum of 10
-        displayMathTasks(newMathTasks);
+        displayMathTasks(newMathTasks, null, format);
         const element = document.getElementById("generatedTasksTable");
         element.scrollIntoView({behavior: "smooth", inline: "nearest"});
         localStorage.setItem('mathTasks', JSON.stringify(newMathTasks)); // Store merged math tasks array in local storage
     });
 
-    function displayMathTasks(tasks, mathTaskAnswers = null) {
+    function displayMathTasks(tasks, mathTaskAnswers = null, format = null) {
         if ($("#deleteTasksBtn").is(":hidden")) {
             $("#deleteTasksBtn").show();
         }
@@ -397,22 +398,49 @@ $(document).ready(function () {
                     correctAnswer = false;
                 }
             }
+            if (format === "opt2") {
+                var item = "<tr class=\"task-box\">\n" +
+                    "                    <td style=\"text-align: center;font-size: 22px\">\n" +
+                    "                        <div class=\"d-flex flex-row justify-content-center align-items-center task-label col-form-label\">\n" +
+                    "                            <div class=\"float-start\" style=\"margin-right: 5px;\">\n" +
+                    "                                +\n" +
+                    "                            </div>\n" +
+                    "                            <div>\n" +
+                    "                                <div>\n" +
+                    "                                    56\n" +
+                    "                                </div>\n" +
+                    "                                <hr class=\"line\"/>\n" +
+                    "                                <div class=\"float-end\">\n" +
+                    "                                    8\n" +
+                    "                                </div>\n" +
+                    "                            </div>\n" +
+                    "                        </div>\n" +
+                    "                    <td>\n" +
+                    "                        <span style=\"margin-right: 10px;\">=</span>\n" +
+                    "                    </td>\n" +
+                    "                    <td><input type=\"text\" autocomplete=\"off\" inputmode=\"numeric\" value=\"\" data-task=\"10 + 1\"\n" +
+                    "                               class=\"form-control task-result text-center \">\n" +
+                    "                    </td>\n" +
+                    "                </tr>";
+            } else {
+                var item = "<tr class=\"task-box\">\n" +
+                    "                    <td style=\"text-align: center;font-size: 22px\"><span class=\"task-label col-form-label\">" + task + "</span>\n" +
+                    "                    </td>\n" +
+                    "                    <td>\n" +
+                    "                        <span style=\"margin-right: 10px;\">=</span>\n" +
+                    "                    </td>\n" +
+                    "                    <td><input " + disabled + " type=\"text\" autocomplete=\"off\" inputmode=\"numeric\" value=\"" + answer + "\" data-task=\"" + task + "\"\n" +
+                    "                               class=\"form-control task-result text-center " + classVer + "\">\n" +
+                    "                    </td>\n" +
+                    "\n" +
+                    "                    <td>\n" +
+                    "                        <button data-task=\"" + task + "\" class=\"form-control task-hint hide text-center " + (correctAnswer ? "hidden" : "") + "\"\n" +
+                    "                                style=\"margin-left: 10px\"><span class=\"wave\">👋</span></button>\n" +
+                    "                    </td>\n" +
+                    "                </tr>";
+            }
 
-            var item = "<tr class=\"task-box\">\n" +
-                "                    <td style=\"text-align: center;font-size: 22px\"><span class=\"task-label col-form-label\">" + task + "</span>\n" +
-                "                    </td>\n" +
-                "                    <td>\n" +
-                "                        <span style=\"margin-right: 10px;\">=</span>\n" +
-                "                    </td>\n" +
-                "                    <td><input " + disabled + " type=\"text\" autocomplete=\"off\" inputmode=\"numeric\" value=\"" + answer + "\" data-task=\"" + task + "\"\n" +
-                "                               class=\"form-control task-result text-center " + classVer + "\">\n" +
-                "                    </td>\n" +
-                "\n" +
-                "                    <td>\n" +
-                "                        <button data-task=\"" + task + "\" class=\"form-control task-hint hide text-center " + (correctAnswer ? "hidden" : "") + "\"\n" +
-                "                                style=\"margin-left: 10px\"><span class=\"wave\">👋</span></button>\n" +
-                "                    </td>\n" +
-                "                </tr>";
+
             $("#generatedTasksTable").append(item);
             $(table).append(item);
         });

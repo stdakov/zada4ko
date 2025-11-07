@@ -28,6 +28,14 @@
     /*width: 90px;*/
 }
 
+.line {
+    margin: 0;
+    color: inherit;
+    border: 1;
+    border-top: var(--bs-border-width) solid;
+    opacity: 1;
+}
+
 .task-result {
     font-size: 22px;
     width: 100px;
@@ -59,7 +67,9 @@
     margin-bottom: 40px;
 }
 
-.cursor-pointer { cursor: pointer; }
+.cursor-pointer {
+    cursor: pointer;
+}
 
 @keyframes wave-animation {
     0% {
@@ -89,7 +99,11 @@
         transform: rotate(0.0deg)
     }
 }
-#generatedTasksPrint {display: none;}
+
+#generatedTasksPrint {
+    display: none;
+}
+
 /* Styles specific to printing */
 @media print {
     /* Hide elements not to be printed */

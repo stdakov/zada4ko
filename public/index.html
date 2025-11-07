@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <link rel="canonical" href="https://zada4ko.com">
     <title>Задачи по математика</title>
-    <meta name="description" content="Сайт за детски задачки. Да поиграем с малко задачи – за малки и пораснали деца. Задачи по математика">
+    <meta name="description"
+          content="Сайт за детски задачки. Да поиграем с малко задачи – за малки и пораснали деца. Задачи по математика">
     <meta name="author" content="Stanislav Dakov">
     <meta name="keywords"
           content="задачи, задача, задачка, zadacha, zada4a, zadachki, zada4ki, задачи за деца, деца, за деца, математически, matematicheski, математика, най-малките">
@@ -18,8 +19,7 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" type="text/css" href="media/style.css">
-    <script async defer data-website-id="8cc30ea9-5fc2-4304-a970-fdd14aafc052"
-            src="https://st.dakovdev.com/umami.js"></script>
+    <script defer src="https://st.dakovdev.com/script.js" data-website-id="3b4261e2-6a2e-447a-ac4d-3376aeb7ea0a"></script>
 </head>
 <body>
 <main class="min-vh-100 d-flex flex-column
@@ -84,7 +84,40 @@
                                            id="btn-check-outlined4"
                                            autocomplete="off">
                                     <label class="btn btn-outline-primary" style="width: 40px"
-                                           for="btn-check-outlined4">/</label><br>
+                                           for="btn-check-outlined4">÷</label><br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-sm-4 col-form-label">Формат</label>
+                        <div class="col-sm-8">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-auto">
+                                    <input type="radio" name="format" checked="checked" value="opt1"
+                                           class="btn-check"
+                                           id="format-child1-option1" autocomplete="off">
+                                    <label class="btn btn-outline-primary"
+                                           for="format-child1-option1">A+B=C</label><br>
+                                </div>
+                                <div class="col-auto">
+                                    <input type="radio" name="format" value="opt2" class="btn-check"
+                                           id="format-child1-option2" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="format-child1-option2">
+                                        <div class="d-flex flex-row justify-content-center align-items-center">
+                                            <div class="float-start" style="margin-right: 5px;">
+                                                +
+                                            </div>
+                                            <div>
+                                                A
+                                                <hr class="line"/>
+                                                B
+                                            </div>
+                                            <div class="float-end" style="margin-left: 10px">
+                                                = C
+                                            </div>
+                                        </div>
+                                    </label><br>
                                 </div>
                             </div>
                         </div>
@@ -217,7 +250,25 @@
         <div id="generatedTasks">
 
             <table id="generatedTasksTable">
-
+                <tr class="task-box">
+                    <td style="text-align: center;font-size: 22px">
+                        <div class="d-flex flex-row justify-content-center align-items-center task-label col-form-label"
+                             style="border-bottom: solid #000000 1px">
+                            <div class="float-start" style="margin-right: 5px;">
+                                +
+                            </div>
+                            <div>
+                                <div>
+                                    56
+                                </div>
+                                <hr class="line"/>
+                                <div class="float-end">
+                                    8
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
             </table>
         </div>
         <div id="generatedTasksPrint">
