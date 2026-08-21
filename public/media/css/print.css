@@ -38,7 +38,7 @@
      WebKit needs the legacy property names as well as the modern ones. */
   .sh-sec { break-inside: auto; page-break-inside: auto; }
   .sh-sec-hd, .sh-instr { break-after: avoid; page-break-after: avoid; }
-  .sh-list > li, .qcard, .sh-key {
+  .sh-row, .sh-cell, .qcard, .sh-key {
     break-inside: avoid;
     page-break-inside: avoid;
     -webkit-column-break-inside: avoid;

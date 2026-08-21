@@ -313,7 +313,6 @@
   }
 
   function fitAndMeasure() {
-    Sheet.fitColumns($("#studioOut"));
     updatePageEstimate();   // transforms do not affect layout metrics
     scaleSheets();
   }

@@ -173,34 +173,102 @@
 
   /* ------------------------------ Rendering ------------------------------ */
 
-  function colsFor(cfg, gen, tasks) {
-    if (cfg.cols) return cfg.cols;
-    var max = H.clamp(gen.cols || 2, 1, 4);
+  var MM = 3.7795275591;               // one CSS millimetre, in px
+  var TEXT_MM = 186;                     // A4 width minus the @page margins
+  var ROW_GAP_PX = 16;                   // gap between the printed columns
+  var NUM_PX = 26;                       // room for the "12." task number
 
-    // Widest task, measured in characters. Diagrams carry their own width, and
-    // their internal labels (clock numerals, side lengths) are not prompt text.
+  /**
+   * Arrange items into rows that read down the columns — the same order a
+   * balanced multi-column layout produces, but as explicit rows.
+   */
+  function toRows(items, cols) {
+    var rows = Math.max(1, Math.ceil(items.length / cols));
+    var out = [];
+    for (var r = 0; r < rows; r++) {
+      var row = [];
+      for (var k = 0; k < cols; k++) {
+        var i = r + k * rows;
+        row.push(i < items.length ? items[i] : null);
+      }
+      out.push(row);
+    }
+    return out;
+  }
+
+  /** Rough character-based width, used only when there is no DOM to measure in. */
+  function guessWidthPx(tasks, cfg) {
     var longest = 0;
     tasks.forEach(function (task) {
-      var txt = String(task.q)
-        .replace(/<svg[\s\S]*?<\/svg>/gi, "")
+      var q = String(task.q);
+      var txt = q.replace(/<svg[\s\S]*?<\/svg>/gi, "")
         .replace(/<table[\s\S]*?<\/table>/gi, "")
         .replace(/<[^>]+>/g, "");
-      var q = String(task.q);
       var w = txt.length +
-        (q.match(/sh-blank/g) || []).length * 7 +      // an inline blank
-        (q.match(/sh-box/g) || []).length * 2;         // a "?" box
-      if (task.layout === "expr" && !hasOwnSlot(task)) w += 9;   // the " = ____" we append
+        (q.match(/sh-blank/g) || []).length * 7 +
+        (q.match(/sh-box/g) || []).length * 2;
+      if (task.layout === "expr" && !hasOwnSlot(task)) w += 9;
       longest = Math.max(longest, w);
     });
+    return longest * 2.2 * MM;           // ~2.2mm per bold character
+  }
 
-    // The printed text block is 186mm wide and a bold digit is about 2.2mm,
-    // so pick the most columns whose width still fits the widest task.
-    var TEXT_MM = 186, CHAR_MM = 2.2, GAP_MM = 5, NUM_MM = 6;
+  /**
+   * How many columns a section gets. `widths` holds the real measured width of
+   * each topic's widest expression (see Sheet.measureTopics); without it we fall
+   * back to counting characters.
+   */
+  function colsFor(cfg, gen, tasks, widths) {
+    if (cfg.cols) return H.clamp(cfg.cols, 1, 4);
+    var max = H.clamp(gen.cols || 2, 1, 4);
+    var need = (widths && widths[gen.id]) || guessWidthPx(tasks, cfg);
+    var text = TEXT_MM * MM;
     for (var c = max; c > 1; c--) {
-      if (longest <= (TEXT_MM / c - GAP_MM - NUM_MM) / CHAR_MM) return c;
+      var col = (text - ROW_GAP_PX * (c - 1)) / c;
+      if (need + NUM_PX <= col) return c;
     }
     return 1;
   }
+
+  /**
+   * Measure the widest expression of every topic, in an off-screen probe as wide
+   * as the printed text block. Measuring beats estimating, and doing it before
+   * the sheet is built means the column count is right on the first render.
+   */
+  Sheet.measureTopics = function (models) {
+    if (typeof document === "undefined" || !document.createElement) return null;
+
+    var html = "", ids = [];
+    models.forEach(function (m) {
+      m.sections.forEach(function (sec) {
+        var boxCls = Sheet.boxClass(sec.tasks);
+        sec.tasks.forEach(function (task) {
+          if (task.layout !== "expr") return;
+          html += '<div class="sh-probe">' + Sheet.printQuestion(task, m.cfg.space, boxCls) + "</div>";
+          ids.push(sec.gen.id);
+        });
+      });
+    });
+    if (!html) return {};
+
+    var probe = document.createElement("div");
+    probe.className = "sheet";
+    probe.setAttribute("style", "position:absolute;left:-99999px;top:0;width:" +
+      (TEXT_MM * MM) + "px;min-height:0;padding:0;border:0;box-shadow:none;pointer-events:none");
+    probe.innerHTML = html;
+    document.body.appendChild(probe);
+
+    var out = {};
+    var spans = probe.querySelectorAll(".sh-probe > .sh-expr");
+    for (var i = 0; i < spans.length; i++) {
+      spans[i].style.whiteSpace = "nowrap";
+      var w = spans[i].getBoundingClientRect().width;
+      var id = ids[i];
+      if (w > 0 && (!out[id] || w > out[id])) out[id] = w;
+    }
+    probe.remove();
+    return out;
+  };
 
   var LETTERS = ["А", "Б", "В", "Г"];
   var LETTERS_EN = ["A", "B", "C", "D"];
@@ -210,7 +278,7 @@
   };
 
   /** Render one printable A4 sheet as an HTML string. */
-  Sheet.renderPaper = function (model) {
+  Sheet.renderPaper = function (model, widths) {
     var cfg = model.cfg, t = Z.t;
     var title = cfg.title || t("titlePlaceholder");
     var gradeName = t("grade" + cfg.grade);
@@ -240,22 +308,29 @@
 
     /* sections */
     model.sections.forEach(function (sec, si) {
-      var cols = colsFor(cfg, sec.gen, sec.tasks);
+      var cols = colsFor(cfg, sec.gen, sec.tasks, widths);
       var boxCls = Sheet.boxClass(sec.tasks);
       var pts = cfg.points ? sec.tasks.length * cfg.points : 0;
       html += '<section class="sh-sec">';
       html += '<div class="sh-sec-hd"><h3>' + (si + 1) + ". " + Z.i18n.pick(sec.gen.name) + "</h3>" +
         (pts ? '<span class="pts">' + pts + " " + t("pts") + "</span>" : "") + "</div>";
       html += '<p class="sh-instr">' + Z.i18n.pick(sec.gen.instr) + "</p>";
-      // data-maxcols marks a list as auto-fitted. When the teacher picks a
-      // column count by hand it is left off, so the choice is never overridden.
-      html += '<ol class="sh-list cols-' + cols + (sec.gen.cols === 1 ? " wide" : "") + '"' +
-        (cfg.cols ? "" : ' data-maxcols="' + H.clamp(sec.gen.cols || 2, 1, 4) + '"') + ">";
-      sec.tasks.forEach(function (task) {
-        html += '<li' + (task.layout === "block" ? ' class="blk"' : "") + '><span class="no">' +
-          task.no + '.</span><span class="q">' + Sheet.printQuestion(task, cfg.space, boxCls) + "</span></li>";
+
+      // Explicit rows rather than CSS columns: Safari collapses a multi-column
+      // container to a single column when it paginates, so a sheet that looked
+      // right on screen printed as one long column on an iPhone.
+      html += '<div class="sh-rows' + (sec.gen.cols === 1 ? " wide" : "") + '">';
+      toRows(sec.tasks, cols).forEach(function (row) {
+        html += '<div class="sh-row">';
+        row.forEach(function (task) {
+          if (!task) { html += '<div class="sh-cell empty"></div>'; return; }
+          html += '<div class="sh-cell' + (task.layout === "block" ? " blk" : "") + '">' +
+            '<span class="no">' + task.no + '.</span>' +
+            '<span class="q">' + Sheet.printQuestion(task, cfg.space, boxCls) + "</span></div>";
+        });
+        html += "</div>";
       });
-      html += "</ol></section>";
+      html += "</div></section>";
     });
 
     /* answer key, when it shares the page */
@@ -286,96 +361,31 @@
     var html = '<div class="sh-key">';
     html += "<h3>🔑 " + t("answersKey") +
       (model.cfg.variants > 1 ? " — " + t("variant") + " " + Sheet.variantLetter(model.variant) : "") + "</h3>";
-    html += "<ol>";
-    Sheet.allTasks(model).forEach(function (task) {
-      html += '<li value="' + task.no + '">' + H.esc(task.a) + "</li>";
+    // rows, for the same reason the task lists use them
+    var all = Sheet.allTasks(model);
+    var cols = all.length <= 8 ? 2 : 4;
+    html += '<div class="sh-rows key-rows">';
+    toRows(all, cols).forEach(function (row) {
+      html += '<div class="sh-row">';
+      row.forEach(function (task) {
+        if (!task) { html += '<div class="sh-cell empty"></div>'; return; }
+        html += '<div class="sh-cell"><span class="no">' + task.no + '.</span>' +
+          '<span class="q">' + H.esc(task.a) + "</span></div>";
+      });
+      html += "</div>";
     });
-    html += "</ol></div>";
+    html += "</div></div>";
     return html;
   };
 
-  /* --------------------------- Column fitting ---------------------------- */
-
-  /**
-   * Would every expression in this list still sit on one line?
-   *
-   * `.q` is the flex cell that holds the task, so its width is exactly the room
-   * available inside the column. Forcing the expression to `nowrap` for a
-   * moment gives the width it actually needs. Counting line boxes instead would
-   * not work: getClientRects() splits an inline run around the inline-block
-   * blank even when everything is on the same line.
-   */
-  function fitsOnOneLine(list) {
-    var judged = 0, fits = true;
-    H.$$("li", list).forEach(function (li) {
-      var expr = li.querySelector(".sh-expr");
-      var cell = li.querySelector(".q");
-      if (!expr || !cell) return;
-      var avail = cell.getBoundingClientRect().width;
-      if (avail < 20) return;          // not laid out yet — no verdict from this one
-      var prev = expr.style.whiteSpace;
-      expr.style.whiteSpace = "nowrap";
-      var need = expr.getBoundingClientRect().width;
-      expr.style.whiteSpace = prev;
-      judged++;
-      if (need > avail + 0.5) fits = false;
-    });
-    return { judged: judged, fits: fits };
-  }
-
-  /**
-   * Character counting only estimates how wide a task is, and it guessed wrong
-   * for four-digit sums: "8327 − 3867 = ____" broke over two lines, which is
-   * very hard for a child to read. So once the sheet is in the DOM, measure it
-   * for real and drop a section to fewer columns until nothing wraps.
-   *
-   * Measuring happens in an off-screen 186mm probe — the width of the printed
-   * text block — so the result matches the paper no matter the window size.
-   */
-  Sheet.fitColumns = function (root) {
-    if (!root || typeof document === "undefined" || !document.createElement) return;
-    var lists = H.$$(".sh-list[data-maxcols]", root);
-    if (!lists.length) return;
-
-    // Always measure against the printed text column (A4 minus the @page
-    // margins), never against the window. Measuring the preview made a phone
-    // print a one-column sheet while a desktop printed three.
-    var target = 186 * 3.7795275591;
-
-    var probe = document.createElement("div");
-    probe.className = "sheet";
-    probe.setAttribute("style", "position:absolute;left:-99999px;top:0;width:" + target + "px;" +
-      "min-height:0;padding:0;border:0;box-shadow:none;pointer-events:none");
-    document.body.appendChild(probe);
-
-    lists.forEach(function (list) {
-      var max = H.clamp(H.toInt(list.getAttribute("data-maxcols"), 2), 1, 4);
-      var wide = list.classList.contains("wide") ? " wide" : "";
-      var clone = list.cloneNode(true);
-      probe.innerHTML = "";
-      probe.appendChild(clone);
-
-      var chosen = 0;
-      for (var c = max; c >= 1; c--) {
-        clone.className = "sh-list cols-" + c + wide;
-        var verdict = fitsOnOneLine(clone);
-        // If nothing could be measured the browser has not laid the clone out.
-        // Leaving the estimated count alone is far better than collapsing every
-        // section to a single column because a measurement came back empty.
-        if (!verdict.judged) { chosen = 0; break; }
-        if (c === 1 || verdict.fits) { chosen = c; break; }
-      }
-      if (chosen) list.className = "sh-list cols-" + chosen + wide;
-    });
-
-    probe.remove();
-  };
-
-  /** All variants of a sheet, one after another. */
+  /** Every variant of a sheet, one page after another. */
   Sheet.renderAll = function (cfg) {
-    var out = "";
     var n = H.clamp(cfg.variants || 1, 1, 4);
-    for (var i = 0; i < n; i++) out += Sheet.renderPaper(Sheet.build(cfg, i));
+    var models = [];
+    for (var i = 0; i < n; i++) models.push(Sheet.build(cfg, i));
+    var widths = Sheet.measureTopics(models);
+    var out = "";
+    models.forEach(function (m) { out += Sheet.renderPaper(m, widths); });
     return out;
   };
 

@@ -267,16 +267,26 @@
 .sh-sec-hd .pts { margin-left: auto; font-size: 0.72rem; font-weight: 800; color: #444; }
 .sh-instr { font-size: 0.8rem; color: #444; font-weight: 700; margin: 0 0 8px; font-style: italic; }
 
-.sh-list { list-style: none; margin: 0; padding: 0; }
-.sh-list.cols-2 { columns: 2; column-gap: 22px; }
-.sh-list.cols-3 { columns: 3; column-gap: 16px; }
-.sh-list.cols-4 { columns: 4; column-gap: 12px; }
-.sh-list > li { break-inside: avoid; margin-bottom: 9px; display: flex; gap: 7px; align-items: baseline; }
-.sh-list > li.blk { align-items: flex-start; }
-.sh-list > li.blk .no { line-height: 1.45; }
-.sh-list > li .no { font-weight: 800; color: #444; min-width: 1.5em; font-size: 0.85rem; }
-.sh-list > li .q { flex: 1 1 auto; }
-.sh-list.wide > li { margin-bottom: 15px; }
+/* Task rows. Explicit rows of cells rather than a CSS multi-column container:
+   WebKit collapses multicol to a single column when it paginates, so an iPhone
+   printed one long column from a sheet that looked correct on screen. Cells are
+   filled column-major, so the reading order matches a balanced multicol. */
+.sh-rows { }
+.sh-row { display: flex; gap: 16px; align-items: stretch; break-inside: avoid; }
+.sh-cell {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  gap: 7px;
+  align-items: baseline;
+  margin-bottom: 9px;
+}
+.sh-cell.blk { align-items: flex-start; }
+.sh-cell.blk .no { line-height: 1.45; }
+.sh-cell.empty { visibility: hidden; }
+.sh-cell .no { font-weight: 800; color: #444; min-width: 1.5em; font-size: 0.85rem; }
+.sh-cell .q { flex: 1 1 auto; min-width: 0; }
+.sh-rows.wide .sh-cell { margin-bottom: 15px; }
 
 .sh-expr { font-size: 1.06rem; font-weight: 700; font-variant-numeric: tabular-nums; }
 .sh-blank { display: inline-block; min-width: 3.1em; border-bottom: 2.5px solid #111; height: 1.05em; vertical-align: -0.15em; }
@@ -347,7 +357,10 @@
 
 .sh-key { margin-top: 26px; border: 3px dashed #111; border-radius: 10px; padding: 14px; }
 .sh-key h3 { margin: 0 0 8px; font-size: 1rem; }
-.sh-key ol { columns: 4; column-gap: 14px; margin: 0; padding-left: 1.4em; font-size: 0.8rem; font-weight: 700; }
+.sh-key .key-rows { font-size: 0.8rem; font-weight: 700; }
+.sh-key .key-rows .sh-row { gap: 14px; }
+.sh-key .key-rows .sh-cell { margin-bottom: 3px; }
+.sh-key .key-rows .no { min-width: 1.9em; text-align: right; }
 
 .variant-tag {
   display: inline-block; border: 2.5px solid #111; border-radius: 6px;
