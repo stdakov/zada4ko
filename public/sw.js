@@ -5,7 +5,7 @@
    ========================================================================== */
 "use strict";
 
-var CACHE = "zada4ko-v1";
+var CACHE = "zada4ko-v2";
 
 var SHELL = [
   "./",
@@ -25,6 +25,8 @@ var SHELL = [
   "media/js/solve.js",
   "media/js/app.js",
   "site.webmanifest",
+  "media/icon/favicon.svg",
+  "media/icon/favicon.ico",
   "media/icon/favicon-32x32.png",
   "media/icon/favicon-16x16.png",
   "media/icon/apple-touch-icon.png",

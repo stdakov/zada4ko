@@ -113,14 +113,19 @@
         a = rng.int(lo + Math.floor(lo / 2), hi); b = rng.int(lo, a); ans = a - b;
       }
 
+      // A real column sum: operands right-aligned, a rule, then room to write.
       var html =
-        '<span class="sh-columnar">' +
-          '<span class="op"><span>' + a + "</span></span>" +
-          '<span class="op"><span>' + op + "</span><span>" + b + "</span></span>" +
+        '<span class="sh-col">' +
+          '<span class="n1">' + a + "</span>" +
+          '<span class="o">' + op + "</span>" +
+          '<span class="n2">' + b + "</span>" +
           '<span class="rule"></span>' +
-          '<span class="space"></span>' +
+          '<span class="pad"></span>' +
         "</span>";
-      return { q: html, a: String(ans), kind: "num", layout: "block", eq: false };
+      return {
+        q: html, a: String(ans), kind: "num", layout: "block", eq: false,
+        selfContained: true            // the space under the rule *is* the answer
+      };
     }
   });
 

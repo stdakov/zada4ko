@@ -89,17 +89,56 @@
 
   /** The answer blank as it appears on paper. */
   function blank(task) {
-    var wide = task.kind === "text" || (task.a && String(task.a).length > 4);
+    var wide = task.kind === "text" || (task.a && String(task.a).length > 3);
     return '<span class="sh-blank' + (wide ? " wide" : "") + '"></span>' +
       (task.unit ? " " + task.unit : "");
   }
 
+  /**
+   * Some prompts already carry their own answer slot — the "?" box in
+   * "□ + 7 = 15", or the inline blank in "8 dm = ___ cm". Appending a second
+   * blank to those reads as two separate questions.
+   */
+  function hasOwnSlot(task) {
+    return /sh-blank|sh-box/.test(String(task.q));
+  }
+
+  /** "= ____" kept on one line, so a blank never orphans onto the next row. */
+  function slotFor(task) {
+    if (hasOwnSlot(task)) return "";
+    return '<span class="sh-nb">' + tailFor(task) + " " + blank(task) + "</span>";
+  }
+
+  /** The separate "Отговор: ____" line used under diagrams and word problems. */
+  function answerLine(task) {
+    if (hasOwnSlot(task)) return "";
+    return '<div class="sh-answer"><span class="sh-nb"><b>' +
+      (Z.i18n.lang === "bg" ? "Отговор:" : "Answer:") + "</b> " + blank(task) + "</span></div>";
+  }
+
+  /**
+   * On paper the "?" box is where the child writes, so it has to be wide enough
+   * for the answer. The size is decided once per section from its longest
+   * answer, not per task — a box that grows with its own answer would tell the
+   * child how many digits to expect.
+   */
+  Sheet.boxClass = function (tasks) {
+    var n = 0;
+    tasks.forEach(function (t) { n = Math.max(n, String(t.a).length); });
+    return n >= 4 ? "box-lg" : (n >= 2 ? "box-md" : "");
+  };
+
   /** Question HTML for the printed sheet. `space` scales the writing room. */
-  Sheet.printQuestion = function (task, space) {
-    var body = task.q;
+  Sheet.printQuestion = function (task, space, boxCls) {
+    var body = boxCls
+      ? String(task.q).replace(/class="sh-box"/g, 'class="sh-box ' + boxCls + '"')
+      : task.q;
     if (space === undefined) space = 1;
 
     if (task.kind === "choice") {
+      // When the prompt carries its own box the child writes the sign straight
+      // into it — listing ○< ○> ○= underneath as well only clutters the page.
+      if (hasOwnSlot(task)) return '<div class="sh-expr">' + body + "</div>";
       var ch = task.choices.map(function (c) {
         return "<span><i></i>" + c + "</span>";
       }).join("");
@@ -111,21 +150,17 @@
       var base = task.work === undefined ? 2 : task.work;
       var lines = space === 0 ? 0 : (space === 2 ? base + 2 : base);
       for (var i = 0; i < lines; i++) work += '<div class="sh-work"></div>';
-      return '<div class="sh-text">' + body + "</div>" + work +
-        '<div class="sh-text" style="margin-top:5px"><b>' +
-        (Z.i18n.lang === "bg" ? "Отговор:" : "Answer:") + "</b> " + blank(task) + "</div>";
+      return '<div class="sh-text">' + body + "</div>" + work + answerLine(task);
     }
 
     if (task.layout === "block") {
-      var tail = task.eq ? tailFor(task) + " " + blank(task) : "";
-      var extra = task.kind === "num" || task.kind === "text"
-        ? '<div class="sh-text" style="margin-top:4px">' +
-          (Z.i18n.lang === "bg" ? "Отговор:" : "Answer:") + " " + blank(task) + "</div>"
-        : "";
-      return '<div>' + body + tail + "</div>" + (task.eq ? "" : extra);
+      if (task.eq) return "<div>" + body + slotFor(task) + "</div>";
+      // `selfContained` means the drawing already leaves room to write in
+      var needsLine = !task.selfContained && (task.kind === "num" || task.kind === "text");
+      return "<div>" + body + "</div>" + (needsLine ? answerLine(task) : "");
     }
 
-    return '<span class="sh-expr">' + body + tailFor(task) + " " + blank(task) + "</span>";
+    return '<span class="sh-expr">' + body + slotFor(task) + "</span>";
   };
 
   /** Question HTML for the interactive card (no blanks — inputs go elsewhere). */
@@ -140,20 +175,31 @@
 
   function colsFor(cfg, gen, tasks) {
     if (cfg.cols) return cfg.cols;
-    var c = gen.cols || 2;
-    // Long *prompts* need more room. Diagrams carry their own width, and their
-    // internal labels (clock numerals, side lengths) must not count as text.
+    var max = H.clamp(gen.cols || 2, 1, 4);
+
+    // Widest task, measured in characters. Diagrams carry their own width, and
+    // their internal labels (clock numerals, side lengths) are not prompt text.
     var longest = 0;
     tasks.forEach(function (task) {
       var txt = String(task.q)
         .replace(/<svg[\s\S]*?<\/svg>/gi, "")
         .replace(/<table[\s\S]*?<\/table>/gi, "")
         .replace(/<[^>]+>/g, "");
-      longest = Math.max(longest, txt.length);
+      var q = String(task.q);
+      var w = txt.length +
+        (q.match(/sh-blank/g) || []).length * 7 +      // an inline blank
+        (q.match(/sh-box/g) || []).length * 2;         // a "?" box
+      if (task.layout === "expr" && !hasOwnSlot(task)) w += 9;   // the " = ____" we append
+      longest = Math.max(longest, w);
     });
-    if (longest > 46) c = Math.min(c, 1);
-    else if (longest > 26) c = Math.min(c, 2);
-    return H.clamp(c, 1, 4);
+
+    // The printed text block is 186mm wide and a bold digit is about 2.2mm,
+    // so pick the most columns whose width still fits the widest task.
+    var TEXT_MM = 186, CHAR_MM = 2.2, GAP_MM = 5, NUM_MM = 6;
+    for (var c = max; c > 1; c--) {
+      if (longest <= (TEXT_MM / c - GAP_MM - NUM_MM) / CHAR_MM) return c;
+    }
+    return 1;
   }
 
   var LETTERS = ["А", "Б", "В", "Г"];
@@ -195,6 +241,7 @@
     /* sections */
     model.sections.forEach(function (sec, si) {
       var cols = colsFor(cfg, sec.gen, sec.tasks);
+      var boxCls = Sheet.boxClass(sec.tasks);
       var pts = cfg.points ? sec.tasks.length * cfg.points : 0;
       html += '<section class="sh-sec">';
       html += '<div class="sh-sec-hd"><h3>' + (si + 1) + ". " + Z.i18n.pick(sec.gen.name) + "</h3>" +
@@ -203,7 +250,7 @@
       html += '<ol class="sh-list cols-' + cols + (sec.gen.cols === 1 ? " wide" : "") + '">';
       sec.tasks.forEach(function (task) {
         html += '<li' + (task.layout === "block" ? ' class="blk"' : "") + '><span class="no">' +
-          task.no + '.</span><span class="q">' + Sheet.printQuestion(task, cfg.space) + "</span></li>";
+          task.no + '.</span><span class="q">' + Sheet.printQuestion(task, cfg.space, boxCls) + "</span></li>";
       });
       html += "</ol></section>";
     });

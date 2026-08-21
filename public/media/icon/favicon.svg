@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="zada4ko">
+  <title>zada4ko</title>
+  <rect x="4" y="4" width="56" height="56" rx="17" fill="#ffc93c" stroke="#241b45" stroke-width="5"/>
+  <path d="M38.5 15 L15.5 41.5 H50.5" fill="none" stroke="#241b45" stroke-width="6.5"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M38.5 15 V51" fill="none" stroke="#241b45" stroke-width="6.5" stroke-linecap="round"/>
+</svg>
