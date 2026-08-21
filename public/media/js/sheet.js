@@ -247,8 +247,10 @@
       html += '<div class="sh-sec-hd"><h3>' + (si + 1) + ". " + Z.i18n.pick(sec.gen.name) + "</h3>" +
         (pts ? '<span class="pts">' + pts + " " + t("pts") + "</span>" : "") + "</div>";
       html += '<p class="sh-instr">' + Z.i18n.pick(sec.gen.instr) + "</p>";
-      html += '<ol class="sh-list cols-' + cols + (sec.gen.cols === 1 ? " wide" : "") +
-        '" data-maxcols="' + H.clamp(sec.gen.cols || 2, 1, 4) + '">';
+      // data-maxcols marks a list as auto-fitted. When the teacher picks a
+      // column count by hand it is left off, so the choice is never overridden.
+      html += '<ol class="sh-list cols-' + cols + (sec.gen.cols === 1 ? " wide" : "") + '"' +
+        (cfg.cols ? "" : ' data-maxcols="' + H.clamp(sec.gen.cols || 2, 1, 4) + '"') + ">";
       sec.tasks.forEach(function (task) {
         html += '<li' + (task.layout === "block" ? ' class="blk"' : "") + '><span class="no">' +
           task.no + '.</span><span class="q">' + Sheet.printQuestion(task, cfg.space, boxCls) + "</span></li>";
@@ -330,16 +332,10 @@
     var lists = H.$$(".sh-list[data-maxcols]", root);
     if (!lists.length) return;
 
-    // The printed text column is 186mm. On a narrow window the preview page is
-    // squeezed below that, so measure at whichever is tighter — then neither the
-    // preview nor the paper can wrap.
+    // Always measure against the printed text column (A4 minus the @page
+    // margins), never against the window. Measuring the preview made a phone
+    // print a one-column sheet while a desktop printed three.
     var target = 186 * 3.7795275591;
-    var live = H.$(".sheet", root);
-    if (live) {
-      var lcs = window.getComputedStyle(live);
-      var inner = live.clientWidth - parseFloat(lcs.paddingLeft || 0) - parseFloat(lcs.paddingRight || 0);
-      if (inner > 80) target = Math.min(target, inner);
-    }
 
     var probe = document.createElement("div");
     probe.className = "sheet";

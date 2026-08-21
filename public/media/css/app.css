@@ -155,8 +155,11 @@
 .feat p { margin: 0; color: var(--ink-2); font-size: 0.95rem; font-weight: 600; }
 
 /* ---------------- Builder (studio) ---------------- */
-.studio { display: grid; grid-template-columns: 380px 1fr; gap: 26px; align-items: start; }
-@media (max-width: 1040px) { .studio { grid-template-columns: 1fr; } }
+/* minmax(0, 1fr) rather than 1fr: a plain 1fr track has an implicit min-content
+   floor, so the fixed-width A4 sheet would stretch the column instead of
+   letting .paper-scroll constrain and scale it. */
+.studio { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 26px; align-items: start; }
+@media (max-width: 1040px) { .studio { grid-template-columns: minmax(0, 1fr); } }
 
 .panel {
   background: var(--paper); border: 3px solid var(--line); border-radius: var(--r-l);
@@ -236,9 +239,10 @@
   box-shadow: var(--soft);
   font-family: var(--f-body);
 }
-@media (max-width: 1240px) {
-  .sheet { width: 100%; max-width: 210mm; min-height: 0; padding: 22px 20px 28px; }
-}
+/* The sheet is a page, not a responsive layout. It keeps its A4 geometry on
+   every device and is scaled down to fit the screen instead (see scaleSheets in
+   app.js), so what the preview shows is what the printer produces. */
+.paper-scroll > .sheet + .sheet { margin-top: 22px; }
 
 .sh-head { display: flex; align-items: flex-start; gap: 16px; border-bottom: 3px solid #111; padding-bottom: 10px; margin-bottom: 6px; }
 .sh-head .sh-brand { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
@@ -342,7 +346,6 @@
 .sh-key { margin-top: 26px; border: 3px dashed #111; border-radius: 10px; padding: 14px; }
 .sh-key h3 { margin: 0 0 8px; font-size: 1rem; }
 .sh-key ol { columns: 4; column-gap: 14px; margin: 0; padding-left: 1.4em; font-size: 0.8rem; font-weight: 700; }
-@media (max-width: 640px) { .sh-key ol { columns: 2; } .sh-list.cols-3, .sh-list.cols-4 { columns: 2; } }
 
 .variant-tag {
   display: inline-block; border: 2.5px solid #111; border-radius: 6px;

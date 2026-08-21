@@ -314,7 +314,36 @@
 
   function fitAndMeasure() {
     Sheet.fitColumns($("#studioOut"));
+    clearZoom();          // measure the page at its true size...
     updatePageEstimate();
+    scaleSheets();        // ...then shrink it to fit the screen
+  }
+
+  /** Drop any fit-to-width scaling so the pages measure at their real size. */
+  function clearZoom() {
+    $$("#studioOut .sheet").forEach(function (sh) { sh.style.zoom = ""; });
+  }
+
+  /**
+   * A printable sheet keeps its A4 geometry everywhere, so on a narrow screen it
+   * is scaled down rather than reflowed. Reflowing it (which is what the old
+   * viewport media queries did) meant a phone previewed — and printed — a
+   * different arrangement than a desktop.
+   */
+  function scaleSheets() {
+    var wrap = $(".paper-scroll", $("#studioOut"));
+    if (!wrap) return;
+    var sheets = $$(".sheet", wrap);
+    if (!sheets.length) return;
+
+    var natural = sheets[0].offsetWidth;          // one A4 page, in px
+    var avail = wrap.clientWidth;
+    if (!natural || !avail) return;
+
+    var scale = Math.min(1, avail / natural);
+    var fits = scale > 0.995;
+    wrap.style.overflowX = fits ? "" : "hidden";  // the page already fits once scaled
+    sheets.forEach(function (sh) { sh.style.zoom = fits ? "" : scale; });
   }
 
   /**
@@ -486,8 +515,8 @@
 
     // the preview width feeds the column fitting, so re-fit after a resize
     window.addEventListener("resize", H.debounce(function () {
-      if (App.view === "studio" && App.mode === "print") fitAndMeasure();
-    }, 250));
+      if (App.view === "studio" && App.mode === "print") scaleSheets();
+    }, 200));
 
     window.addEventListener("hashchange", route);
     route();

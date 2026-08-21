@@ -22,6 +22,7 @@
   .sheet {
     width: auto; min-height: 0; margin: 0; padding: 0;
     border: 0 !important; border-radius: 0; box-shadow: none !important;
+    zoom: 1 !important;           /* drop the on-screen fit-to-width scaling */
   }
   .sheet + .sheet { break-before: page; }
 
