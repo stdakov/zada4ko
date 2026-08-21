@@ -218,7 +218,7 @@
     model.sections.forEach(function (s) { total += s.tasks.length; });
     var maxPoints = cfg.points ? total * cfg.points : 0;
 
-    var html = '<div class="sheet">';
+    var html = '<div class="sheet-fit"><div class="sheet">';
 
     /* header */
     html += '<div class="sh-head">' +
@@ -263,11 +263,12 @@
 
     /* the footer closes the page, so it goes last */
     html += Sheet.footer(model);
-    html += "</div>";
+    html += "</div></div>";
 
     /* the key on its own page gets the same footer */
     if (cfg.key === "page") {
-      html += '<div class="sheet">' + Sheet.renderKey(model) + Sheet.footer(model) + "</div>";
+      html += '<div class="sheet-fit"><div class="sheet">' +
+        Sheet.renderKey(model) + Sheet.footer(model) + "</div></div>";
     }
     return html;
   };
@@ -305,17 +306,21 @@
    * blank even when everything is on the same line.
    */
   function fitsOnOneLine(list) {
-    return H.$$("li", list).every(function (li) {
+    var judged = 0, fits = true;
+    H.$$("li", list).forEach(function (li) {
       var expr = li.querySelector(".sh-expr");
       var cell = li.querySelector(".q");
-      if (!expr || !cell) return true;
+      if (!expr || !cell) return;
       var avail = cell.getBoundingClientRect().width;
+      if (avail < 20) return;          // not laid out yet — no verdict from this one
       var prev = expr.style.whiteSpace;
       expr.style.whiteSpace = "nowrap";
       var need = expr.getBoundingClientRect().width;
       expr.style.whiteSpace = prev;
-      return need <= avail + 0.5;
+      judged++;
+      if (need > avail + 0.5) fits = false;
     });
+    return { judged: judged, fits: fits };
   }
 
   /**
@@ -350,12 +355,17 @@
       probe.innerHTML = "";
       probe.appendChild(clone);
 
-      var chosen = 1;
+      var chosen = 0;
       for (var c = max; c >= 1; c--) {
         clone.className = "sh-list cols-" + c + wide;
-        if (c === 1 || fitsOnOneLine(clone)) { chosen = c; break; }
+        var verdict = fitsOnOneLine(clone);
+        // If nothing could be measured the browser has not laid the clone out.
+        // Leaving the estimated count alone is far better than collapsing every
+        // section to a single column because a measurement came back empty.
+        if (!verdict.judged) { chosen = 0; break; }
+        if (c === 1 || verdict.fits) { chosen = c; break; }
       }
-      list.className = "sh-list cols-" + chosen + wide;
+      if (chosen) list.className = "sh-list cols-" + chosen + wide;
     });
 
     probe.remove();

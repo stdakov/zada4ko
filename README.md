@@ -125,8 +125,18 @@ cd public && python3 -m http.server 8777
 ## Deploying
 
 Upload `public/` as the document root. `.htaccess` handles https, the www
-redirect, compression, caching and the single-page fallback. Bump `CACHE` in
-`sw.js` whenever assets change, so returning visitors get the new files.
+redirect, compression, caching and the single-page fallback.
+
+**After changing any CSS or JS, bump both version markers:**
+
+1. the `?v=N` query on the `media/css/*.css` and `media/js/*.js` URLs in
+   `index.html` — CSS and JS are served with a 7-day expiry, so without a new
+   URL a returning browser keeps the old file and can end up running new JS
+   against old CSS;
+2. `CACHE` in `sw.js`, so the service worker drops its old entries.
+
+`index.html` and `sw.js` are sent `no-cache`, which is what makes step 1 work:
+a fresh shell always points at fresh assets.
 
 ---
 

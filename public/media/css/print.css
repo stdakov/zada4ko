@@ -19,18 +19,30 @@
   .panel-sticky, .panel, .tools { display: none !important; }
   .paper-scroll { overflow: visible; }
 
+  /* undo the on-screen fit-to-width scaling */
+  .sheet-fit {
+    overflow: visible !important;
+    height: auto !important;
+    margin: 0 !important;
+  }
   .sheet {
     width: auto; min-height: 0; margin: 0; padding: 0;
     border: 0 !important; border-radius: 0; box-shadow: none !important;
-    zoom: 1 !important;           /* drop the on-screen fit-to-width scaling */
+    transform: none !important;
+    zoom: 1 !important;
   }
-  .sheet + .sheet { break-before: page; }
+  .sheet-fit + .sheet-fit { break-before: page; page-break-before: always; }
 
   /* Let a long section flow onto the next page, but never split a single task,
-     and never leave a section heading stranded at the foot of a page. */
-  .sh-sec { break-inside: auto; }
-  .sh-sec-hd, .sh-instr { break-after: avoid; }
-  .sh-list > li, .qcard, .sh-key { break-inside: avoid; }
+     and never leave a section heading stranded at the foot of a page.
+     WebKit needs the legacy property names as well as the modern ones. */
+  .sh-sec { break-inside: auto; page-break-inside: auto; }
+  .sh-sec-hd, .sh-instr { break-after: avoid; page-break-after: avoid; }
+  .sh-list > li, .qcard, .sh-key {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+  }
   .sh-head { border-bottom: 2pt solid #000; }
   .sh-foot { border-top: 1.5pt solid #000; }
 

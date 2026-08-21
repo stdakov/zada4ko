@@ -5,7 +5,7 @@
    ========================================================================== */
 "use strict";
 
-var CACHE = "zada4ko-v4";
+var CACHE = "zada4ko-v5";
 
 var SHELL = [
   "./",
@@ -94,7 +94,8 @@ self.addEventListener("fetch", function (e) {
   if (isCode(url)) {
     e.respondWith(
       fetch(req).then(function (res) { return keep(req, res); }).catch(function () {
-        return caches.match(req);
+        // ignoreSearch: the page requests assets with a ?v= cache-busting query
+        return caches.match(req, { ignoreSearch: true });
       })
     );
     return;

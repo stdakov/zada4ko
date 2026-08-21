@@ -314,14 +314,8 @@
 
   function fitAndMeasure() {
     Sheet.fitColumns($("#studioOut"));
-    clearZoom();          // measure the page at its true size...
-    updatePageEstimate();
-    scaleSheets();        // ...then shrink it to fit the screen
-  }
-
-  /** Drop any fit-to-width scaling so the pages measure at their real size. */
-  function clearZoom() {
-    $$("#studioOut .sheet").forEach(function (sh) { sh.style.zoom = ""; });
+    updatePageEstimate();   // transforms do not affect layout metrics
+    scaleSheets();
   }
 
   /**
@@ -329,21 +323,36 @@
    * is scaled down rather than reflowed. Reflowing it (which is what the old
    * viewport media queries did) meant a phone previewed — and printed — a
    * different arrangement than a desktop.
+   *
+   * Scaling uses `transform`, not `zoom`: zoom is a legacy property with uneven
+   * behaviour across engines, and the wrapper's height is set explicitly so the
+   * scaled page does not leave a gap beneath it.
    */
   function scaleSheets() {
     var wrap = $(".paper-scroll", $("#studioOut"));
     if (!wrap) return;
-    var sheets = $$(".sheet", wrap);
-    if (!sheets.length) return;
-
-    var natural = sheets[0].offsetWidth;          // one A4 page, in px
+    var boxes = $$(".sheet-fit", wrap);
+    if (!boxes.length) return;
     var avail = wrap.clientWidth;
-    if (!natural || !avail) return;
 
-    var scale = Math.min(1, avail / natural);
-    var fits = scale > 0.995;
-    wrap.style.overflowX = fits ? "" : "hidden";  // the page already fits once scaled
-    sheets.forEach(function (sh) { sh.style.zoom = fits ? "" : scale; });
+    boxes.forEach(function (box) {
+      var sh = box.firstElementChild;
+      if (!sh) return;
+
+      // reset first, so the measurement is of the unscaled page
+      sh.style.transform = "";
+      sh.style.transformOrigin = "";
+      box.style.height = "";
+
+      var natural = sh.offsetWidth;
+      if (!natural || !avail) return;
+      var scale = Math.min(1, avail / natural);
+      if (scale > 0.995) return;
+
+      sh.style.transformOrigin = "top left";
+      sh.style.transform = "scale(" + scale + ")";
+      box.style.height = Math.ceil(sh.offsetHeight * scale) + "px";
+    });
   }
 
   /**

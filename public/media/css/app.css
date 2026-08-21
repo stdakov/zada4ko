@@ -241,8 +241,10 @@
 }
 /* The sheet is a page, not a responsive layout. It keeps its A4 geometry on
    every device and is scaled down to fit the screen instead (see scaleSheets in
-   app.js), so what the preview shows is what the printer produces. */
-.paper-scroll > .sheet + .sheet { margin-top: 22px; }
+   app.js), so what the preview shows is what the printer produces.
+   .sheet-fit reserves exactly the scaled height, so no gap is left below. */
+.sheet-fit { overflow: hidden; }
+.sheet-fit + .sheet-fit { margin-top: 22px; }
 
 .sh-head { display: flex; align-items: flex-start; gap: 16px; border-bottom: 3px solid #111; padding-bottom: 10px; margin-bottom: 6px; }
 .sh-head .sh-brand { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; }
