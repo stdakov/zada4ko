@@ -1,864 +1,540 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <!-- Google tag (gtag.js) -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-1DVQQZ0EHE"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>zada4ko — задачи по математика за деца | генератор на задачи за печат</title>
+<meta name="description" content="Безплатен генератор на задачи по математика за деца от предучилищна до 7. клас. Събиране, дроби, текстови задачи, геометрия. Реши онлайн или принтирай контролно с ключ с отговори.">
+<meta name="keywords" content="задачи за деца, задачи по математика, генератор на задачи, контролно по математика, работен лист, задачи за печат, математика 1 клас, математика 2 клас, математика 3 клас, математика 4 клас, текстови задачи, дроби, таблица за умножение">
+<meta name="author" content="Stanislav Dakov">
+<meta name="theme-color" content="#fff6e9">
+<link rel="canonical" href="https://zada4ko.com/">
+<link rel="alternate" hreflang="bg" href="https://zada4ko.com/">
+<link rel="alternate" hreflang="en" href="https://zada4ko.com/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://zada4ko.com/">
 
-      gtag("config", "G-1DVQQZ0EHE");
-    </script>
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zada4ko.com/">
+<meta property="og:title" content="zada4ko — задачи по математика за деца">
+<meta property="og:description" content="Генерирай задачи по математика за всеки клас. Реши онлайн или принтирай готов лист с ключ с отговори.">
+<meta property="og:image" content="https://zada4ko.com/media/icon/android-chrome-512x512.png">
+<meta property="og:locale" content="bg_BG">
+<meta name="twitter:card" content="summary_large_image">
 
-    <meta charset="UTF-8" />
-    <link rel="canonical" href="https://zada4ko.com" />
-    <title>Задачи по математика</title>
-    <meta
-      name="description"
-      content="Сайт за детски задачки. Да поиграем с малко задачи - за малки и пораснали деца. Задачи по математика"
-    />
-    <meta name="author" content="Stanislav Dakov" />
-    <meta
-      name="keywords"
-      content="задачи, задача, задачка, zadacha, zada4a, zadachki, zada4ki, задачи за деца, деца, за деца, математически, matematicheski, математика, най-малките"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      type="text/css"
-      href="media/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="media/icon/apple-touch-icon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="media/icon/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="media/icon/favicon-16x16.png"
-    />
-    <link rel="manifest" href="site.webmanifest" />
-    <link
-      rel="mask-icon"
-      href="media/icon/safari-pinned-tab.svg"
-      color="#5bbad5"
-    />
-    <meta name="msapplication-TileColor" content="#da532c" />
-    <meta name="theme-color" content="#ffffff" />
-    <link rel="stylesheet" type="text/css" href="media/style.css" />
-  </head>
-  <body class="playful-bg">
-    <main class="min-vh-100 d-flex flex-column justify-content-between">
-      <div class="container">
-        <header class="hero-card mt-5">
-          <div>
-            <p class="hero-eyebrow" data-i18n="heroLead">
-              Време е за игри с числата!
-            </p>
-            <h1 class="hero-title" data-i18n="heading">
-              zada4ko.com - Задачи за деца
-            </h1>
-            <p class="hero-subtitle" data-i18n="heroSub">
-              Изберете задачки според възрастта и играйте заедно с детето.
-            </p>
-            <div
-              class="language-toggle"
-              role="group"
-              aria-label="Language switcher"
-            >
-              <button
-                type="button"
-                class="btn btn-language active"
-                data-lang="en"
-              >
-                EN
-              </button>
-              <button type="button" class="btn btn-language" data-lang="bg">
-                BG
-              </button>
-            </div>
-          </div>
-          <div class="hero-art" aria-hidden="true">
-            <div class="hero-balloon balloon-one"></div>
-            <div class="hero-balloon balloon-two"></div>
-            <div class="hero-star star-one"></div>
-            <div class="hero-star star-two"></div>
-          </div>
-        </header>
-        <div class="app-card mt-4">
-          <nav>
-            <div class="nav nav-tabs" id="nav-tab" role="tablist">
-              <button
-                class="nav-link active"
-                id="nav-home-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#nav-home"
-                type="button"
-                role="tab"
-                aria-controls="nav-home"
-                aria-selected="true"
-                data-i18n="tabSmall"
-              >
-                За най-малките
-              </button>
-              <button
-                class="nav-link"
-                id="nav-profile-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#nav-profile"
-                type="button"
-                role="tab"
-                aria-controls="nav-profile"
-                aria-selected="false"
-                data-i18n="tabBig"
-              >
-                За по-големите
-              </button>
-              <button
-                class="nav-link"
-                id="nav-unknown-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#nav-unknown"
-                type="button"
-                role="tab"
-                aria-controls="nav-unknown"
-                aria-selected="false"
-                data-i18n="tabUnknown"
-              >
-                Открий Х
-              </button>
-            </div>
-          </nav>
-          <div class="tab-content pt-4" id="nav-tabContent">
-            <div
-              class="tab-pane fade show active"
-              id="nav-home"
-              role="tabpanel"
-              aria-labelledby="nav-home-tab"
-            >
-              <form class="form-inline" id="smallChildrenForm" action="#">
-                <div class="mb-3 row">
-                  <label
-                    for="taskCount"
-                    class="col-sm-4 col-form-label"
-                    data-i18n="labelTaskCount"
-                    >Брой задачи</label
-                  >
-                  <div class="col-sm-8">
-                    <input
-                      type="text"
-                      name="taskCount"
-                      style="width: 50px"
-                      value="10"
-                      class="form-control"
-                      id="taskCount"
-                      autocomplete="off"
-                    />
-                  </div>
-                </div>
-                <div class="mb-3 row">
-                  <label
-                    for="maxSum"
-                    class="col-sm-4 col-form-label"
-                    data-i18n="labelMaxValue"
-                    >Максимална стойност</label
-                  >
-                  <div class="col-sm-8">
-                    <input
-                      type="text"
-                      name="maxSum"
-                      style="width: 50px"
-                      value="10"
-                      class="form-control"
-                      id="maxSum"
-                      autocomplete="off"
-                    />
-                  </div>
-                </div>
-                <div class="mb-3 row">
-                  <label
-                    class="col-sm-4 col-form-label"
-                    data-i18n="labelOperations"
-                    >Операции</label
-                  >
-                  <div class="col-sm-8">
-                    <div class="row g-3 align-items-center">
-                      <div class="col-auto">
-                        <input
-                          type="checkbox"
-                          name="op1"
-                          checked="checked"
-                          value="+"
-                          class="btn-check"
-                          id="btn-check-outlined"
-                          autocomplete="off"
-                        />
-                        <label
-                          class="btn btn-outline-primary"
-                          style="width: 40px"
-                          for="btn-check-outlined"
-                          >+</label
-                        ><br />
-                      </div>
-                      <div class="col-auto">
-                        <input
-                          type="checkbox"
-                          name="op2"
-                          checked="checked"
-                          value="-"
-                          class="btn-check"
-                          id="btn-check-outlined2"
-                          autocomplete="off"
-                        />
-                        <label
-                          class="btn btn-outline-primary"
-                          style="width: 40px"
-                          for="btn-check-outlined2"
-                          >-</label
-                        ><br />
-                      </div>
-                      <div class="col-auto">
-                        <input
-                          type="checkbox"
-                          name="op3"
-                          value="*"
-                          class="btn-check"
-                          id="btn-check-outline3"
-                          autocomplete="off"
-                        />
-                        <label
-                          class="btn btn-outline-primary"
-                          style="width: 40px"
-                          for="btn-check-outline3"
-                          >*</label
-                        ><br />
-                      </div>
-                      <div class="col-auto">
-                        <input
-                          type="checkbox"
-                          name="op4"
-                          value="/"
-                          class="btn-check"
-                          id="btn-check-outlined4"
-                          autocomplete="off"
-                        />
-                        <label
-                          class="btn btn-outline-primary"
-                          style="width: 40px"
-                          for="btn-check-outlined4"
-                          >/</label
-                        ><br />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-auto mb-5">
-                  <div class="d-grid gap-2 d-md-block">
-                    <button
-                      type="submit"
-                      id="generateTasks"
-                      class="btn btn-warning btn-kiddo"
-                      data-i18n="buttonGenerate"
-                    >
-                      Генерирай задачки
-                    </button>
-                  </div>
-                </div>
-              </form>
+<link rel="apple-touch-icon" sizes="180x180" href="media/icon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="media/icon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="media/icon/favicon-16x16.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="mask-icon" href="media/icon/safari-pinned-tab.svg" color="#9b5de5">
 
-              <div class="comparison-section mt-4">
-                <div
-                  class="d-flex flex-column flex-xl-row align-items-xl-center justify-content-between gap-3"
-                >
-                  <div>
-                    <h3 class="comparison-title" data-i18n="comparisonTitle">
-                      Игра: кой е по-голям?
-                    </h3>
-                    <p class="comparison-subtitle" data-i18n="comparisonDesc">
-                      Сравнете двете изразчета и изберете правилния знак.
-                    </p>
-                  </div>
-                  <button
-                    class="btn btn-kiddo"
-                    id="generateCompareTasks"
-                    data-i18n="comparisonButton"
-                  >
-                    Генерирай сравнения
-                  </button>
-                </div>
-                <div
-                  id="comparisonTasksList"
-                  class="comparison-grid mt-3"
-                ></div>
-              </div>
-            </div>
-            <div
-              class="tab-pane fade"
-              id="nav-profile"
-              role="tabpanel"
-              aria-labelledby="nav-profile-tab"
-            >
-              <form class="form-inline" id="biggerChildrenForm" action="#">
-                <div class="mb-3 row">
-                  <label
-                    for="taskCount"
-                    class="col-sm-4 col-form-label"
-                    data-i18n="labelTaskCount"
-                    >Брой задачи</label
-                  >
-                  <div class="col-sm-8">
-                    <input
-                      type="text"
-                      style="width: 50px"
-                      value="10"
-                      name="taskCount"
-                      class="form-control"
-                      autocomplete="off"
-                    />
-                  </div>
-                </div>
-                <div class="mb-3 row">
-                  <label
-                    class="col-sm-4 col-form-label"
-                    data-i18n="labelTemplate"
-                    >Темплейт</label
-                  >
-                  <div class="col-sm-8">
-                    <div
-                      class="form-text"
-                      style="margin-bottom: 5px"
-                      data-i18n-html="templateHint"
-                    >
-                      <strong>{1,10}</strong> може да съдържа стойност между
-                      <strong>1</strong> и
-                      <strong>10</strong>
-                    </div>
-                    <div class="mb-3 form-check">
-                      <input
-                        type="checkbox"
-                        class="form-check-input checkbox-template"
-                        id="template1"
-                        value="{1,10} + ({1,10} * {1,10})"
-                      />
-                      <label
-                        class="form-check-label cursor-pointer"
-                        for="template1"
-                        >{1,10} + <strong>(</strong>{1,10} * {1,10}<strong
-                          >)</strong
-                        ></label
-                      >
-                    </div>
-                    <div class="mb-3 form-check">
-                      <input
-                        type="checkbox"
-                        class="form-check-input checkbox-template"
-                        id="template12"
-                        value="({1,10} * {1,10}) - {1,10}"
-                      />
-                      <label
-                        class="form-check-label cursor-pointer"
-                        for="template12"
-                        ><strong>(</strong>{1,10} * {1,10}<strong>)</strong> -
-                        {1,10}</label
-                      >
-                    </div>
-                    <div class="mb-3 form-check">
-                      <input
-                        type="checkbox"
-                        class="form-check-input checkbox-template"
-                        id="template2"
-                        value="{1,20} / ({1,10} + {1,10})"
-                      />
-                      <label
-                        class="form-check-label cursor-pointer"
-                        for="template2"
-                        >{1,20} / <strong>(</strong>{1,10} + {1,10}<strong
-                          >)</strong
-                        ></label
-                      >
-                    </div>
-                    <div class="mb-3 form-check">
-                      <input
-                        type="checkbox"
-                        class="form-check-input checkbox-template"
-                        id="template3"
-                        value="{1,10} * ({1,10} + {1,10})"
-                      />
-                      <label
-                        class="form-check-label cursor-pointer"
-                        for="template3"
-                        >{1,10} * <strong>(</strong>{1,10} + {1,10}<strong
-                          >)</strong
-                        ></label
-                      >
-                    </div>
-                    <div class="mb-3 form-check">
-                      <input
-                        type="checkbox"
-                        class="form-check-input checkbox-template"
-                        id="template4"
-                        value="{1,10} * {1,10} + ({1,10} * {1,10}) / {1,10}"
-                      />
-                      <label
-                        class="form-check-label cursor-pointer"
-                        for="template4"
-                        >{1,10} * {1,10} + <strong>(</strong>{1,10} *
-                        {1,10}<strong>)</strong> / {1,10}</label
-                      >
-                    </div>
-                    <div class="input-group mb-3">
-                      <input
-                        type="text"
-                        class="form-control"
-                        name="template"
-                        value="{1,10} + ({1,10} * {1,10})"
-                        id="templateInput"
-                        aria-describedby="button-addon2"
-                      />
-                      <button
-                        class="btn btn-outline-secondary btn-kiddo-ghost"
-                        type="button"
-                        id="button-add-template"
-                        data-i18n="buttonAddTemplate"
-                      >
-                        Добави
-                      </button>
-                    </div>
-                    <div>
-                      <ul
-                        class="list-group"
-                        id="template-list"
-                        style="margin-bottom: 20px"
-                      >
-                        <!--<li data-index-id="1126" data-record-is_planned="0"
-                                        class="list-group-item d-flex justify-content-between align-items-center   ">
-                                        Hraba : 32.51
-                                        <div>
-                                            &lt;!&ndash; Button trigger modal &ndash;&gt;
-                                            <button class="edit_record btn btn-sm btn-info" data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                     fill="currentColor" class="bi bi-pencil-square"
-                                                     viewBox="0 0 16 16">
-                                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"></path>
-                                                    <path fill-rule="evenodd"
-                                                          d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"></path>
-                                                </svg>
-                                            </button>
-                                            <button class="remove_record btn btn-sm btn-danger">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                     fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
-                                                    <path fill-rule="evenodd"
-                                                          d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </li>-->
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-auto mb-5">
-                  <div class="d-grid gap-2 d-md-block">
-                    <button
-                      type="submit"
-                      id="generateTasksTemplates"
-                      class="btn btn-warning btn-kiddo"
-                      data-i18n="buttonGenerate"
-                    >
-                      Генерирай задачки
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
-            <div
-              class="tab-pane fade"
-              id="nav-unknown"
-              role="tabpanel"
-              aria-labelledby="nav-unknown-tab"
-            >
-              <form class="form-inline" id="unknownXForm" action="#">
-                <div class="mb-3 row">
-                  <label
-                    for="unknownTaskCount"
-                    class="col-sm-4 col-form-label"
-                    data-i18n="labelTaskCount"
-                    >Брой задачи</label
-                  >
-                  <div class="col-sm-8">
-                    <input
-                      type="number"
-                      min="3"
-                      max="20"
-                      name="taskCount"
-                      style="width: 60px"
-                      value="8"
-                      class="form-control"
-                      id="unknownTaskCount"
-                      autocomplete="off"
-                    />
-                  </div>
-                </div>
-                <div class="mb-3 row">
-                  <label
-                    for="unknownMax"
-                    class="col-sm-4 col-form-label"
-                    data-i18n="labelMaxValue"
-                    >Максимална стойност</label
-                  >
-                  <div class="col-sm-8">
-                    <input
-                      type="number"
-                      min="5"
-                      max="100"
-                      name="maxSum"
-                      style="width: 60px"
-                      value="20"
-                      class="form-control"
-                      id="unknownMax"
-                      autocomplete="off"
-                    />
-                  </div>
-                </div>
-                <div class="mb-3 row">
-                  <label
-                    class="col-sm-4 col-form-label"
-                    data-i18n="labelOperations"
-                    >Операции</label
-                  >
-                  <div class="col-sm-8">
-                    <div class="row g-3 align-items-center">
-                      <div class="col-auto">
-                        <input
-                          type="checkbox"
-                          name="unknownOps"
-                          checked
-                          value="+"
-                          class="btn-check"
-                          id="unknown-op-add"
-                          autocomplete="off"
-                        />
-                        <label
-                          class="btn btn-outline-primary"
-                          style="width: 40px"
-                          for="unknown-op-add"
-                          >+</label
-                        ><br />
-                      </div>
-                      <div class="col-auto">
-                        <input
-                          type="checkbox"
-                          name="unknownOps"
-                          checked
-                          value="-"
-                          class="btn-check"
-                          id="unknown-op-sub"
-                          autocomplete="off"
-                        />
-                        <label
-                          class="btn btn-outline-primary"
-                          style="width: 40px"
-                          for="unknown-op-sub"
-                          >-</label
-                        ><br />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <p class="text-muted" data-i18n="unknownHint">
-                  X може да е отляво или отдясно на знака. Намерете стойността,
-                  която прави равенството вярно.
-                </p>
-                <div class="col-auto mb-5">
-                  <div class="d-grid gap-2 d-md-block">
-                    <button
-                      type="submit"
-                      id="generateUnknownTasks"
-                      class="btn btn-warning btn-kiddo"
-                      data-i18n="buttonGenerate"
-                    >
-                      Генерирай задачки
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="media/css/base.css">
+<link rel="stylesheet" href="media/css/app.css">
+<link rel="stylesheet" href="media/css/print.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "zada4ko",
+  "url": "https://zada4ko.com/",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Any",
+  "inLanguage": ["bg", "en"],
+  "description": "Генератор на задачи по математика за деца от предучилищна до 7. клас — за решаване онлайн и за печат.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BGN" },
+  "audience": { "@type": "EducationalAudience", "educationalRole": ["student", "teacher", "parent"] }
+}
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1DVQQZ0EHE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-1DVQQZ0EHE');
+</script>
+</head>
+
+<body>
+
+<noscript>
+  <div style="max-width:640px;margin:60px auto;padding:24px;border:3px solid #241b45;border-radius:26px;background:#fff;font-family:sans-serif">
+    <h1 style="margin-top:0">zada4ko</h1>
+    <p><strong>За да генерира задачи, сайтът има нужда от JavaScript.</strong>
+    Моля, включете JavaScript в браузъра си и презаредете страницата.</p>
+    <p>This maths worksheet generator needs JavaScript. Please enable it and reload.</p>
+  </div>
+</noscript>
+
+
+<!-- ===================== TOP BAR ===================== -->
+<header class="topbar noprint">
+  <div class="wrap topbar-in">
+    <a class="brand" href="#/home">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#241b45" stroke-width="2.6" stroke-linecap="round">
+          <path d="M4 8h7M7.5 4.5v7M14 6.5h6M14 17.5h6M17 14.5v6M3.5 17.5l5 0M4 15l4 5M8 15l-4 5"/>
+        </svg>
+      </span>
+      <span>zada4<b>ko</b><small data-i18n="brandSub">математика за деца</small></span>
+    </a>
+
+    <button class="btn btn-sm btn-paper burger" id="burger" aria-label="Меню" data-i18n-aria="menu">☰</button>
+
+    <nav class="topnav" id="topnav">
+      <a href="#/home" data-i18n="navHome">Начало</a>
+      <a href="#/studio" data-i18n="navStudio">Създай задачи</a>
+      <a href="#/teachers" data-i18n="navTeachers">За учители</a>
+      <a href="#/progress" data-i18n="navProgress">Моят напредък</a>
+      <a href="#/about" data-i18n="navAbout">Как работи</a>
+      <span class="langsw" id="langsw" style="margin-left:8px">
+        <button type="button" data-l="bg">BG</button>
+        <button type="button" data-l="en">EN</button>
+      </span>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ===================== HOME ===================== -->
+<section class="view on" id="view-home">
+  <div class="wrap">
+
+    <div class="hero">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow"><span class="dot"></span><span data-i18n="heroBadge">Нови задачи при всяко кликване</span></span>
+          <h1>
+            <span data-i18n="heroTitle">Безкрайни задачи по математика за</span>
+            <span class="hl" data-i18n="heroTitleHl">любопитни деца</span>
+          </h1>
+          <p class="hero-lead" data-i18n="heroLead">
+            Избери клас, избери теми и получи готов лист със задачи. Реши ги онлайн с моментална проверка
+            или ги принтирай за контролно, домашно и упражнение.
+          </p>
+          <div class="hero-cta">
+            <a class="btn btn-lg btn-grape" href="#/studio">✨ <span data-i18n="heroCta1">Създай задачи</span></a>
+            <button class="btn btn-lg btn-paper" data-quick="1:addsub.10,counting.4,compare.6" data-mode="solve">
+              🚀 <span data-i18n="heroCta2">Бърз старт за 1. клас</span>
+            </button>
           </div>
-          <div class="quick-section mt-4" id="quickChallenges">
-            <div class="quick-section__header">
-              <h2 class="quick-title" data-i18n="quickTitle">
-                Бързи предизвикателства
-              </h2>
-              <p class="quick-subtitle" data-i18n="quickSubtitle">
-                Изберете готово приключение и започнете решаването веднага.
-              </p>
-            </div>
-            <div class="row g-3 quick-grid">
-              <div class="col-md-4">
-                <div class="preset-card">
-                  <div class="preset-icon">➕</div>
-                  <h3 data-i18n="presetAddTitle">Весело събиране</h3>
-                  <p data-i18n="presetAddText">
-                    8 задачи до 15 с резултати само от събиране.
-                  </p>
-                  <button
-                    class="btn btn-kiddo preset-btn"
-                    data-preset="add"
-                    data-ops="+"
-                    data-max="15"
-                    data-count="8"
-                    data-i18n="presetButton"
-                  >
-                    Старт
-                  </button>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="preset-card">
-                  <div class="preset-icon">➖</div>
-                  <h3 data-i18n="presetSubTitle">Смели изваждания</h3>
-                  <p data-i18n="presetSubText">
-                    10 задачи до 20, за да тренираме изваждането без отрицателни
-                    резултати.
-                  </p>
-                  <button
-                    class="btn btn-kiddo preset-btn"
-                    data-preset="sub"
-                    data-ops="-"
-                    data-max="20"
-                    data-count="10"
-                    data-i18n="presetButton"
-                  >
-                    Старт
-                  </button>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="preset-card">
-                  <div class="preset-icon">✨</div>
-                  <h3 data-i18n="presetMixTitle">Смесени приключения</h3>
-                  <p data-i18n="presetMixText">
-                    12 задачи до 30 с плюс, минус и множене за по-големите.
-                  </p>
-                  <button
-                    class="btn btn-kiddo preset-btn"
-                    data-preset="mix"
-                    data-ops="+,-,*"
-                    data-max="30"
-                    data-count="12"
-                    data-i18n="presetButton"
-                  >
-                    Старт
-                  </button>
-                </div>
-              </div>
-            </div>
+          <div class="hero-stats">
+            <div><b>20+</b><span data-i18n="stat1">вида задачи</span></div>
+            <div><b>8</b><span data-i18n="stat2">класа</span></div>
+            <div><b>∞</b><span data-i18n="stat3">комбинации</span></div>
           </div>
         </div>
 
-        <div class="col-auto mb-5" id="buttonDiv">
-          <div class="d-grid gap-2 d-md-block">
-            <button
-              id="deleteTasksBtn"
-              style="display: none"
-              class="btn btn-danger"
-              data-i18n="buttonDeleteTasks"
-            >
-              Изтрий задачки
-            </button>
-            <button
-              id="printTasksBtn"
-              style="display: none"
-              class="btn btn-info"
-            >
-              <span data-i18n="buttonPrintTasks" class="me-2 d-none d-sm-inline"
-                >Принтиране</span
-              >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                class="bi bi-printer"
-                viewBox="0 0 16 16"
-              >
-                <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
-                <path
-                  d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"
-                />
-              </svg>
-            </button>
-            <!-- Add a "Delete Tasks" button -->
-          </div>
-        </div>
-
-        <div id="generatedTasks">
-          <div id="generatedTasksList" class="task-grid"></div>
-        </div>
-        <div id="generatedTasksPrint"></div>
-      </div>
-      <div class="container">
-        <footer
-          class="justify-content-between align-items-center py-3 border-top"
-        >
-          <div class="col-md-6 d-flex align-items-center">
-            <span class="mb-md-0 text-muted" data-i18n="footerText"
-              >© 2023 zada4ko.com - По идея на Митко</span
-            >
-            <span class="ms-md-3 text-muted" data-i18n-html="footerCredit">
-              <a
-                href="https://dakovdev.com"
-                class="text-muted text-decoration-none"
-                target="_blank"
-                rel="noopener"
-                >Създадено от dakovdev.com</a
-              >
-            </span>
-          </div>
-        </footer>
-      </div>
-    </main>
-    <!-- Modal -->
-    <div
-      class="modal fade"
-      id="hint-modal"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content modal-playful">
-          <div class="modal-header">
-            <div class="modal-icon">🧠</div>
-            <h1
-              class="modal-title fs-5"
-              id="exampleModalLabel"
-              data-i18n="modalHintTitle"
-            >
-              Подсказване
-            </h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <div class="task-left"></div>
-            <div class="task-operation">
-              <span>+</span>
-            </div>
-            <div class="task-right"></div>
-            <hr />
-            <div class="hint-result"></div>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-              data-i18n="buttonClose"
-            >
-              Затвори
-            </button>
-          </div>
+        <div class="stage" aria-hidden="true">
+          <div class="stage-blob"></div>
+          <span class="floater f1">7</span>
+          <span class="floater f2">×</span>
+          <span class="floater f3">½</span>
+          <span class="floater f4">=</span>
+          <svg class="mascot" viewBox="0 0 260 260" role="img" aria-label="zada4ko">
+            <defs>
+              <linearGradient id="mg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#ffd76a"/><stop offset="1" stop-color="#ffb31f"/>
+              </linearGradient>
+            </defs>
+            <!-- antenna -->
+            <path d="M130 44 L130 22" stroke="#241b45" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="130" cy="16" r="10" fill="#ff6b6b" stroke="#241b45" stroke-width="6"/>
+            <!-- body -->
+            <rect x="34" y="44" width="192" height="176" rx="44" fill="url(#mg)" stroke="#241b45" stroke-width="7"/>
+            <!-- screen -->
+            <rect x="58" y="70" width="144" height="74" rx="22" fill="#fff6e9" stroke="#241b45" stroke-width="6"/>
+            <!-- eyes -->
+            <circle cx="103" cy="105" r="15" fill="#241b45"/>
+            <circle cx="157" cy="105" r="15" fill="#241b45"/>
+            <circle cx="108" cy="100" r="5" fill="#fff"/>
+            <circle cx="162" cy="100" r="5" fill="#fff"/>
+            <!-- cheeks -->
+            <ellipse cx="76" cy="125" rx="11" ry="7" fill="#ff8fab" opacity=".85"/>
+            <ellipse cx="184" cy="125" rx="11" ry="7" fill="#ff8fab" opacity=".85"/>
+            <!-- smile -->
+            <path d="M112 126 q18 16 36 0" stroke="#241b45" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <!-- keypad -->
+            <g fill="#fff6e9" stroke="#241b45" stroke-width="5">
+              <rect x="62" y="160" width="34" height="30" rx="10"/>
+              <rect x="112" y="160" width="34" height="30" rx="10"/>
+              <rect x="162" y="160" width="34" height="30" rx="10"/>
+            </g>
+            <g fill="#241b45" font-family="Comfortaa, sans-serif" font-weight="700" font-size="19" text-anchor="middle">
+              <text x="79" y="182">+</text><text x="129" y="182">−</text><text x="179" y="182">=</text>
+            </g>
+            <!-- arms -->
+            <path d="M34 120 q-24 8 -20 34" stroke="#241b45" stroke-width="7" fill="none" stroke-linecap="round"/>
+            <path d="M226 120 q24 8 20 34" stroke="#241b45" stroke-width="7" fill="none" stroke-linecap="round"/>
+            <circle cx="16" cy="158" r="12" fill="#2fc4b2" stroke="#241b45" stroke-width="6"/>
+            <circle cx="244" cy="158" r="12" fill="#4d96ff" stroke="#241b45" stroke-width="6"/>
+            <!-- feet -->
+            <rect x="72" y="218" width="40" height="20" rx="10" fill="#241b45"/>
+            <rect x="148" y="218" width="40" height="20" rx="10" fill="#241b45"/>
+          </svg>
         </div>
       </div>
     </div>
-    <!-- Modal -->
-    <div
-      class="modal fade"
-      id="updateTemplateModal"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel2"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content modal-playful">
-          <div class="modal-header">
-            <div class="modal-icon">✏️</div>
-            <h1
-              class="modal-title fs-5"
-              id="exampleModalLabel2"
-              data-i18n="modalTemplateTitle"
-            >
-              Редакция на темплейт
-            </h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form class="form-inline" action="#">
-              <input type="hidden" name="index" />
-              <div class="mb-3 row">
-                <label class="col-sm-4 col-form-label" data-i18n="labelTemplate"
-                  >Темплейт</label
-                >
-                <div class="col-sm-8">
-                  <div class="input-group mb-3">
-                    <input
-                      type="text"
-                      name="template"
-                      class="form-control"
-                      value=""
-                    />
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-              data-i18n="buttonClose"
-            >
-              Затвори
-            </button>
-            <button
-              type="button"
-              id="updateTemplateModalButton"
-              class="btn btn-primary"
-              data-i18n="buttonSaveChanges"
-            >
-              Запази промените
-            </button>
-          </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <h2 data-i18n="gradesTitle">От кой клас е детето?</h2>
+        <p data-i18n="gradesLead">Всеки клас отваря темите по учебна програма — от броене на ябълки до Питагорова теорема.</p>
+      </div>
+      <div class="grades" id="homeGrades"></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><h2 data-i18n="featTitle">Какво може zada4ko</h2></div>
+      <div class="feats">
+        <div class="feat">
+          <div class="f-ico" style="background:var(--mint)">🎮</div>
+          <h3 data-i18n="f1t">Реши онлайн</h3><p data-i18n="f1d">Пиши отговора и разбери веднага дали е вярно.</p>
+        </div>
+        <div class="feat">
+          <div class="f-ico" style="background:var(--sun)">🖨️</div>
+          <h3 data-i18n="f2t">Принтирай на лист</h3><p data-i18n="f2d">Чист A4 лист за домашно или контролно.</p>
+        </div>
+        <div class="feat">
+          <div class="f-ico" style="background:var(--coral)">🔑</div>
+          <h3 data-i18n="f3t">Ключ с отговори</h3><p data-i18n="f3d">Отделна страница само за учителя.</p>
+        </div>
+        <div class="feat">
+          <div class="f-ico" style="background:var(--sky)">🅰️</div>
+          <h3 data-i18n="f4t">Варианти А / Б / В</h3><p data-i18n="f4d">Един клик прави различни варианти.</p>
+        </div>
+        <div class="feat">
+          <div class="f-ico" style="background:var(--grape)">🔗</div>
+          <h3 data-i18n="f5t">Споделим линк</h3><p data-i18n="f5d">Всеки лист има код.</p>
+        </div>
+        <div class="feat">
+          <div class="f-ico" style="background:var(--bubble)">📖</div>
+          <h3 data-i18n="f6t">Текстови задачи</h3><p data-i18n="f6d">Истински житейски ситуации.</p>
         </div>
       </div>
     </div>
-  </body>
-  <script type="text/javascript" src="media/jquery-3.6.4.min.js"></script>
-  <script type="text/javascript" src="media/dist/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="media/confetti.browser.min.js"></script>
-  <script type="text/javascript" src="media/scripts.js"></script>
-  <!--<script type="text/javascript" src="media/confetti.js"></script>-->
+
+    <div class="sec">
+      <div class="teach">
+        <h2 data-i18n="teachTitle">Направено за учители и родители</h2>
+        <p data-i18n="teachLead">За 30 секунди имаш контролно за целия клас — с варианти и ключ с отговори.</p>
+        <ul>
+          <li data-i18n="t1">Смеси теми в един лист</li>
+          <li data-i18n="t2">Варианти А, Б, В</li>
+          <li data-i18n="t3">Точки за всяка задача</li>
+          <li data-i18n="t4">Печата се чисто, черно-бяло</li>
+          <li data-i18n="t5">Кодът връща същите задачи</li>
+          <li data-i18n="t6">Работи офлайн</li>
+        </ul>
+        <button class="btn btn-lg" data-quick="4:addsub.8,bigmuldiv.6,word.4,geometry.3" data-mode="print">
+          📝 <span data-i18n="teachCta">Направи контролно</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== STUDIO ===================== -->
+<section class="view" id="view-studio">
+  <div class="wrap">
+    <div class="sec-head noprint">
+      <h2 data-i18n="studioTitle">Ателие за задачи</h2>
+      <p data-i18n="studioLead">Настрой листа отляво, виж резултата отдясно.</p>
+    </div>
+
+    <div class="studio">
+      <!-- LEFT: setup -->
+      <aside class="panel panel-sticky noprint">
+        <div class="panel-hd">
+          <span>⚙️ <span data-i18n="panelSetup">Настройки на листа</span></span>
+          <span class="chip"><span id="totalCount">0</span>&nbsp;<span data-i18n="taskWord">задачи</span></span>
+        </div>
+        <div class="panel-bd">
+
+          <div class="group">
+            <div class="group-t"><span class="n">1</span><span data-i18n="stepGrade">Клас</span></div>
+            <div class="switchbar" id="panelGrades"></div>
+          </div>
+
+          <div class="group">
+            <div class="group-t"><span class="n">2</span><span data-i18n="pickTopics">Избери теми</span></div>
+            <div class="topics" id="panelTopics"></div>
+          </div>
+
+          <div class="group">
+            <div class="group-t"><span class="n">3</span><span data-i18n="stepSettings">Настройки</span></div>
+
+            <div class="opt-row full">
+              <label class="lbl" for="optTitle" data-i18n="titleLabel">Заглавие на листа</label>
+              <input class="inp" id="optTitle" type="text" maxlength="90" data-i18n-ph="titlePlaceholder" placeholder="Контролна работа по математика">
+            </div>
+
+            <div class="opt-row">
+              <label class="lbl" for="optDiff" data-i18n="difficulty">Трудност</label>
+              <select class="inp" id="optDiff">
+                <option value="0" data-i18n="diffEasy">Лесно</option>
+                <option value="1" selected data-i18n="diffNormal">Нормално</option>
+                <option value="2" data-i18n="diffHard">Трудно</option>
+              </select>
+            </div>
+
+            <div class="opt-row">
+              <label class="lbl" for="optCols" data-i18n="columns">Колони при печат</label>
+              <select class="inp" id="optCols">
+                <option value="0" data-i18n="auto">Автоматично</option>
+                <option value="1">1</option><option value="2">2</option>
+                <option value="3">3</option><option value="4">4</option>
+              </select>
+            </div>
+
+            <div class="opt-row">
+              <label class="lbl" for="optKey" data-i18n="showKey">Ключ с отговори</label>
+              <select class="inp" id="optKey">
+                <option value="none" data-i18n="keyNone">Без ключ</option>
+                <option value="same" data-i18n="keySame">На същия лист</option>
+                <option value="page" selected data-i18n="keyPage">Отделна страница</option>
+              </select>
+            </div>
+
+            <div class="opt-row">
+              <label class="lbl" for="optPoints" data-i18n="points">Точки за задача</label>
+              <select class="inp" id="optPoints">
+                <option value="0">—</option><option value="1">1</option>
+                <option value="2">2</option><option value="3">3</option><option value="5">5</option>
+              </select>
+            </div>
+
+            <div class="opt-row">
+              <label class="lbl" for="optSpace" data-i18n="workspace">Място за решение</label>
+              <select class="inp" id="optSpace">
+                <option value="0" data-i18n="spaceNone">Без (сбито)</option>
+                <option value="1" selected data-i18n="spaceNormal">Нормално</option>
+                <option value="2" data-i18n="spaceMore">Повече</option>
+              </select>
+            </div>
+
+            <div class="opt-row">
+              <label class="lbl" for="optVariants" data-i18n="variants">Варианти</label>
+              <select class="inp" id="optVariants">
+                <option value="1">1</option><option value="2">2</option>
+                <option value="3">3</option><option value="4">4</option>
+              </select>
+            </div>
+            <p class="tiny muted" style="margin:-4px 0 0" data-i18n="variantsHint">Различни числа, еднакви теми — срещу преписване.</p>
+          </div>
+
+          <div class="group">
+            <div class="row center between">
+              <div>
+                <span class="lbl" data-i18n="seedLabel">Код на листа</span>
+                <div class="mono" style="font-weight:800;font-size:1.05rem" id="seedBox">------</div>
+              </div>
+              <button class="btn btn-sm btn-paper" id="btnReshuffle">🎲 <span data-i18n="reshuffle">Нови числа</span></button>
+            </div>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- RIGHT: output -->
+      <div>
+        <div class="tools noprint">
+          <div class="mode-tabs" id="modeTabs">
+            <button type="button" data-m="solve" class="on">🎮 <span data-i18n="modeSolve">Реши онлайн</span></button>
+            <button type="button" data-m="print">📄 <span data-i18n="modePrint">Лист за печат</span></button>
+          </div>
+          <span class="sep"></span>
+          <span id="printTools" class="row center hidden" style="gap:10px">
+            <button class="btn btn-sm btn-coral" id="btnPrint">🖨 <span data-i18n="btnPrint">Принтирай</span></button>
+            <span class="chip" id="pageEstWrap" data-i18n-aria="pagesEst">📄&nbsp;<b id="pageEst">1</b>&nbsp;<span data-i18n="pagesWord">стр. A4</span></span>
+          </span>
+          <button class="btn btn-sm btn-paper" id="btnShare">🔗 <span data-i18n="btnShare">Копирай линк</span></button>
+        </div>
+
+        <div id="studioOut"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TEACHERS ===================== -->
+<section class="view" id="view-teachers">
+  <div class="wrap wrap-narrow">
+    <div class="sec-head">
+      <h2 data-i18n="teachTitle">Направено за учители и родители</h2>
+      <p data-i18n="teachLead">За 30 секунди имаш контролно за целия клас.</p>
+    </div>
+
+    <div class="stack">
+      <div class="callout" style="border-left-color:var(--sun)">
+        <span class="c-ico">1️⃣</span>
+        <p><b data-i18n="t1">Смеси теми в един лист</b><br><span class="muted" data-i18n="a2d">Смесвай събиране, дроби, текстови задачи и геометрия.</span></p>
+      </div>
+      <div class="callout" style="border-left-color:var(--coral)">
+        <span class="c-ico">2️⃣</span>
+        <p><b data-i18n="t2">Варианти А, Б, В с еднаква трудност</b><br><span class="muted" data-i18n="variantsHint">Различни числа, еднакви теми — срещу преписване.</span></p>
+      </div>
+      <div class="callout" style="border-left-color:var(--mint)">
+        <span class="c-ico">3️⃣</span>
+        <p><b data-i18n="t5">Кодът на листа връща същите задачи</b><br><span class="muted" data-i18n="f5d">Дай линка на класа и всички получават същите задачи.</span></p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h3>📚 <span data-i18n="teachCta">Готови контролни</span></h3>
+      <div class="feats">
+        <div class="feat">
+          <div class="f-ico" style="background:var(--sun)">🍎</div>
+          <h3>1.–2. клас</h3>
+          <p class="muted">Събиране и изваждане до 100, сравняване, текстови задачи, часовник.</p>
+          <button class="btn btn-sm btn-paper" style="margin-top:12px" data-quick="2:addsub.10,compare.6,clock.4,word.4" data-mode="print">📄 Отвори</button>
+        </div>
+        <div class="feat">
+          <div class="f-ico" style="background:var(--sky)">🔭</div>
+          <h3>3.–4. клас</h3>
+          <p class="muted">Умножение и деление, ред на действията, мерни единици, лице и периметър.</p>
+          <button class="btn btn-sm btn-paper" style="margin-top:12px" data-quick="4:bigmuldiv.8,order.6,units.5,geometry.4,word.4" data-mode="print">📄 Отвори</button>
+        </div>
+        <div class="feat">
+          <div class="f-ico" style="background:var(--grape)">🧪</div>
+          <h3>5.–6. клас</h3>
+          <p class="muted">Дроби, десетични числа, проценти, уравнения, обем и лице.</p>
+          <button class="btn btn-sm btn-paper" style="margin-top:12px" data-quick="6:fractions.6,decimals.6,percent.5,equations.5,word.4" data-mode="print">📄 Отвори</button>
+        </div>
+        <div class="feat">
+          <div class="f-ico" style="background:var(--leaf)">🏅</div>
+          <h3>7. клас</h3>
+          <p class="muted">Уравнения, изрази, степени, Питагорова теорема, текстови задачи.</p>
+          <button class="btn btn-sm btn-paper" style="margin-top:12px" data-quick="7:equations.6,algebra.5,powers.5,pythagoras.4,word.4" data-mode="print">📄 Отвори</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PROGRESS ===================== -->
+<section class="view" id="view-progress">
+  <div class="wrap wrap-narrow">
+    <div class="sec-head">
+      <h2 data-i18n="progTitle">Моят напредък</h2>
+      <p data-i18n="progLead">Всичко се пази само в този браузър — без регистрация.</p>
+    </div>
+
+    <div class="feats" id="progStats" style="margin-bottom:26px"></div>
+
+    <div class="card card-pad" style="margin-bottom:20px">
+      <h3>🏅 <span data-i18n="progBadges">Значки</span></h3>
+      <div class="badges" id="progBadges"></div>
+    </div>
+
+    <div class="card card-pad">
+      <h3>📊 <span data-i18n="byTopic">По теми</span></h3>
+      <div id="progTopics"></div>
+    </div>
+
+    <div style="margin-top:20px">
+      <button class="btn btn-sm btn-paper" id="progReset">🧹 <span data-i18n="progReset">Изчисти напредъка</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ABOUT ===================== -->
+<section class="view" id="view-about">
+  <div class="wrap wrap-narrow">
+    <div class="sec-head"><h2 data-i18n="aboutTitle">Как работи</h2></div>
+    <div class="feats">
+      <div class="feat"><div class="f-ico" style="background:var(--sun)">🎒</div>
+        <h3 data-i18n="a1t">1. Избери клас</h3><p data-i18n="a1d">Темите се нагаждат към учебната програма.</p></div>
+      <div class="feat"><div class="f-ico" style="background:var(--mint)">🧩</div>
+        <h3 data-i18n="a2t">2. Избери теми</h3><p data-i18n="a2d">Смесвай както ти трябва.</p></div>
+      <div class="feat"><div class="f-ico" style="background:var(--coral)">✅</div>
+        <h3 data-i18n="a3t">3. Реши или принтирай</h3><p data-i18n="a3d">Онлайн с проверка или на хартия.</p></div>
+    </div>
+
+    <div class="sec">
+      <div class="callout" style="border-left-color:var(--grape)">
+        <span class="c-ico">🔒</span>
+        <p><b>Без регистрация, без реклами в задачите.</b> Напредъкът се пази само в браузъра на устройството ти
+        и никога не напуска компютъра. Сайтът работи и офлайн, след като се зареди веднъж.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="foot noprint">
+  <div class="wrap foot-grid">
+    <div>
+      <a class="brand" href="#/home" style="margin-bottom:10px">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#241b45" stroke-width="2.6" stroke-linecap="round">
+            <path d="M4 8h7M7.5 4.5v7M14 6.5h6M14 17.5h6M17 14.5v6M3.5 17.5l5 0M4 15l4 5M8 15l-4 5"/>
+          </svg>
+        </span>
+        <span>zada4<b>ko</b></span>
+      </a>
+      <p class="muted tiny" style="max-width:38ch" data-i18n="footTagline">
+        Безплатен генератор на задачи по математика за деца от предучилищна до 7. клас.
+      </p>
+    </div>
+    <div>
+      <h4 data-i18n="footLinks">Бързи връзки</h4>
+      <ul>
+        <li><a href="#/studio" data-i18n="navStudio">Създай задачи</a></li>
+        <li><a href="#/teachers" data-i18n="navTeachers">За учители</a></li>
+        <li><a href="#/progress" data-i18n="navProgress">Моят напредък</a></li>
+        <li><a href="#/about" data-i18n="navAbout">Как работи</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 data-i18n="footGrades">По класове</h4>
+      <ul>
+        <li><a href="#/studio?g=1&t=addsub.10_counting.4_compare.6">1. клас</a></li>
+        <li><a href="#/studio?g=2&t=addsub.10_times.8_clock.4_word.4">2. клас</a></li>
+        <li><a href="#/studio?g=3&t=times.8_order.6_bigmuldiv.6_word.4">3. клас</a></li>
+        <li><a href="#/studio?g=4&t=bigmuldiv.8_fractions.5_units.5_geometry.4">4. клас</a></li>
+        <li><a href="#/studio?g=5&t=fractions.6_decimals.6_equations.5_word.4">5. клас</a></li>
+        <li><a href="#/studio?g=6&t=percent.6_negatives.6_equations.6_geometry.4">6. клас</a></li>
+        <li><a href="#/studio?g=7&t=equations.6_algebra.5_pythagoras.4_word.4">7. клас</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap foot-bot">
+    <span>© <span id="year">2026</span> zada4ko.com · <span data-i18n="idea">По идея на Митко</span></span>
+    <span><span data-i18n="madeBy">Създадено от</span>
+      <a href="https://dakovdev.com" target="_blank" rel="noopener">dakovdev.com</a></span>
+  </div>
+</footer>
+
+<div class="toast-wrap" id="toasts"></div>
+
+<script src="media/js/confetti.min.js"></script>
+<script src="media/js/core.js"></script>
+<script src="media/js/store.js"></script>
+<script src="media/js/gen/registry.js"></script>
+<script src="media/js/gen/arith.js"></script>
+<script src="media/js/gen/word.js"></script>
+<script src="media/js/gen/measure.js"></script>
+<script src="media/js/gen/advanced.js"></script>
+<script src="media/js/sheet.js"></script>
+<script src="media/js/solve.js"></script>
+<script src="media/js/app.js"></script>
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () { /* offline mode simply stays off */ });
+    });
+  }
+</script>
+</body>
 </html>

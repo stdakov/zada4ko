@@ -1,19 +1,23 @@
 {
-    "name": "Zada4ko",
-    "short_name": "Zada4ko",
-    "icons": [
-        {
-            "src": "/media/icon/android-chrome-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "/media/icon/android-chrome-512x512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ],
-    "theme_color": "#ffffff",
-    "background_color": "#ffffff",
-    "display": "standalone"
+  "name": "zada4ko — задачи по математика за деца",
+  "short_name": "zada4ko",
+  "description": "Генератор на задачи по математика за деца от предучилищна до 7. клас — за решаване онлайн и за печат.",
+  "lang": "bg",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#fff6e9",
+  "background_color": "#fff6e9",
+  "categories": ["education", "kids"],
+  "icons": [
+    { "src": "/media/icon/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/media/icon/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/media/icon/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Създай задачи", "url": "/#/studio" },
+    { "name": "За учители", "url": "/#/teachers" },
+    { "name": "Моят напредък", "url": "/#/progress" }
+  ]
 }
