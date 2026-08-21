@@ -5,7 +5,7 @@
    ========================================================================== */
 "use strict";
 
-var CACHE = "zada4ko-v2";
+var CACHE = "zada4ko-v4";
 
 var SHELL = [
   "./",
@@ -55,6 +55,21 @@ self.addEventListener("activate", function (e) {
   );
 });
 
+/** Store a copy of a good response, without blocking the response itself. */
+function keep(req, res) {
+  if (res && res.ok) {
+    var copy = res.clone();
+    caches.open(CACHE).then(function (c) { c.put(req, copy); });
+  }
+  return res;
+}
+
+/** The app's own code, as opposed to icons and other immutable assets. */
+function isCode(url) {
+  return /\.(?:html|js|css|webmanifest)$/i.test(url.pathname) ||
+    url.pathname === "/" || url.pathname.slice(-1) === "/";
+}
+
 self.addEventListener("fetch", function (e) {
   var req = e.request;
   if (req.method !== "GET") return;
@@ -62,26 +77,34 @@ self.addEventListener("fetch", function (e) {
   var url = new URL(req.url);
   if (url.origin !== self.location.origin) return;   // fonts & analytics: network only
 
-  // Navigations: serve the shell so deep links work offline too.
+  // Navigations: network first, fall back to the cached shell so deep links
+  // still work offline.
   if (req.mode === "navigate") {
     e.respondWith(
-      fetch(req).catch(function () {
+      fetch(req).then(function (res) { return keep(req, res); }).catch(function () {
         return caches.match("index.html").then(function (r) { return r || caches.match("./"); });
       })
     );
     return;
   }
 
-  // Assets: cache first, then refresh in the background.
+  // Code: network first. Serving JS and CSS from the cache first meant a deploy
+  // looked like it had done nothing until CACHE was bumped by hand — one
+  // forgotten bump and every returning visitor kept running the old app.
+  if (isCode(url)) {
+    e.respondWith(
+      fetch(req).then(function (res) { return keep(req, res); }).catch(function () {
+        return caches.match(req);
+      })
+    );
+    return;
+  }
+
+  // Icons and other assets: cache first, refreshed in the background.
   e.respondWith(
     caches.match(req).then(function (hit) {
-      var net = fetch(req).then(function (res) {
-        if (res && res.ok) {
-          var copy = res.clone();
-          caches.open(CACHE).then(function (c) { c.put(req, copy); });
-        }
-        return res;
-      }).catch(function () { return hit; });
+      var net = fetch(req).then(function (res) { return keep(req, res); })
+        .catch(function () { return hit; });
       return hit || net;
     })
   );

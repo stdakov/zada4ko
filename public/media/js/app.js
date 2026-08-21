@@ -299,6 +299,21 @@
   function renderPaper() {
     Z.Solve.stop();
     $("#studioOut").innerHTML = '<div class="paper-scroll">' + Sheet.renderAll(App.cfg) + "</div>";
+    fitAndMeasure();
+
+    // Column fitting measures text, so it needs the real font. On a cold load
+    // Nunito may still be downloading, and the fallback font has different
+    // metrics — so measure again once the font is in. fitColumns always starts
+    // from data-maxcols, which makes re-running it safe and idempotent.
+    if (document.fonts && document.fonts.status !== "loaded") {
+      document.fonts.ready.then(function () {
+        if (App.view === "studio" && App.mode === "print") fitAndMeasure();
+      });
+    }
+  }
+
+  function fitAndMeasure() {
+    Sheet.fitColumns($("#studioOut"));
     updatePageEstimate();
   }
 
@@ -468,6 +483,11 @@
     $("#progReset").addEventListener("click", function () {
       if (confirm(t("progResetAsk"))) { Z.Store.reset(); renderProgress(); Z.toast("🧹"); }
     });
+
+    // the preview width feeds the column fitting, so re-fit after a resize
+    window.addEventListener("resize", H.debounce(function () {
+      if (App.view === "studio" && App.mode === "print") fitAndMeasure();
+    }, 250));
 
     window.addEventListener("hashchange", route);
     route();

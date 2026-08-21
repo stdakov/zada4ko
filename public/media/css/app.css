@@ -229,7 +229,9 @@
 .sheet {
   background: #fff; color: #111;
   width: 210mm; min-height: 297mm;
-  margin: 0 auto; padding: 16mm 15mm 18mm;
+  /* same as the @page margin in print.css, so the preview's text column is
+     186mm wide — exactly what comes out of the printer */
+  margin: 0 auto; padding: 12mm 12mm 10mm;
   border: 3px solid var(--line); border-radius: 6px;
   box-shadow: var(--soft);
   font-family: var(--f-body);

@@ -247,7 +247,8 @@
       html += '<div class="sh-sec-hd"><h3>' + (si + 1) + ". " + Z.i18n.pick(sec.gen.name) + "</h3>" +
         (pts ? '<span class="pts">' + pts + " " + t("pts") + "</span>" : "") + "</div>";
       html += '<p class="sh-instr">' + Z.i18n.pick(sec.gen.instr) + "</p>";
-      html += '<ol class="sh-list cols-' + cols + (sec.gen.cols === 1 ? " wide" : "") + '">';
+      html += '<ol class="sh-list cols-' + cols + (sec.gen.cols === 1 ? " wide" : "") +
+        '" data-maxcols="' + H.clamp(sec.gen.cols || 2, 1, 4) + '">';
       sec.tasks.forEach(function (task) {
         html += '<li' + (task.layout === "block" ? ' class="blk"' : "") + '><span class="no">' +
           task.no + '.</span><span class="q">' + Sheet.printQuestion(task, cfg.space, boxCls) + "</span></li>";
@@ -255,18 +256,26 @@
       html += "</ol></section>";
     });
 
-    /* footer */
-    html += '<div class="sh-foot"><span>' + t("sheetFoot") + "</span>" +
-      "<span>" + t("seedLabel") + ": " + H.esc(cfg.seed) +
-      (cfg.variants > 1 ? "-" + Sheet.variantLetter(model.variant) : "") + "</span></div>";
+    /* answer key, when it shares the page */
+    if (cfg.key === "same") html += Sheet.renderKey(model);
 
-    /* answer key on the same sheet */
-    if (cfg.key === "same") html += Sheet.renderKey(model, false);
-
+    /* the footer closes the page, so it goes last */
+    html += Sheet.footer(model);
     html += "</div>";
 
-    if (cfg.key === "page") html += '<div class="sheet">' + Sheet.renderKey(model) + "</div>";
+    /* the key on its own page gets the same footer */
+    if (cfg.key === "page") {
+      html += '<div class="sheet">' + Sheet.renderKey(model) + Sheet.footer(model) + "</div>";
+    }
     return html;
+  };
+
+  /** The line that closes every printed page: site name and sheet code. */
+  Sheet.footer = function (model) {
+    var cfg = model.cfg;
+    return '<div class="sh-foot"><span>' + Z.t("sheetFoot") + "</span>" +
+      "<span>" + Z.t("seedLabel") + ": " + H.esc(cfg.seed) +
+      (cfg.variants > 1 ? "-" + Sheet.variantLetter(model.variant) : "") + "</span></div>";
   };
 
   Sheet.renderKey = function (model) {
@@ -280,6 +289,80 @@
     });
     html += "</ol></div>";
     return html;
+  };
+
+  /* --------------------------- Column fitting ---------------------------- */
+
+  /**
+   * Would every expression in this list still sit on one line?
+   *
+   * `.q` is the flex cell that holds the task, so its width is exactly the room
+   * available inside the column. Forcing the expression to `nowrap` for a
+   * moment gives the width it actually needs. Counting line boxes instead would
+   * not work: getClientRects() splits an inline run around the inline-block
+   * blank even when everything is on the same line.
+   */
+  function fitsOnOneLine(list) {
+    return H.$$("li", list).every(function (li) {
+      var expr = li.querySelector(".sh-expr");
+      var cell = li.querySelector(".q");
+      if (!expr || !cell) return true;
+      var avail = cell.getBoundingClientRect().width;
+      var prev = expr.style.whiteSpace;
+      expr.style.whiteSpace = "nowrap";
+      var need = expr.getBoundingClientRect().width;
+      expr.style.whiteSpace = prev;
+      return need <= avail + 0.5;
+    });
+  }
+
+  /**
+   * Character counting only estimates how wide a task is, and it guessed wrong
+   * for four-digit sums: "8327 − 3867 = ____" broke over two lines, which is
+   * very hard for a child to read. So once the sheet is in the DOM, measure it
+   * for real and drop a section to fewer columns until nothing wraps.
+   *
+   * Measuring happens in an off-screen 186mm probe — the width of the printed
+   * text block — so the result matches the paper no matter the window size.
+   */
+  Sheet.fitColumns = function (root) {
+    if (!root || typeof document === "undefined" || !document.createElement) return;
+    var lists = H.$$(".sh-list[data-maxcols]", root);
+    if (!lists.length) return;
+
+    // The printed text column is 186mm. On a narrow window the preview page is
+    // squeezed below that, so measure at whichever is tighter — then neither the
+    // preview nor the paper can wrap.
+    var target = 186 * 3.7795275591;
+    var live = H.$(".sheet", root);
+    if (live) {
+      var lcs = window.getComputedStyle(live);
+      var inner = live.clientWidth - parseFloat(lcs.paddingLeft || 0) - parseFloat(lcs.paddingRight || 0);
+      if (inner > 80) target = Math.min(target, inner);
+    }
+
+    var probe = document.createElement("div");
+    probe.className = "sheet";
+    probe.setAttribute("style", "position:absolute;left:-99999px;top:0;width:" + target + "px;" +
+      "min-height:0;padding:0;border:0;box-shadow:none;pointer-events:none");
+    document.body.appendChild(probe);
+
+    lists.forEach(function (list) {
+      var max = H.clamp(H.toInt(list.getAttribute("data-maxcols"), 2), 1, 4);
+      var wide = list.classList.contains("wide") ? " wide" : "";
+      var clone = list.cloneNode(true);
+      probe.innerHTML = "";
+      probe.appendChild(clone);
+
+      var chosen = 1;
+      for (var c = max; c >= 1; c--) {
+        clone.className = "sh-list cols-" + c + wide;
+        if (c === 1 || fitsOnOneLine(clone)) { chosen = c; break; }
+      }
+      list.className = "sh-list cols-" + chosen + wide;
+    });
+
+    probe.remove();
   };
 
   /** All variants of a sheet, one after another. */

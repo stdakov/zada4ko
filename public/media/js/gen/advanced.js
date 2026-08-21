@@ -175,16 +175,23 @@
     icon: "🔍",
     grades: [4, 5, 6],
     cols: 2,
-    name: { bg: "Делимост, НОД и НОК", en: "Divisibility, GCD & LCM" },
-    desc: { bg: "Прости числа, делители, кратни", en: "Primes, divisors and multiples" },
+    name: { bg: "Делимост и делители", en: "Divisibility & factors" },
+    desc: { bg: "Признаци за делимост, прости числа, НОД и НОК", en: "Divisibility rules, primes, GCD and LCM" },
     instr: { bg: "Отговори на въпроса.", en: "Answer the question." },
     make: function (rng, ctx) {
-      var mode = ctx.grade === 4 ? rng.int(0, 1) : rng.int(0, 3);
+      var mode = ctx.grade === 4 ? 0 : rng.int(0, 3);
       var a, b;
 
       if (mode === 0) {
-        var n = rng.int(12, 400);
-        var d = rng.pick([2, 3, 4, 5, 9, 10]);
+        var d = rng.pick(ctx.grade <= 4 ? [2, 5, 10] : [2, 3, 4, 5, 9, 10]);
+        // Aim for a "yes" half the time. Drawing n at random would answer "no"
+        // about three times out of four, and a child could just write "no".
+        var n;
+        if (rng.bool()) {
+          n = d * rng.int(3, Math.floor(400 / d));
+        } else {
+          do { n = rng.int(12, 400); } while (n % d === 0);
+        }
         return T.choice(
           L("Делимо ли е " + n + " на " + d + "?", "Is " + n + " divisible by " + d + "?"),
           n % d === 0 ? L("да", "yes") : L("не", "no"),
@@ -193,7 +200,13 @@
         );
       }
       if (mode === 1) {
-        var m = rng.int(20, 90);
+        // likewise balanced: half prime, half composite
+        var m;
+        if (rng.bool()) {
+          m = rng.pick([23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89]);
+        } else {
+          do { m = rng.int(20, 90); } while (H.isPrime(m));
+        }
         var isP = H.isPrime(m);
         return T.choice(
           L("Просто число ли е " + m + "?", "Is " + m + " a prime number?"),

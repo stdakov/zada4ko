@@ -179,6 +179,30 @@
   });
 
   /* -------------------------------- Geometry ------------------------------- */
+
+  /**
+   * Bulgarian primary school (up to 4th grade) says "обиколка" and "лице";
+   * the words "периметър"/"P" and the symbol "S" only arrive in 5th grade.
+   * Asking a 2nd-grader for "периметъра P" is jargon they have not met yet.
+   */
+  function askPerimeter(grade) {
+    return Z.i18n.lang === "en"
+      ? "Find the perimeter (P)."
+      : (grade <= 4 ? "Намери обиколката (P)." : "Намери периметъра (P).");
+  }
+  function askArea(grade) {
+    return Z.i18n.lang === "en" ? "Find the area (S)." : "Намери лицето (S).";
+  }
+  function perimNoun(grade) {
+    return Z.i18n.lang === "en" ? "perimeter" : (grade <= 4 ? "обиколка" : "периметър");
+  }
+  /** A side length different from `from`, so a rectangle is never a square. */
+  function otherSide(rng, lo, hi, from) {
+    var v;
+    do { v = rng.int(lo, hi); } while (v === from);
+    return v;
+  }
+
   /** Draw a rectangle to scale: a square looks square, a long strip looks long. */
   function rectSVG(a, b, ua) {
     var MAXPX = 116, MINPX = 30;
@@ -217,14 +241,16 @@
     grades: [2, 3, 4, 5, 6, 7],
     cols: 2,
     name: { bg: "Геометрия", en: "Geometry" },
-    desc: { bg: "Периметър, лице, обем на фигури", en: "Perimeter, area and volume of shapes" },
-    instr: { bg: "Пресметни търсената величина.", en: "Find the required value." },
+    desc: { bg: "Обиколка, лице и обем на фигури", en: "Perimeter, area and volume of shapes" },
+    instr: { bg: "Разгледай чертежа и пресметни.", en: "Look at the drawing and calculate." },
     make: function (rng, ctx) {
       var u = L("см", "cm");
+      // Rectangles are listed twice so squares stay about a third of the mix;
+      // with one entry each, half of every geometry section came out square.
       var modes = [];
-      if (ctx.grade >= 2) modes.push("perimRect", "perimSquare");
-      if (ctx.grade >= 3) modes.push("areaRect", "areaSquare");
-      if (ctx.grade >= 4) modes.push("areaRect", "sideFromPerim");
+      if (ctx.grade >= 2) modes.push("perimRect", "perimRect", "perimSquare");
+      if (ctx.grade >= 3) modes.push("areaRect", "areaRect", "areaSquare");
+      if (ctx.grade >= 4) modes.push("sideFromPerim");
       if (ctx.grade >= 5) modes.push("areaTri", "volCuboid", "volCube");
       if (ctx.grade >= 6) modes.push("circumference", "areaCircle");
       var mode = rng.pick(modes);
@@ -232,59 +258,69 @@
 
       switch (mode) {
         case "perimRect":
-          a = rng.int(2, 24); b = rng.int(2, 24);
-          return { q: rectSVG(a, b, u) + '<div style="font-size:.88em;font-weight:700">' + L("Намери периметъра P.", "Find the perimeter P.") + "</div>",
+          a = rng.int(2, 24); b = otherSide(rng, 2, 24, a);
+          return { q: rectSVG(a, b, u) + '<div style="font-size:.88em;font-weight:700">' + askPerimeter(ctx.grade) + "</div>",
             a: String(2 * (a + b)), kind: "num", layout: "block", eq: false, unit: u,
-            sol: "P = 2 · (" + a + " + " + b + ") = " + 2 * (a + b) + " " + u };
+            // primary school adds up the four sides; the formula comes later
+            sol: ctx.grade <= 4
+              ? "P = " + a + " + " + b + " + " + a + " + " + b + " = " + 2 * (a + b) + " " + u
+              : "P = 2 · (" + a + " + " + b + ") = " + 2 * (a + b) + " " + u };
         case "perimSquare":
           a = rng.int(2, 30);
-          return { q: rectSVG(a, a, u) + '<div style="font-size:.88em;font-weight:700">' + L("Квадрат. Намери периметъра P.", "A square. Find the perimeter P.") + "</div>",
+          return { q: rectSVG(a, a, u) + '<div style="font-size:.88em;font-weight:700">' +
+              L("Квадрат. ", "A square. ") + askPerimeter(ctx.grade) + "</div>",
             a: String(4 * a), kind: "num", layout: "block", eq: false, unit: u,
-            sol: "P = 4 · " + a + " = " + 4 * a + " " + u };
+            sol: ctx.grade <= 2
+              ? "P = " + a + " + " + a + " + " + a + " + " + a + " = " + 4 * a + " " + u
+              : "P = 4 · " + a + " = " + 4 * a + " " + u };
         case "areaRect":
-          a = rng.int(3, ctx.grade >= 4 ? 40 : 12); b = rng.int(3, ctx.grade >= 4 ? 30 : 12);
-          return { q: rectSVG(a, b, u) + '<div style="font-size:.88em;font-weight:700">' + L("Намери лицето S.", "Find the area S.") + "</div>",
+          a = rng.int(3, ctx.grade >= 4 ? 40 : 12);
+          b = otherSide(rng, 3, ctx.grade >= 4 ? 30 : 12, a);
+          return { q: rectSVG(a, b, u) + '<div style="font-size:.88em;font-weight:700">' + askArea(ctx.grade) + "</div>",
             a: String(a * b), kind: "num", layout: "block", eq: false, unit: u + "²",
             sol: "S = " + a + " · " + b + " = " + a * b + " " + u + "²" };
         case "areaSquare":
           a = rng.int(3, 20);
-          return { q: rectSVG(a, a, u) + '<div style="font-size:.88em;font-weight:700">' + L("Квадрат. Намери лицето S.", "A square. Find the area S.") + "</div>",
+          return { q: rectSVG(a, a, u) + '<div style="font-size:.88em;font-weight:700">' +
+              L("Квадрат. ", "A square. ") + askArea(ctx.grade) + "</div>",
             a: String(a * a), kind: "num", layout: "block", eq: false, unit: u + "²",
             sol: "S = " + a + " · " + a + " = " + a * a + " " + u + "²" };
         case "sideFromPerim":
-          a = rng.int(3, 25); b = rng.int(3, 25);
-          return { q: L("Правоъгълник има периметър " + 2 * (a + b) + " " + u + " и едната му страна е " + a + " " + u + ". Колко е другата страна?",
-                       "A rectangle has perimeter " + 2 * (a + b) + " " + u + " and one side of " + a + " " + u + ". How long is the other side?"),
+          a = rng.int(3, 25); b = otherSide(rng, 3, 25, a);
+          return { q: L("Правоъгълник има " + perimNoun(ctx.grade) + " P = " + 2 * (a + b) + " " + u +
+                         " и едната му страна е " + a + " " + u + ". Колко е другата страна?",
+                       "A rectangle has perimeter P = " + 2 * (a + b) + " " + u + " and one side of " +
+                         a + " " + u + ". How long is the other side?"),
             a: String(b), kind: "num", layout: "text", eq: false, unit: u, work: 2,
             sol: (2 * (a + b)) + " : 2 − " + a + " = " + b + " " + u };
         case "areaTri":
           a = rng.step(4, 40, 2); b = rng.int(3, 24);
-          return { q: triSVG(a, b, u) + '<div style="font-size:.88em;font-weight:700">' + L("Намери лицето на триъгълника.", "Find the area of the triangle.") + "</div>",
+          return { q: triSVG(a, b, u) + '<div style="font-size:.88em;font-weight:700">' + L("Намери лицето (S) на триъгълника.", "Find the area (S) of the triangle.") + "</div>",
             a: String(a * b / 2), kind: "num", layout: "block", eq: false, unit: u + "²",
             sol: "S = a · h : 2 = " + a + " · " + b + " : 2 = " + (a * b / 2) + " " + u + "²" };
         case "volCube":
           a = rng.int(2, 12);
-          return { q: L("Куб има ръб " + a + " " + u + ". Намери обема му.", "A cube has an edge of " + a + " " + u + ". Find its volume."),
+          return { q: L("Куб има ръб " + a + " " + u + ". Намери обема (V).", "A cube has an edge of " + a + " " + u + ". Find the volume (V)."),
             a: String(a * a * a), kind: "num", layout: "text", eq: false, unit: u + "³", work: 1,
             sol: "V = " + a + "³ = " + a * a * a + " " + u + "³" };
         case "volCuboid":
           a = rng.int(2, 15); b = rng.int(2, 15); c = rng.int(2, 15);
-          return { q: L("Правоъгълен паралелепипед с размери " + a + " × " + b + " × " + c + " " + u + ". Намери обема.",
-                       "A cuboid measures " + a + " × " + b + " × " + c + " " + u + ". Find its volume."),
+          return { q: L("Правоъгълен паралелепипед с размери " + a + " × " + b + " × " + c + " " + u + ". Намери обема (V).",
+                       "A cuboid measures " + a + " × " + b + " × " + c + " " + u + ". Find the volume (V)."),
             a: String(a * b * c), kind: "num", layout: "text", eq: false, unit: u + "³", work: 1,
             sol: "V = " + a + " · " + b + " · " + c + " = " + a * b * c + " " + u + "³" };
         case "circumference":
           a = rng.int(2, 20);
           return { q: circSVG(a, u, false) + '<div style="font-size:.88em;font-weight:700">' +
-              L("Намери дължината на окръжността (π ≈ 3,14).", "Find the circumference (π ≈ 3.14).") + "</div>",
+              L("Намери дължината (C) на окръжността. Приеми π ≈ 3,14.", "Find the circumference (C). Take π ≈ 3.14.") + "</div>",
             a: H.num(Math.round(2 * 3.14 * a * 100) / 100), kind: "num", layout: "block", eq: false, unit: u,
-            sol: "C = 2πr = 2 · 3,14 · " + a + " = " + H.num(Math.round(2 * 3.14 * a * 100) / 100) + " " + u };
+            sol: "C = 2πr = 2 · " + H.num(3.14) + " · " + a + " = " + H.num(Math.round(2 * 3.14 * a * 100) / 100) + " " + u };
         default:
           a = rng.int(2, 15);
           return { q: circSVG(a, u, false) + '<div style="font-size:.88em;font-weight:700">' +
-              L("Намери лицето на кръга (π ≈ 3,14).", "Find the area of the circle (π ≈ 3.14).") + "</div>",
+              L("Намери лицето (S) на кръга. Приеми π ≈ 3,14.", "Find the area (S) of the circle. Take π ≈ 3.14.") + "</div>",
             a: H.num(Math.round(3.14 * a * a * 100) / 100), kind: "num", layout: "block", eq: false, unit: u + "²",
-            sol: "S = πr² = 3,14 · " + a + "² = " + H.num(Math.round(3.14 * a * a * 100) / 100) + " " + u + "²" };
+            sol: "S = πr² = " + H.num(3.14) + " · " + a + "² = " + H.num(Math.round(3.14 * a * a * 100) / 100) + " " + u + "²" };
       }
     }
   });
