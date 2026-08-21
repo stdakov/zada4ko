@@ -176,7 +176,17 @@
   var MM = 3.7795275591;               // one CSS millimetre, in px
   var TEXT_MM = 186;                     // A4 width minus the @page margins
   var ROW_GAP_PX = 16;                   // gap between the printed columns
-  var NUM_PX = 26;                       // room for the "12." task number
+  var NUM_PX = 28;                       // room for the "12." task number and its gap
+
+  /**
+   * Headroom demanded of every column before it is accepted.
+   *
+   * Fitting an expression to the last pixel looked fine in Chrome but broke on
+   * iOS Safari, which adds its own print header and margins and rasterises text
+   * slightly differently: sections that had 3–8% slack wrapped onto two lines.
+   * Requiring 12% means a column is only used when it comfortably fits.
+   */
+  var SAFETY = 1.12;
 
   /**
    * Arrange items into rows that read down the columns — the same order a
@@ -222,10 +232,11 @@
     if (cfg.cols) return H.clamp(cfg.cols, 1, 4);
     var max = H.clamp(gen.cols || 2, 1, 4);
     var need = (widths && widths[gen.id]) || guessWidthPx(tasks, cfg);
+    if (!need) return max;               // nothing to measure (diagrams only)
     var text = TEXT_MM * MM;
     for (var c = max; c > 1; c--) {
-      var col = (text - ROW_GAP_PX * (c - 1)) / c;
-      if (need + NUM_PX <= col) return c;
+      var avail = (text - ROW_GAP_PX * (c - 1)) / c - NUM_PX;
+      if (need * SAFETY <= avail) return c;
     }
     return 1;
   }
@@ -261,6 +272,10 @@
     var out = {};
     var spans = probe.querySelectorAll(".sh-probe > .sh-expr");
     for (var i = 0; i < spans.length; i++) {
+      // Multiple-choice prompts render as a block <div>, which would measure the
+      // full probe width instead of the text. inline-block collapses it to its
+      // content; the probe is thrown away, so real layout is untouched.
+      spans[i].style.display = "inline-block";
       spans[i].style.whiteSpace = "nowrap";
       var w = spans[i].getBoundingClientRect().width;
       var id = ids[i];
