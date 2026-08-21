@@ -184,9 +184,10 @@
    * Fitting an expression to the last pixel looked fine in Chrome but broke on
    * iOS Safari, which adds its own print header and margins and rasterises text
    * slightly differently: sections that had 3–8% slack wrapped onto two lines.
-   * Requiring 12% means a column is only used when it comfortably fits.
+   * Requiring a fifth of the width as slack means a column is only used when it
+   * comfortably fits, on any engine.
    */
-  var SAFETY = 1.12;
+  var SAFETY = 1.20;
 
   /**
    * Arrange items into rows that read down the columns — the same order a
@@ -368,7 +369,8 @@
     var cfg = model.cfg;
     return '<div class="sh-foot"><span>' + Z.t("sheetFoot") + "</span>" +
       "<span>" + Z.t("seedLabel") + ": " + H.esc(cfg.seed) +
-      (cfg.variants > 1 ? "-" + Sheet.variantLetter(model.variant) : "") + "</span></div>";
+      (cfg.variants > 1 ? "-" + Sheet.variantLetter(model.variant) : "") +
+      (Z.VERSION ? " · v" + Z.VERSION : "") + "</span></div>";
   };
 
   Sheet.renderKey = function (model) {

@@ -133,7 +133,10 @@ redirect, compression, caching and the single-page fallback.
    `index.html` — CSS and JS are served with a 7-day expiry, so without a new
    URL a returning browser keeps the old file and can end up running new JS
    against old CSS;
-2. `CACHE` in `sw.js`, so the service worker drops its old entries.
+2. `CACHE` in `sw.js`, so the service worker drops its old entries;
+3. `Z.VERSION` in `media/js/core.js` — it is printed in the sheet footer next to
+   the sheet code, so a screenshot of any worksheet says which build made it.
+   That is the quickest way to tell a real layout bug from a stale cache.
 
 `index.html` and `sw.js` are sent `no-cache`, which is what makes step 1 work:
 a fresh shell always points at fresh assets.

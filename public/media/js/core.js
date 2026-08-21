@@ -5,6 +5,11 @@
 
 window.Z = window.Z || {};
 
+/* Asset version. Keep in step with the ?v= query on the CSS/JS URLs in
+   index.html and with CACHE in sw.js — it is printed in the sheet footer so a
+   screenshot always says which build produced it. */
+window.Z.VERSION = "8";
+
 /* ------------------------------ Seeded RNG ------------------------------ */
 (function (Z) {
   function hashSeed(str) {
