@@ -8,10 +8,11 @@
   var reg = Z.reg, T = Z.T, H = Z.H;
 
   function L(bg, en) { return Z.i18n.lang === "en" ? en : bg; }
-  function cur() { return L("лв.", "$"); }
+  function cur() { return "€"; }
+  /** Bulgarian writes the amount then the symbol: "12,50 €". English: "€12.50". */
   function money(v) {
     var s = (Math.round(v * 100) / 100).toFixed(2).replace(/\.00$/, "");
-    return L(s.replace(".", ",") + " лв.", "$" + s);
+    return L(s.replace(".", ",") + " €", "€" + s);
   }
   function ansMoney(v) { return String(Math.round(v * 100) / 100).replace(/\.0+$/, ""); }
 
@@ -73,10 +74,11 @@
     {
       g: [2, 3, 4], f: function (rng, ctx) {
         var k = Z.pickKid(rng), th = Z.pickThing(rng, "shop");
-        var price = rng.int(2, ctx.grade === 2 ? 9 : 25);
+        var cap = Math.min(th[3] || 15, ctx.grade === 2 ? 6 : 15);
+        var price = rng.int(2, Math.max(3, cap));
         var n = rng.int(2, 9);
         return T.word(
-          L(k + " купува " + Z.qty(n, th) + " по " + money(price) + " всяка. Колко пари плаща?",
+          L(k + " купува " + Z.qty(n, th) + " по " + money(price) + ". Колко пари плаща?",
             k + " buys " + n + " " + th[1] + " at " + money(price) + " each. How much does " + k + " pay?"),
           price * n, { unit: cur(), sol: n + " · " + price + " = " + (n * price) + " " + cur() }
         );
@@ -85,7 +87,8 @@
     {
       g: [2, 3, 4], f: function (rng, ctx) {
         var k = Z.pickKid(rng), th = Z.pickThing(rng, "shop");
-        var price = rng.int(3, 18), paid = price + rng.int(2, 20);
+        var price = rng.int(2, Math.max(3, Math.min(th[3] || 12, 12)));
+        var paid = price + rng.int(2, 15);
         return T.word(
           L(k + " плаща " + money(paid) + " за " + th[0] + " на цена " + money(price) + ". Колко ресто получава?",
             k + " pays " + money(paid) + " for a " + th[0] + " that costs " + money(price) + ". How much change is returned?"),
@@ -96,7 +99,7 @@
     {
       g: [3, 4, 5], f: function (rng, ctx) {
         var k = Z.pickKid(rng);
-        var week = rng.int(3, 12), weeks = rng.int(4, 12), target = week * weeks + rng.int(5, 40);
+        var week = rng.int(2, 8), weeks = rng.int(4, 12), target = week * weeks + rng.int(5, 30);
         return T.word(
           L(k + " спестява по " + money(week) + " всяка седмица. След " + weeks + " седмици иска да си купи скейтборд за " +
             money(target) + ". Колко пари още ще му трябват?",
@@ -276,7 +279,7 @@
     {
       g: [5, 6, 7], f: function (rng, ctx) {
         var p = rng.pick([10, 15, 20, 25, 30, 40, 50]);
-        var price = rng.step(40, 600, 10);
+        var price = rng.step(30, 300, 10);
         var final = price * (100 - p) / 100;
         return T.word(
           L("Яке струва " + money(price) + ". В разпродажба цената пада с " + p + "%. Колко струва якето след намалението?",

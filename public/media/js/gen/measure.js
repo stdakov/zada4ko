@@ -123,48 +123,56 @@
     grades: [1, 2, 3, 4],
     cols: 2,
     name: { bg: "Пари", en: "Money" },
-    desc: { bg: "Левове и стотинки, ресто, покупки", en: "Coins and notes, change, shopping" },
+    desc: { bg: "Евро и центове, ресто, покупки", en: "Euros and cents, change, shopping" },
     instr: { bg: "Пресметни сумата.", en: "Work out the amount." },
     make: function (rng, ctx) {
       var mode = rng.int(0, 2);
-      var coinsBG = [1, 2, 5, 10, 20, 50];
+      var coins = [1, 2, 5, 10, 20, 50];        // the euro cent coins
+      var notes = [5, 10, 20, 50];              // the small euro notes
+
+      // "1 цент" but "5 цента"; "евро" never changes form in Bulgarian.
+      function cents(n) { return L(n === 1 ? "цент" : "цента", n === 1 ? "cent" : "cents"); }
 
       if (mode === 0) {
-        var picks = rng.sample(coinsBG, rng.int(2, 3));
+        var picks = rng.sample(coins, rng.int(2, 3));
         var parts = [], total = 0;
         picks.forEach(function (c) {
           var n = rng.int(1, 5);
           total += n * c;
-          parts.push(L(n + " монети по " + c + " ст.", n + " coins of " + c + "c"));
+          parts.push(L(n + (n === 1 ? " монета" : " монети") + " по " + c + " " + cents(c),
+                       n + " coin" + (n === 1 ? "" : "s") + " of " + c + "c"));
         });
         return {
-          q: L("В касичката има " + parts.join(" и ") + ". Колко стотинки има общо?",
-               "A money box holds " + parts.join(" and ") + ". How many cents in total?"),
-          a: String(total), kind: "num", layout: "text", eq: false, unit: L("ст.", "c"), work: 1,
-          sol: String(total) + L(" ст.", "c")
+          q: L("В касичката има " + Z.joinList(parts) + ". Колко цента има общо?",
+               "A money box holds " + Z.joinList(parts) + ". How many cents in total?"),
+          a: String(total), kind: "num", layout: "text", eq: false, unit: cents(total), work: 1,
+          sol: String(total) + " " + cents(total)
         };
       }
       if (mode === 1) {
-        var lv = rng.int(1, 20), st = rng.pick([10, 20, 25, 40, 50, 60, 75, 80, 90]);
+        var eur = rng.int(1, 20), st = rng.pick([10, 20, 25, 40, 50, 60, 75, 80, 90]);
         return {
-          q: L(lv + " лв. и " + st + " ст. = <span class='sh-blank'></span> ст.",
-               lv + " dollars and " + st + " cents = <span class='sh-blank'></span> cents"),
-          a: String(lv * 100 + st), kind: "num", layout: "expr", eq: false,
-          sol: lv + " · 100 + " + st + " = " + (lv * 100 + st)
+          q: L(eur + " евро и " + st + " цента = <span class='sh-blank'></span> цента",
+               eur + " euro" + (eur === 1 ? "" : "s") + " and " + st +
+               " cents = <span class='sh-blank'></span> cents"),
+          a: String(eur * 100 + st), kind: "num", layout: "expr", eq: false,
+          sol: eur + " · 100 + " + st + " = " + (eur * 100 + st)
         };
       }
-      var paid = rng.pick([20, 50, 100]);
-      var price1 = rng.int(2, 15), price2 = rng.int(2, 15);
-      while (price1 + price2 >= paid || price1 === price2) {
-        price1 = rng.int(2, 9);
-        price2 = rng.int(2, 9) + (price1 <= 5 ? 3 : 0);
-      }
+      var paid = rng.pick(notes);
+      var price1 = 2, price2 = 3, guard = 0;
+      do {
+        price1 = rng.int(1, paid - 2);
+        price2 = rng.int(1, paid - 2);
+        guard++;
+      } while ((price1 + price2 >= paid || price1 === price2) && guard < 40);
+      if (price1 + price2 >= paid || price1 === price2) { price1 = 1; price2 = 2; }
       return {
-        q: L("Купуваме две неща за " + price1 + " лв. и " + price2 + " лв. и плащаме с банкнота от " +
-             paid + " лв. Колко ресто получаваме?",
-             "We buy two items for $" + price1 + " and $" + price2 + " and pay with a $" + paid +
+        q: L("Купуваме две неща за " + price1 + " € и " + price2 + " € и плащаме с банкнота от " +
+             paid + " €. Колко ресто получаваме?",
+             "We buy two items for €" + price1 + " and €" + price2 + " and pay with a €" + paid +
              " note. How much change do we get?"),
-        a: String(paid - price1 - price2), kind: "num", layout: "text", eq: false, unit: L("лв.", "$"), work: 2,
+        a: String(paid - price1 - price2), kind: "num", layout: "text", eq: false, unit: "€", work: 2,
         sol: price1 + " + " + price2 + " = " + (price1 + price2) + "; " + paid + " − " + (price1 + price2) + " = " + (paid - price1 - price2)
       };
     }

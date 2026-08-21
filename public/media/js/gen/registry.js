@@ -92,15 +92,16 @@
            ["chick", "chicks", "🐥"], ["fish", "fish", "🐟"], ["butterfly", "butterflies", "🦋"],
            ["ant", "ants", "🐜"], ["bee", "bees", "🐝"]]
     },
+    /* [singular, plural, emoji, a believable top price in euro] */
     shop: {
-      bg: [["тетрадка", "тетрадки", "📓"], ["книга", "книги", "📚"], ["топка", "топки", "⚽"],
-           ["раница", "раници", "🎒"], ["пъзел", "пъзела", "🧩"], ["чадър", "чадъра", "☂️"],
-           ["шапка", "шапки", "🧢"], ["играчка", "играчки", "🧸"], ["чаша", "чаши", "☕"],
-           ["сладолед", "сладоледа", "🍦"], ["билет", "билета", "🎟️"], ["саксия", "саксии", "🪴"]],
-      en: [["notebook", "notebooks", "📓"], ["book", "books", "📚"], ["ball", "balls", "⚽"],
-           ["backpack", "backpacks", "🎒"], ["puzzle", "puzzles", "🧩"], ["umbrella", "umbrellas", "☂️"],
-           ["cap", "caps", "🧢"], ["toy", "toys", "🧸"], ["mug", "mugs", "☕"],
-           ["ice cream", "ice creams", "🍦"], ["ticket", "tickets", "🎟️"], ["plant pot", "plant pots", "🪴"]]
+      bg: [["тетрадка", "тетрадки", "📓", 3], ["книга", "книги", "📚", 20], ["топка", "топки", "⚽", 15],
+           ["раница", "раници", "🎒", 40], ["пъзел", "пъзела", "🧩", 15], ["чадър", "чадъра", "☂️", 12],
+           ["шапка", "шапки", "🧢", 15], ["играчка", "играчки", "🧸", 25], ["чаша", "чаши", "☕", 8],
+           ["сладолед", "сладоледа", "🍦", 4], ["билет", "билета", "🎟️", 12], ["саксия", "саксии", "🪴", 10]],
+      en: [["notebook", "notebooks", "📓", 3], ["book", "books", "📚", 20], ["ball", "balls", "⚽", 15],
+           ["backpack", "backpacks", "🎒", 40], ["puzzle", "puzzles", "🧩", 15], ["umbrella", "umbrellas", "☂️", 12],
+           ["cap", "caps", "🧢", 15], ["toy", "toys", "🧸", 25], ["mug", "mugs", "☕", 8],
+           ["ice cream", "ice creams", "🍦", 4], ["ticket", "tickets", "🎟️", 12], ["plant pot", "plant pots", "🪴", 10]]
     },
     things: {
       bg: [["ябълка", "ябълки", "🍎"], ["банан", "банана", "🍌"], ["молив", "молива", "✏️"],
@@ -131,4 +132,11 @@
   };
   /** Bulgarian needs "2 ябълки" but "1 ябълка" — pick singular/plural. */
   Z.qty = function (n, thing) { return n + " " + (n === 1 ? thing[0] : thing[1]); };
+
+  /** "a, b и c" — commas between, a conjunction before the last item. */
+  Z.joinList = function (parts) {
+    if (parts.length < 2) return parts.join("");
+    var and = Z.i18n.lang === "en" ? " and " : " и ";
+    return parts.slice(0, -1).join(", ") + and + parts[parts.length - 1];
+  };
 })(window.Z);

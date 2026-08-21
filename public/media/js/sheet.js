@@ -51,7 +51,7 @@
         var fp = task.q + "|" + task.a;
         if (seen[fp] && guard < t.count * 20) continue;   // avoid duplicates while we can
         seen[fp] = 1;
-        // "7 лв.." -> "7 лв." : abbreviations already carry their own full stop
+        // "20 мин.." -> "20 мин." : abbreviations already carry their own full stop
         task.q = String(task.q).replace(/([.!?])\.(?=\s|<|$)/g, "$1");
         task.no = ++n;
         task.gen = gen.id;
