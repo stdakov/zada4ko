@@ -205,23 +205,42 @@ breadcrumbs(o.trail) + "\n" +
 '  <a class="brand" href="/">' + BRAND_SVG + "<span>zada4<b>ko</b><small>математика за деца</small></span></a>\n" +
 '  <nav class="topnav lp-nav"><a href="/">Начало</a><a href="/#/studio">Създай задачи</a><a href="/#/teachers">За учители</a></nav>\n' +
 "</div></header>\n" +
-'<main class="wrap wrap-narrow lp">\n' +
+'<div class="wrap lp-layout">\n' +
+'<main class="lp">\n' +
 '<nav class="lp-crumbs" aria-label="breadcrumb">' + crumbs + "</nav>\n" +
 o.body +
 "</main>\n" +
+sidebar(o.path) +
+"</div>\n" +
 footer() +
 "</body>\n</html>\n";
 }
 
+/** Every grade and topic, with the current page marked. Sits left on desktop, below the content on phones. */
+function sidebar(current) {
+  function link(href, html) {
+    var on = href === current;
+    return '<li><a href="' + href + '"' + (on ? ' class="on" aria-current="page"' : "") + ">" + html + "</a></li>";
+  }
+  var grades = GRADES.map(function (G) { return link(gradeUrl(G), esc(G.short)); }).join("");
+  var topics = TOPICS.map(function (t) {
+    return link(topicUrl(t), '<span class="lp-side-ico">' + t.gen.icon + "</span>" + esc(t.name));
+  }).join("");
+  return '<aside class="lp-side" aria-label="Класове и теми">\n' +
+    '<h2>Класове</h2><ul class="lp-side-grades">' + grades + "</ul>\n" +
+    '<h2>Всички теми</h2><ul class="lp-side-topics">' + topics + "</ul>\n" +
+    "</aside>\n";
+}
+
 function footer() {
   var grades = GRADES.map(function (G) { return '<li><a href="' + gradeUrl(G) + '">Задачи за ' + esc(G.name) + "</a></li>"; }).join("");
-  var topics = TOPICS.map(function (t) { return '<li><a href="' + topicUrl(t) + '">' + esc(t.name) + "</a></li>"; }).join("");
   return '<footer class="foot"><div class="wrap foot-grid">\n' +
     '<div><a class="brand" href="/">' + BRAND_SVG + "<span>zada4<b>ko</b></span></a>" +
     '<p class="muted tiny" style="max-width:38ch">Задачко — безплатен генератор на задачи по математика за деца ' +
     "от предучилищна до 7. клас. Реши онлайн или принтирай лист с ключ с отговори.</p></div>\n" +
     "<div><h4>По класове</h4><ul>" + grades + "</ul></div>\n" +
-    '<div><h4>По теми</h4><ul class="lp-cols">' + topics + "</ul></div>\n" +
+    '<div><h4>Бързи връзки</h4><ul><li><a href="/#/studio">Създай задачи</a></li>' +
+    '<li><a href="/#/teachers">За учители</a></li><li><a href="/#/about">Как работи</a></li></ul></div>\n' +
     '</div><div class="wrap foot-bot"><span>© ' + TODAY.slice(0, 4) + " zada4ko.com · По идея на Митко</span>" +
     '<span>Създадено от <a href="https://dakovdev.com" target="_blank" rel="noopener">dakovdev.com</a></span></div></footer>\n';
 }

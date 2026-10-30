@@ -505,6 +505,30 @@
 @media (max-width: 600px) { .lp-nav a { white-space: nowrap; padding-left: 0.6em; padding-right: 0.6em; } }
 .lp, .lp > * { min-width: 0; }
 .lp h1, .lp h2 { overflow-wrap: anywhere; hyphens: auto; }
+.lp-layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); grid-template-areas: "side main"; gap: 36px; align-items: start; }
+.lp-layout > .lp { grid-area: main; max-width: 900px; }
+.lp-side {
+  grid-area: side; position: sticky; top: 16px; margin-top: 22px;
+  max-height: calc(100vh - 32px); overflow-y: auto; overscroll-behavior: contain;
+  background: var(--paper); border: 3px solid var(--line); border-radius: var(--r-l); box-shadow: var(--pop);
+  padding: 16px 12px;
+}
+.lp-side h2 { font-size: 0.78rem; font-family: var(--f-body); font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); margin: 0 6px 8px; }
+.lp-side h2 + ul { margin-bottom: 18px; }
+.lp-side ul { list-style: none; margin: 0; padding: 0; }
+.lp-side a { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 10px; color: var(--ink-2); font-weight: 700; font-size: 0.88rem; line-height: 1.25; text-decoration: none; }
+.lp-side a:hover { background: rgba(36, 27, 69, 0.07); color: var(--ink); }
+.lp-side a.on { background: var(--ink); color: var(--cream); }
+.lp-side-ico { width: 1.4em; flex: 0 0 auto; text-align: center; }
+.lp-side-grades { display: flex; flex-wrap: wrap; gap: 4px; }
+.lp-side-grades a { border: 2px solid var(--line-soft); padding: 3px 9px; font-size: 0.82rem; }
+.lp-side-grades a.on { border-color: var(--ink); }
+@media (max-width: 900px) {
+  .lp-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "main" "side"; gap: 10px; }
+  .lp-side { position: static; max-height: none; margin: 0 0 30px; }
+  .lp-side-topics { columns: 2 180px; column-gap: 8px; }
+  .lp-side-topics li { break-inside: avoid; }
+}
 .lp { padding-top: 22px; padding-bottom: 20px; }
 .lp-crumbs { font-size: 0.85rem; font-weight: 700; color: var(--ink-3); margin-bottom: 14px; }
 .lp-crumbs a { color: var(--ink-2); }
@@ -529,6 +553,5 @@
 .lp-faq p { margin: 10px 0 0; color: var(--ink-2); }
 .lp-list { padding-left: 1.2em; line-height: 1.9; font-weight: 600; }
 .lp-other .chip { margin: 0 4px 8px 0; text-decoration: none; white-space: normal; max-width: 100%; }
-.lp-cols { columns: 2; column-gap: 18px; }
 .home-links { display: flex; flex-wrap: wrap; gap: 8px; }
 .home-links .chip { text-decoration: none; }
