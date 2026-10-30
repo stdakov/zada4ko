@@ -56,6 +56,19 @@ public/
       advanced.js       fractions, decimals, algebra, number theory
 ```
 
+## Landing pages (SEO)
+
+The app routes with `#/…`, which search engines ignore, so on its own the site
+is a single indexable URL. `tools/build-pages.js` writes a static page for every
+grade (`/zadachi-po-matematika-1-klas/`, …) and every topic (`/zadachi/<topic>/`)
+with its own title, description, text and sample tasks from the real
+generators, refreshes the topic links on the home page and rewrites
+`sitemap.xml`. Run it after adding or renaming a generator:
+
+```
+node tools/build-pages.js
+```
+
 ## Adding a task generator
 
 Register it and it appears in the studio for the grades you list:

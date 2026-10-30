@@ -23,10 +23,9 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
-    # everything that is not a real file falls back to the single page app
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ index.html [L]
+    # No catch-all to index.html: the app routes with "#/…", so a path that is
+    # not a real file is a genuine 404. Answering 200 with the home page made
+    # search engines see endless duplicate copies of it ("soft 404").
 </IfModule>
 
 <IfModule mod_mime.c>

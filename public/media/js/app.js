@@ -475,10 +475,17 @@
   }
 
   /* ----------------------------- Language -------------------------------- */
+  /** The English view lives at ?lang=en, so it must not claim the Bulgarian URL as canonical. */
+  function setCanonical(lang) {
+    var link = $('link[rel="canonical"]');
+    if (link) link.href = location.origin + "/" + (lang === "en" ? "?lang=en" : "");
+  }
+
   function setLang(lang) {
     Z.i18n.lang = lang;
     localStorage.setItem("z4_lang", lang);
     document.documentElement.setAttribute("lang", lang);
+    setCanonical(lang);
     Z.i18n.apply();
     $$("#langsw button").forEach(function (b) { b.classList.toggle("on", b.getAttribute("data-l") === lang); });
     renderHomeGrades();
@@ -492,6 +499,7 @@
   function init() {
     Z.i18n.lang = Z.i18n.detect();
     document.documentElement.setAttribute("lang", Z.i18n.lang);
+    setCanonical(Z.i18n.lang);
     Z.Store.load();
     Z.i18n.apply();
 

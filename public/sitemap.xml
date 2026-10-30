@@ -1,11 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  <url>
-    <loc>https://zada4ko.com/</loc>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://zada4ko.com/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://zada4ko.com/?lang=en"/>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://zada4ko.com/</loc><lastmod>2026-10-30</lastmod><priority>1.0</priority></url>
+  <url><loc>https://zada4ko.com/zadachi-za-predouchilishna/</loc><lastmod>2026-10-30</lastmod><priority>0.9</priority></url>
+  <url><loc>https://zada4ko.com/zadachi-po-matematika-1-klas/</loc><lastmod>2026-10-30</lastmod><priority>0.9</priority></url>
+  <url><loc>https://zada4ko.com/zadachi-po-matematika-2-klas/</loc><lastmod>2026-10-30</lastmod><priority>0.9</priority></url>
+  <url><loc>https://zada4ko.com/zadachi-po-matematika-3-klas/</loc><lastmod>2026-10-30</lastmod><priority>0.9</priority></url>
+  <url><loc>https://zada4ko.com/zadachi-po-matematika-4-klas/</loc><lastmod>2026-10-30</lastmod><priority>0.9</priority></url>
+  <url><loc>https://zada4ko.com/zadachi-po-matematika-5-klas/</loc><lastmod>2026-10-30</lastmod><priority>0.9</priority></url>
+  <url><loc>https://zada4ko.com/zadachi-po-matematika-6-klas/</loc><lastmod>2026-10-30</lastmod><priority>0.9</priority></url>
+  <url><loc>https://zada4ko.com/zadachi-po-matematika-7-klas/</loc><lastmod>2026-10-30</lastmod><priority>0.9</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/broene/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/sabirane-i-izvazhdane/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/smyatane-v-stalbche/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/tablitsa-za-umnozhenie/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/umnozhenie-i-delenie-na-mnogotsifreni/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/red-na-deystviyata/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/nameri-neizvestnoto/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/sravnyavane/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/chislovi-reditsi/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/zakraglyavane/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/razredni-edinitsi/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/tekstovi-zadachi/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/chasovnik/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/merni-edinitsi/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/pari/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/geometriya/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/obiknoveni-drobi/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/desetichni-drobi/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/protsenti/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/delimost-i-deliteli/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/stepeni-i-koreni/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/otritsatelni-chisla/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/uravneniya/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/izrazi-i-formuli/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/pitagorova-teorema/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/rimski-tsifri/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
+  <url><loc>https://zada4ko.com/zadachi/zanimatelni-zadachi/</loc><lastmod>2026-10-30</lastmod><priority>0.7</priority></url>
 </urlset>

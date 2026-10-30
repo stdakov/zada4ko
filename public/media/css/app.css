@@ -499,3 +499,36 @@
 .modal-hd { padding: 16px 20px; border-bottom: 3px solid var(--line); display: flex; align-items: center; justify-content: space-between; }
 .modal-hd h3 { margin: 0; }
 .modal-bd { padding: 20px; }
+
+/* ---------------- Landing pages (/zadachi-…, built by tools/build-pages.js) ---------------- */
+@media (max-width: 900px) { .topnav.lp-nav { display: flex; } .lp-nav a:not([href="/#/studio"]) { display: none; } }
+@media (max-width: 600px) { .lp-nav a { white-space: nowrap; padding-left: 0.6em; padding-right: 0.6em; } }
+.lp, .lp > * { min-width: 0; }
+.lp h1, .lp h2 { overflow-wrap: anywhere; hyphens: auto; }
+.lp { padding-top: 22px; padding-bottom: 20px; }
+.lp-crumbs { font-size: 0.85rem; font-weight: 700; color: var(--ink-3); margin-bottom: 14px; }
+.lp-crumbs a { color: var(--ink-2); }
+.lp h1 { margin-bottom: 0.35em; }
+.lp .sec { padding: 30px 0 6px; }
+.lp-lead { max-width: none; }
+.lp-text { color: var(--ink-2); font-weight: 600; }
+.lp-topic { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.lp-topic h3 { margin: 0; }
+.lp-topic h3 a { color: inherit; }
+.lp-topic p { margin: 0 0 6px; color: var(--ink-2); flex: 1 1 auto; }
+.lp-ico { font-size: 1.8rem; line-height: 1; }
+.lp-tasks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(230px, 100%), 1fr)); gap: 18px 26px; }
+.lp-tasks li { display: flex; gap: 8px; align-items: flex-start; min-width: 0; }
+.lp-tasks li:has(.sh-text) { grid-column: 1 / -1; }
+.lp-no { font-weight: 800; color: var(--ink-3); min-width: 1.6em; }
+.lp-q { flex: 1 1 auto; min-width: 0; }
+.lp-key { margin-top: 20px; font-weight: 700; }
+.lp-key summary, .lp-faq summary { cursor: pointer; font-weight: 800; }
+.lp-key ol { list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.lp-faq { border: 3px solid var(--line); border-radius: var(--r-m); background: var(--paper); padding: 14px 18px; margin-bottom: 12px; }
+.lp-faq p { margin: 10px 0 0; color: var(--ink-2); }
+.lp-list { padding-left: 1.2em; line-height: 1.9; font-weight: 600; }
+.lp-other .chip { margin: 0 4px 8px 0; text-decoration: none; white-space: normal; max-width: 100%; }
+.lp-cols { columns: 2; column-gap: 18px; }
+.home-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.home-links .chip { text-decoration: none; }

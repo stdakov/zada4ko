@@ -192,6 +192,7 @@ window.Z.VERSION = "9";
       stat3: "комбинации",
       /* grades */
       gradesTitle: "От кой клас е детето?",
+      topicsTitle: "Задачи по класове и теми",
       gradesLead: "Всеки клас отваря темите по учебна програма — от броене на ябълки до Питагорова теорема.",
       grade0: "Предучилищна",
       grade1: "1. клас", grade2: "2. клас", grade3: "3. клас", grade4: "4. клас",
@@ -322,6 +323,7 @@ window.Z.VERSION = "9";
       heroCta2: "Quick start: Grade 1",
       stat1: "task types", stat2: "grades", stat3: "combinations",
       gradesTitle: "Which grade is the child in?",
+      topicsTitle: "Tasks by grade and topic",
       gradesLead: "Each grade unlocks curriculum topics — from counting apples to the Pythagorean theorem.",
       grade0: "Preschool",
       grade1: "Grade 1", grade2: "Grade 2", grade3: "Grade 3", grade4: "Grade 4",
@@ -428,8 +430,10 @@ window.Z.VERSION = "9";
       if (m && dict[m[1].toLowerCase()]) return m[1].toLowerCase();
       var saved = localStorage.getItem("z4_lang");
       if (saved && dict[saved]) return saved;
-      var b = (navigator.language || "bg").slice(0, 2).toLowerCase();
-      return dict[b] ? b : "bg";
+      // No guessing from navigator.language: Googlebot renders pages with an
+      // English browser, so guessing meant Google indexed the Bulgarian home
+      // page in English. English stays one click (or ?lang=en) away.
+      return "bg";
     }
   };
 
