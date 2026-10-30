@@ -31,7 +31,7 @@ var sandbox = {
 };
 sandbox.window = sandbox;
 vm.createContext(sandbox);
-["core", "gen/registry", "gen/arith", "gen/word", "gen/measure", "gen/advanced", "sheet"].forEach(function (f) {
+["core", "i18n/bg", "i18n/en", "gen/registry", "gen/arith", "gen/word", "gen/measure", "gen/advanced", "sheet"].forEach(function (f) {
   vm.runInContext(fs.readFileSync(path.join(ROOT, "media/js", f + ".js"), "utf8"), sandbox, { filename: f + ".js" });
 });
 var Z = sandbox.Z;
@@ -93,7 +93,8 @@ function slugify(s) {
 }
 
 var TOPICS = Z.reg.all().map(function (gen) {
-  return { gen: gen, slug: slugify(gen.name.bg), name: gen.name.bg, desc: gen.desc.bg };
+  var name = Z.i18n.gen(gen, "name");
+  return { gen: gen, slug: slugify(name), name: name, desc: Z.i18n.gen(gen, "desc") };
 });
 function topicUrl(t) { return "/zadachi/" + t.slug + "/"; }
 function gradeUrl(G) { return "/" + G.slug + "/"; }
@@ -323,7 +324,7 @@ function topicPage(t) {
     trail: [["Начало", "/"], [t.name, topicUrl(t)]],
     body:
       "<h1>" + gen.icon + " " + esc(t.name) + " — задачи за " + esc(span) + "</h1>\n" +
-      '<p class="hero-lead lp-lead">' + t.desc + ". " + esc(plain(Z.i18n.pick(gen.instr))) + "</p>\n" +
+      '<p class="hero-lead lp-lead">' + t.desc + ". " + esc(plain(Z.i18n.gen(gen, "instr"))) + "</p>\n" +
       '<p class="lp-text">Задачите по темата „' + esc(t.name) + "“ се генерират наново при всяко кликване и следват " +
       "учебната програма — числата и трудността се нагаждат според класа. Реши ги онлайн с моментална проверка или " +
       "принтирай готов A4 лист с ключ с отговорите.</p>\n" +

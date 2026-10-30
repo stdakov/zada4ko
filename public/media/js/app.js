@@ -15,14 +15,14 @@
   };
 
   var GRADES = [
-    { g: 0, emoji: "🧸", age: "5–6",   short: { bg: "ПГ", en: "Pre" } },
-    { g: 1, emoji: "🍎", age: "6–7",   short: { bg: "1.", en: "G1" } },
-    { g: 2, emoji: "🚀", age: "7–8",   short: { bg: "2.", en: "G2" } },
-    { g: 3, emoji: "🎨", age: "8–9",   short: { bg: "3.", en: "G3" } },
-    { g: 4, emoji: "🔭", age: "9–10",  short: { bg: "4.", en: "G4" } },
-    { g: 5, emoji: "🧪", age: "10–11", short: { bg: "5.", en: "G5" } },
-    { g: 6, emoji: "🤖", age: "11–12", short: { bg: "6.", en: "G6" } },
-    { g: 7, emoji: "🏅", age: "12–13", short: { bg: "7.", en: "G7" } }
+    { g: 0, emoji: "🧸", age: "5–6" },
+    { g: 1, emoji: "🍎", age: "6–7" },
+    { g: 2, emoji: "🚀", age: "7–8" },
+    { g: 3, emoji: "🎨", age: "8–9" },
+    { g: 4, emoji: "🔭", age: "9–10" },
+    { g: 5, emoji: "🧪", age: "10–11" },
+    { g: 6, emoji: "🤖", age: "11–12" },
+    { g: 7, emoji: "🏅", age: "12–13" }
   ];
   App.GRADES = GRADES;
 
@@ -88,9 +88,7 @@
     $("#topnav").classList.remove("open");
     if (r.view !== "studio") window.scrollTo({ top: 0, behavior: "instant" in window ? "auto" : "auto" });
     document.title = (r.view === "home" ? "" : t("nav" + r.view.charAt(0).toUpperCase() + r.view.slice(1)) + " · ") +
-      (Z.i18n.lang === "bg"
-        ? "zada4ko — задачи по математика за деца"
-        : "zada4ko — maths tasks for kids");
+      t("docTitle");
   }
 
   /* --------------------------- Config helpers ---------------------------- */
@@ -157,7 +155,7 @@
           refresh();
         }
       }));
-      box.appendChild(el("label", { for: id, text: Z.i18n.pick(g.short), title: t("grade" + g.g) }));
+      box.appendChild(el("label", { for: id, text: t("gshort" + g.g), title: t("grade" + g.g) }));
     });
   }
 
@@ -175,12 +173,12 @@
       var row = el("div", { class: "topic" + (on ? " on" : ""), "data-id": gen.id });
       row.appendChild(el("span", { class: "t-ico", text: gen.icon }));
       row.appendChild(el("span", { class: "t-txt" }, [
-        el("span", { class: "t-name", text: Z.i18n.pick(gen.name) }),
-        el("span", { class: "t-desc", html: Z.i18n.pick(gen.desc) })
+        el("span", { class: "t-name", text: Z.i18n.gen(gen, "name") }),
+        el("span", { class: "t-desc", html: Z.i18n.gen(gen, "desc") })
       ]));
       var cnt = el("input", {
         class: "t-cnt", type: "number", min: "1", max: "40", value: String(on ? topicCount(gen.id) : defaultCount(gen)),
-        "aria-label": Z.i18n.pick(gen.name) + " — " + t("countLabel"),
+        "aria-label": Z.i18n.gen(gen, "name") + " — " + t("countLabel"),
         onclick: function (e) { e.stopPropagation(); },
         onchange: function (e) {
           e.stopPropagation();
@@ -449,7 +447,7 @@
     Z.Store.badges.forEach(function (b) {
       var got = d.badges.indexOf(b.id) !== -1;
       bb.appendChild(el("div", { class: "badge-i" + (got ? "" : " locked") }, [
-        el("span", { text: b.icon }), el("span", { text: Z.i18n.pick(b.name) })
+        el("span", { text: b.icon }), el("span", { text: Z.i18n.badge(b.id) })
       ]));
     });
 
@@ -466,7 +464,7 @@
         var pct = Math.round((s.ok / s.n) * 100);
         tb.appendChild(el("div", { class: "row center", style: "gap:10px;margin-bottom:10px" }, [
           el("span", { style: "font-size:1.3rem;width:1.6em", text: gen.icon }),
-          el("span", { style: "flex:0 0 34%;font-weight:800;font-size:.9rem", text: Z.i18n.pick(gen.name) }),
+          el("span", { style: "flex:0 0 34%;font-weight:800;font-size:.9rem", text: Z.i18n.gen(gen, "name") }),
           el("span", { class: "progressbar grow" }, [el("i", { style: "width:" + pct + "%" })]),
           el("span", { class: "tiny mono", style: "font-weight:800;width:5.5em;text-align:right", text: s.ok + "/" + s.n + " · " + pct + "%" })
         ]));
@@ -478,35 +476,76 @@
   /** The English view lives at ?lang=en, so it must not claim the Bulgarian URL as canonical. */
   function setCanonical(lang) {
     var link = $('link[rel="canonical"]');
-    if (link) link.href = location.origin + "/" + (lang === "en" ? "?lang=en" : "");
+    if (link) link.href = location.origin + "/" + (lang === "bg" ? "" : "?lang=" + lang);
   }
 
+  /** Switch language; other than bg/en the words are fetched first. */
   function setLang(lang) {
-    Z.i18n.lang = lang;
-    localStorage.setItem("z4_lang", lang);
+    Z.i18n.load(lang).then(function () {
+      Z.i18n.lang = lang;
+      try { localStorage.setItem("z4_lang", lang); } catch (e) { }
+      applyLang();
+      renderHomeGrades();
+      if ($("#panelTopics")) fillPanel();
+      App.dirty = true;
+      route();
+      if (App.view === "studio") renderStudio();
+    }, function () { Z.toast("⚠️ " + lang); });
+  }
+
+  function applyLang() {
+    var lang = Z.i18n.lang;
     document.documentElement.setAttribute("lang", lang);
     setCanonical(lang);
     Z.i18n.apply();
-    $$("#langsw button").forEach(function (b) { b.classList.toggle("on", b.getAttribute("data-l") === lang); });
-    renderHomeGrades();
-    if ($("#panelTopics")) fillPanel();
-    App.dirty = true;
-    route();
-    if (App.view === "studio") renderStudio();
+    var sel = $("#langSel");
+    if (sel) sel.value = lang;
+    var hint = $("#langHint");
+    if (hint) hint.remove();
+  }
+
+  function renderLangPicker() {
+    var sel = $("#langSel");
+    Z.i18n.LANGS.forEach(function (l) {
+      sel.appendChild(el("option", { value: l.code, text: l.flag + " " + l.name }));
+    });
+    sel.value = Z.i18n.lang;
+    sel.addEventListener("change", function () { setLang(sel.value); });
+  }
+
+  /**
+   * The page always opens in Bulgarian (see i18n.detect), so a first-time
+   * visitor whose browser speaks another supported language gets a one-click
+   * offer instead of an automatic switch.
+   */
+  function offerLang() {
+    var code = Z.i18n.suggest();
+    var asked = false;
+    try { asked = !!localStorage.getItem("z4_lang") || !!localStorage.getItem("z4_lang_hint"); } catch (e) { }
+    if (!code || asked || /[?&]lang=/.test(location.search)) return;
+    var l = Z.i18n.LANGS.filter(function (x) { return x.code === code; })[0];
+    var close = function () { bar.remove(); try { localStorage.setItem("z4_lang_hint", "1"); } catch (e) { } };
+    var bar = el("div", { class: "lang-hint noprint", id: "langHint" }, [
+      el("button", { class: "btn btn-sm btn-grape", type: "button", text: l.flag + " " + l.name,
+        onclick: function () { close(); setLang(code); } }),
+      el("button", { class: "btn btn-sm btn-ghost", type: "button", "aria-label": t("close"), text: "✕", onclick: close })
+    ]);
+    document.body.appendChild(bar);
   }
 
   /* -------------------------------- Init --------------------------------- */
   function init() {
-    Z.i18n.lang = Z.i18n.detect();
-    document.documentElement.setAttribute("lang", Z.i18n.lang);
-    setCanonical(Z.i18n.lang);
-    Z.Store.load();
-    Z.i18n.apply();
+    var want = Z.i18n.detect();
+    // bg and en ship with the page; any other language is fetched before the first render
+    Z.i18n.load(want).then(function () { start(want); }, function () { start("bg"); });
+  }
 
-    $$("#langsw button").forEach(function (b) {
-      b.classList.toggle("on", b.getAttribute("data-l") === Z.i18n.lang);
-      b.addEventListener("click", function () { setLang(b.getAttribute("data-l")); });
-    });
+  function start(lang) {
+    Z.i18n.lang = lang;
+    Z.Store.load();
+    applyLang();
+    renderLangPicker();
+    offerLang();
 
     $("#burger").addEventListener("click", function () { $("#topnav").classList.toggle("open"); });
 

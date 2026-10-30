@@ -22,9 +22,6 @@
     icon: "🍎",
     grades: [0, 1],
     cols: 2,
-    name: { bg: "Броене", en: "Counting" },
-    desc: { bg: "Преброй предметите и запиши числото", en: "Count the objects and write the number" },
-    instr: { bg: "Преброй и запиши колко са.", en: "Count and write how many." },
     make: function (rng, ctx) {
       var thing = Z.pickThing(rng, rng.bool(0.5) ? "things" : "animals");
       var max = ctx.grade === 0 ? (ctx.diff === 0 ? 6 : 10) : (ctx.diff === 2 ? 20 : 14);
@@ -32,13 +29,13 @@
       var n = rng.int(ctx.max ? 1 : 2, max);
       var row = "";
       for (var i = 0; i < n; i++) {
-        row += '<span style="font-size:1.5em;letter-spacing:2px">' + thing[2] + "</span>";
+        row += '<span style="font-size:1.5em;letter-spacing:2px">' + thing.e + "</span>";
         if ((i + 1) % 10 === 0) row += "<br>";
       }
       return {
         q: '<div style="line-height:1.7;max-width:22em">' + row + "</div>",
         a: String(n), kind: "num", layout: "block", eq: false,
-        sol: { bg: "Броим едно по едно: " + n + ".", en: "Count one by one: " + n + "." }[Z.i18n.lang]
+        sol: Z.m("arith.countSol", { n: n })
       };
     }
   });
@@ -49,8 +46,6 @@
     icon: "➕",
     grades: [0, 1, 2, 3, 4],
     cols: 3,
-    name: { bg: "Събиране и изваждане", en: "Addition & subtraction" },
-    desc: { bg: "Основните действия в границите на класа", en: "The core operations within the grade range" },
     make: function (rng, ctx) {
       var max = range(ctx.grade, ctx.diff, ctx.max);
 
@@ -103,9 +98,6 @@
     icon: "🧮",
     grades: [2, 3, 4, 5],
     cols: 4,
-    name: { bg: "Смятане в стълбче", en: "Column arithmetic" },
-    desc: { bg: "Записване едно под друго — за печат", en: "Written one under the other — great on paper" },
-    instr: { bg: "Пресметни в стълбче.", en: "Calculate in columns." },
     make: function (rng, ctx) {
       var digits = { 2: 2, 3: 3, 4: 4, 5: 4 }[ctx.grade] || 3;
       if (ctx.diff === 0) digits = Math.max(2, digits - 1);
@@ -146,8 +138,6 @@
     icon: "✖️",
     grades: [2, 3, 4],
     cols: 4,
-    name: { bg: "Таблица за умножение", en: "Times tables" },
-    desc: { bg: "Умножение и деление до 100", en: "Multiplication and division up to 100" },
     make: function (rng, ctx) {
       var top = ctx.grade === 2 ? (ctx.diff === 0 ? 5 : 7) : 10;
       if (ctx.diff === 2) top = 12;
@@ -163,8 +153,6 @@
     icon: "🔢",
     grades: [3, 4, 5],
     cols: 3,
-    name: { bg: "Умножение и деление на многоцифрени", en: "Multi-digit × and ÷" },
-    desc: { bg: "Извънтаблично смятане, деление с остатък", en: "Beyond the tables, division with remainder" },
     make: function (rng, ctx) {
       var big = ctx.grade === 3 ? rng.int(11, 99) : rng.int(101, 999);
       if (ctx.diff === 2) big = rng.int(1001, 9999);
@@ -182,11 +170,11 @@
       var dividend = q * d + r;
       return {
         q: dividend + " : " + d,
-        a: q + " ост. " + r,
+        a: Z.m("arith.remAnswer", { q: q, r: r }),
         alts: [q + "ост" + r, q + " " + r, q + "r" + r, q + " остатък " + r],
         kind: "text", layout: "expr", eq: true,
-        hintTxt: { bg: "запиши като „частно ост. остатък“", en: "write as “quotient r remainder”" }[Z.i18n.lang],
-        sol: dividend + " : " + d + " = " + q + " (" + { bg: "остатък", en: "remainder" }[Z.i18n.lang] + " " + r + ")"
+        hintTxt: Z.m("arith.remHint"),
+        sol: Z.m("arith.remSol", { dividend: dividend, d: d, q: q, r: r })
       };
     }
   });
@@ -197,9 +185,6 @@
     icon: "🧩",
     grades: [3, 4, 5, 6],
     cols: 2,
-    name: { bg: "Ред на действията", en: "Order of operations" },
-    desc: { bg: "Изрази със скоби — какво се смята първо", en: "Expressions with brackets — what comes first" },
-    instr: { bg: "Пресметни, като спазваш реда на действията.", en: "Calculate, respecting the order of operations." },
     make: function (rng, ctx) {
       var s = ctx.grade <= 3 ? 10 : (ctx.grade === 4 ? 20 : 30);
       if (ctx.diff === 2) s = s * 2;
@@ -228,9 +213,6 @@
     icon: "❓",
     grades: [1, 2, 3, 4, 5],
     cols: 3,
-    name: { bg: "Намери неизвестното", en: "Find the missing number" },
-    desc: { bg: "□ + 7 = 15 — кое число се крие", en: "□ + 7 = 15 — which number is hiding" },
-    instr: { bg: "Намери числото, което липсва.", en: "Find the missing number." },
     make: function (rng, ctx) {
       var max = range(ctx.grade, ctx.diff, ctx.max);
       var box = '<span class="sh-box">?</span>';
@@ -264,9 +246,6 @@
     icon: "⚖️",
     grades: [0, 1, 2, 3, 4, 5],
     cols: 3,
-    name: { bg: "Сравняване", en: "Comparing" },
-    desc: { bg: "Постави &lt;, &gt; или =", en: "Put &lt;, &gt; or =" },
-    instr: { bg: "Постави знак &lt;, &gt; или = .", en: "Insert &lt;, &gt; or = ." },
     make: function (rng, ctx) {
       var max = range(ctx.grade, ctx.diff, ctx.max);
       var left, right, lv, rv;
@@ -300,9 +279,6 @@
     icon: "🪜",
     grades: [1, 2, 3, 4, 5, 6],
     cols: 2,
-    name: { bg: "Числови редици", en: "Number sequences" },
-    desc: { bg: "Открий правилото и продължи", en: "Spot the rule and continue" },
-    instr: { bg: "Открий правилото и запиши липсващото число.", en: "Find the rule and write the missing number." },
     make: function (rng, ctx) {
       var start, step, kind, seq = [], i;
       var pool = ctx.grade <= 2 ? ["add", "add", "sub"] :
@@ -344,18 +320,15 @@
       var shown = seq.map(function (v, idx) {
         return idx === hideAt ? '<span class="sh-box">?</span>' : v;
       });
-      var ruleTxt = {
-        add: { bg: "всяко следващо е с " + step + " повече", en: "each next is " + step + " more" },
-        sub: { bg: "всяко следващо е с " + step + " по-малко", en: "each next is " + step + " less" },
-        mul: { bg: "всяко следващо е " + step + " пъти по-голямо", en: "each next is " + step + " times bigger" },
-        square: { bg: "квадратите на числата", en: "the squares of the numbers" },
-        fib: { bg: "всяко е сбор от предните две", en: "each is the sum of the two before" }
+      var ruleKey = {
+        add: "arith.seqRuleAdd", sub: "arith.seqRuleSub", mul: "arith.seqRuleMul",
+        square: "arith.seqRuleSquare", fib: "arith.seqRuleFib"
       }[kind];
 
       return {
         q: shown.join(", ") + ", …",
         a: String(answer), kind: "num", layout: "expr", eq: false,
-        sol: Z.i18n.pick(ruleTxt) + " → " + answer
+        sol: Z.m(ruleKey, { step: step }) + " → " + answer
       };
     }
   });
@@ -366,24 +339,13 @@
     icon: "🎯",
     grades: [3, 4, 5],
     cols: 2,
-    name: { bg: "Закръгляване", en: "Rounding" },
-    desc: { bg: "До десетици, стотици, хиляди", en: "To tens, hundreds, thousands" },
-    instr: { bg: "Закръгли числото.", en: "Round the number." },
     make: function (rng, ctx) {
       var opts = ctx.grade === 3 ? [10, 100] : [10, 100, 1000];
       if (ctx.diff === 2) opts.push(10000);
       var to = rng.pick(opts);
       var n = rng.int(to * 2, to * (ctx.grade >= 4 ? 90 : 9)) + rng.int(1, to - 1);
       var ans = Math.round(n / to) * to;
-      var word = {
-        10: { bg: "десетици", en: "tens" },
-        100: { bg: "стотици", en: "hundreds" },
-        1000: { bg: "хиляди", en: "thousands" },
-        10000: { bg: "десетки хиляди", en: "ten thousands" }
-      }[to];
-      var lead = Z.i18n.lang === "bg"
-        ? "Закръгли " + n + " до " + Z.i18n.pick(word)
-        : "Round " + n + " to the nearest " + Z.i18n.pick(word);
+      var lead = Z.m("arith.roundQ", { n: n, unit: Z.m("arith.roundUnit", { to: to }) });
       return { q: lead, a: String(ans), kind: "num", layout: "expr", eq: true, sol: n + " ≈ " + ans };
     }
   });
@@ -394,26 +356,17 @@
     icon: "🏛️",
     grades: [2, 3, 4],
     cols: 2,
-    name: { bg: "Разредни единици", en: "Place value" },
-    desc: { bg: "Единици, десетици, стотици, хиляди", en: "Units, tens, hundreds, thousands" },
-    instr: { bg: "Отговори на въпроса за числото.", en: "Answer the question about the number." },
     make: function (rng, ctx) {
       var digits = ctx.grade === 2 ? 2 : (ctx.grade === 3 ? 3 : (ctx.diff === 2 ? 6 : 5));
       var n = rng.int(Math.pow(10, digits - 1), Math.pow(10, digits) - 1);
       var s = String(n);
-      var names = {
-        bg: ["единиците", "десетиците", "стотиците", "хилядите", "десетохилядните", "стохилядните"],
-        en: ["units", "tens", "hundreds", "thousands", "ten thousands", "hundred thousands"]
-      }[Z.i18n.lang];
       var mode = rng.int(0, 2);
 
       if (mode === 0) {
         var pos = rng.int(0, digits - 1);
         var dig = +s[s.length - 1 - pos];
         return {
-          q: (Z.i18n.lang === "bg"
-              ? "Коя цифра стои в реда на " + names[pos] + " в числото " + n + "?"
-              : "Which digit is in the " + names[pos] + " place of " + n + "?"),
+          q: Z.m("arith.placeDigitQ", { n: n, place: Z.m("arith.placeName", { pos: pos }) }),
           a: String(dig), kind: "num", layout: "expr", eq: true
         };
       }
@@ -424,7 +377,7 @@
           if (v) parts.push(v);
         }
         return {
-          q: (Z.i18n.lang === "bg" ? "Запиши като сбор от разредни единици: " : "Write as a sum of place values: ") + n,
+          q: Z.m("arith.placeSumQ", { n: n }),
           a: parts.join(" + "),
           alts: [parts.join("+")],
           kind: "text", layout: "expr", eq: true,
@@ -434,7 +387,7 @@
       var m = rng.pick([10, 100]);
       var big = n * m;
       return {
-        q: (Z.i18n.lang === "bg" ? "Колко пъти " + m + " се съдържат в " + big + "?" : "How many times does " + m + " fit into " + big + "?"),
+        q: Z.m("arith.placeFitQ", { m: m, big: big }),
         a: String(n), kind: "num", layout: "expr", eq: true, sol: big + " : " + m + " = " + n
       };
     }

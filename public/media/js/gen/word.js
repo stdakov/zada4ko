@@ -7,14 +7,13 @@
 (function (Z) {
   var reg = Z.reg, T = Z.T, H = Z.H;
 
-  function L(bg, en) { return Z.i18n.lang === "en" ? en : bg; }
-  function cur() { return "€"; }
-  /** Bulgarian writes the amount then the symbol: "12,50 €". English: "€12.50". */
-  function money(v) {
-    var s = (Math.round(v * 100) / 100).toFixed(2).replace(/\.00$/, "");
-    return L(s.replace(".", ",") + " €", "€" + s);
-  }
+  /* Texts live in i18n/parts/word.<lang>.js. Money goes into messages already
+     formatted with Z.money(); nouns go in whole (Z.qty / .sg / .pl there). */
   function ansMoney(v) { return String(Math.round(v * 100) / 100).replace(/\.0+$/, ""); }
+
+  /* Animals for the "how many legs" problem: [noun id, emoji, legs]. */
+  var LEGS = [["chick", "🐥", 2], ["cat", "🐱", 4], ["dog", "🐶", 4], ["bunny", "🐰", 4],
+              ["ant", "🐜", 6], ["bee", "🐝", 6], ["butterfly", "🦋", 6]];
 
   /* Each template: { g:[grades], f:function(rng,ctx) -> task } */
   var TPL = [
@@ -26,10 +25,7 @@
         var a = rng.int(2, max), b = rng.int(2, max);
         if (ctx.max) { if (ctx.max < 4) return null; a = rng.int(2, ctx.max - 2); b = rng.int(2, ctx.max - a); }
         return T.word(
-          L(k[0] + " има " + Z.qty(a, th) + ", а " + k[1] + " има " + Z.qty(b, th) +
-            ". Колко " + th[1] + " имат двамата заедно?",
-            k[0] + " has " + a + " " + th[1] + " and " + k[1] + " has " + b + " " + th[1] +
-            ". How many " + th[1] + " do they have together?"),
+          Z.m("word.together", { k0: k[0], k1: k[1], a: a, b: b, th: th }),
           a + b, { sol: a + " + " + b + " = " + (a + b) }
         );
       }
@@ -41,8 +37,7 @@
         var a = rng.int(5, max), b = rng.int(1, a - 1);
         if (ctx.max) { a = rng.int(2, ctx.max); b = rng.int(1, a - 1); }
         return T.word(
-          L(k + " има " + Z.qty(a, th) + " и подарява " + b + " на приятел. Колко " + th[1] + " му остават?",
-            k + " has " + a + " " + th[1] + " and gives " + b + " to a friend. How many " + th[1] + " are left?"),
+          Z.m("word.giveAway", { k: k, a: a, b: b, th: th }),
           a - b, { sol: a + " − " + b + " = " + (a - b) }
         );
       }
@@ -59,21 +54,21 @@
           d = rng.int(1, ctx.max - 2 * a);
         }
         return T.word(
-          L(k[0] + " има " + Z.qty(a, th) + ". " + k[1] + " има с " + d + " повече. Колко " + th[1] + " имат общо?",
-            k[0] + " has " + a + " " + th[1] + ". " + k[1] + " has " + d + " more. How many do they have in total?"),
+          Z.m("word.moreThan", { k0: k[0], k1: k[1], a: a, d: d, th: th }),
           a + (a + d), { work: 2, sol: (a + d) + " + " + a + " = " + (a + a + d) }
         );
       }
     },
     {
       g: [1, 2, 3], f: function (rng, ctx) {
-        var th = Z.pickThing(rng, "animals");
-        var legs = rng.pick([2, 4]);
+        // the leg count belongs to the animal — no two-legged cats; fish sit this one out
+        var animal = rng.pick(LEGS);
+        var th = Z.noun(animal[0], animal[1]);
+        var legs = animal[2];
         var n = rng.int(3, ctx.grade === 1 ? 6 : 12);
         if (ctx.max) { if (ctx.max < 2 * legs) return null; n = rng.int(1, Math.floor(ctx.max / legs)); }
         return T.word(
-          L("В двора има " + Z.qty(n, th) + ". Всяко животно има по " + legs + " крака. Колко крака има общо?",
-            "There are " + n + " " + th[1] + " in the yard. Each has " + legs + " legs. How many legs in total?"),
+          Z.m("word.animalLegs", { n: n, legs: legs, th: th }),
           n * legs, { sol: n + " · " + legs + " = " + n * legs }
         );
       }
@@ -87,9 +82,8 @@
         var price = rng.int(2, Math.max(3, cap));
         var n = rng.int(2, 9);
         return T.word(
-          L(k + " купува " + Z.qty(n, th) + " по " + money(price) + ". Колко пари плаща?",
-            k + " buys " + n + " " + th[1] + " at " + money(price) + " each. How much does " + k + " pay?"),
-          price * n, { unit: cur(), sol: n + " · " + price + " = " + (n * price) + " " + cur() }
+          Z.m("word.buyMany", { k: k, n: n, th: th, price: Z.money(price) }),
+          price * n, { unit: Z.cur(), sol: n + " · " + price + " = " + (n * price) + " " + Z.cur() }
         );
       }
     },
@@ -99,9 +93,8 @@
         var price = rng.int(2, Math.max(3, Math.min(th[3] || 12, 12)));
         var paid = price + rng.int(2, 15);
         return T.word(
-          L(k + " плаща " + money(paid) + " за " + th[0] + " на цена " + money(price) + ". Колко ресто получава?",
-            k + " pays " + money(paid) + " for a " + th[0] + " that costs " + money(price) + ". How much change is returned?"),
-          paid - price, { unit: cur(), sol: paid + " − " + price + " = " + (paid - price) + " " + cur() }
+          Z.m("word.change", { k: k, th: th, paid: Z.money(paid), price: Z.money(price) }),
+          paid - price, { unit: Z.cur(), sol: paid + " − " + price + " = " + (paid - price) + " " + Z.cur() }
         );
       }
     },
@@ -110,12 +103,9 @@
         var k = Z.pickKid(rng);
         var week = rng.int(2, 8), weeks = rng.int(4, 12), target = week * weeks + rng.int(5, 30);
         return T.word(
-          L(k + " спестява по " + money(week) + " всяка седмица. След " + weeks + " седмици иска да си купи скейтборд за " +
-            money(target) + ". Колко пари още ще му трябват?",
-            k + " saves " + money(week) + " every week. After " + weeks + " weeks " + k + " wants a skateboard for " +
-            money(target) + ". How much more money is needed?"),
+          Z.m("word.saveUp", { k: k, week: Z.money(week), weeks: weeks, target: Z.money(target) }),
           target - week * weeks,
-          { unit: cur(), work: 3, sol: week + " · " + weeks + " = " + week * weeks + "; " + target + " − " + week * weeks + " = " + (target - week * weeks) }
+          { unit: Z.cur(), work: 3, sol: week + " · " + weeks + " = " + week * weeks + "; " + target + " − " + week * weeks + " = " + (target - week * weeks) }
         );
       }
     },
@@ -125,8 +115,7 @@
       g: [2, 3, 4], f: function (rng, ctx) {
         var th = Z.pickThing(rng), n = rng.int(2, 8), per = rng.int(2, ctx.grade === 2 ? 6 : 12);
         return T.word(
-          L("В " + n + " кутии има по " + Z.qty(per, th) + ". Колко " + th[1] + " има общо?",
-            "There are " + per + " " + th[1] + " in each of " + n + " boxes. How many " + th[1] + " in total?"),
+          Z.m("word.boxesTotal", { n: n, per: per, th: th }),
           n * per, { sol: n + " · " + per + " = " + n * per }
         );
       }
@@ -136,8 +125,7 @@
         var th = Z.pickThing(rng), kids = rng.int(2, 8), per = rng.int(2, 12);
         var total = kids * per;
         return T.word(
-          L(total + " " + th[1] + " се разделят поравно между " + kids + " деца. По колко получава всяко дете?",
-            total + " " + th[1] + " are shared equally between " + kids + " children. How many does each child get?"),
+          Z.m("word.shareEqually", { total: total, kids: kids, th: th }),
           per, { sol: total + " : " + kids + " = " + per }
         );
       }
@@ -147,15 +135,12 @@
         var th = Z.pickThing(rng), per = rng.int(3, 9), boxes = rng.int(4, 15), rest = rng.int(1, per - 1);
         var total = per * boxes + rest;
         return T.word(
-          L("Имаме " + Z.qty(total, th) + ". В една кутия влизат по " + per + ". Колко кутии ще напълним докрай и колко " +
-            th[1] + " ще останат? (запиши като „кутии ост. брой“)",
-            "We have " + total + " " + th[1] + ". A box holds " + per + ". How many full boxes and how many " +
-            th[1] + " are left? (write as “boxes r left”)"),
-          boxes + L(" ост. ", " r ") + rest,
+          Z.m("word.boxesRest", { total: total, per: per, th: th }),
+          Z.m("word.boxesRestAns", { boxes: boxes, rest: rest }),
           {
             kind: "text", work: 2,
             alts: [boxes + "ост" + rest, boxes + " " + rest, boxes + "r" + rest],
-            sol: total + " : " + per + " = " + boxes + " (" + L("остатък", "remainder") + " " + rest + ")"
+            sol: total + " : " + per + " = " + boxes + " (" + Z.m("word.solRemainder", { rest: rest }) + ")"
           }
         );
       }
@@ -167,10 +152,7 @@
         var k = Z.pickKid(rng);
         var pages = rng.int(8, 30), days = rng.int(4, 12), total = pages * days + rng.int(10, 90);
         return T.word(
-          L(k + " чете по " + pages + " страници на ден в продължение на " + days + " дни. Книгата има " + total +
-            " страници. Колко страници остават непрочетени?",
-            k + " reads " + pages + " pages a day for " + days + " days. The book has " + total +
-            " pages. How many pages are left unread?"),
+          Z.m("word.pagesLeft", { k: k, pages: pages, days: days, total: total }),
           total - pages * days,
           { work: 3, sol: pages + " · " + days + " = " + pages * days + "; " + total + " − " + pages * days + " = " + (total - pages * days) }
         );
@@ -181,10 +163,9 @@
         var a = rng.int(15, 60), b = rng.int(15, 60), c = rng.int(15, 60), n = 3;
         var sum = a + b + c;
         return T.word(
-          L("В три кошници има съответно " + a + ", " + b + " и " + c + " плода. Колко плода средно има в една кошница?",
-            "Three baskets hold " + a + ", " + b + " and " + c + " fruits. What is the average number of fruits per basket?"),
+          Z.m("word.average", { a: a, b: b, c: c }),
           Math.round((sum / n) * 100) / 100,
-          { work: 2, sol: "(" + a + " + " + b + " + " + c + ") : 3 = " + (Math.round((sum / n) * 100) / 100) }
+          { work: 2, sol: "(" + a + " + " + b + " + " + c + ") : 3 = " + H.num(Math.round((sum / n) * 100) / 100) }
         );
       }
     },
@@ -194,10 +175,7 @@
         var total = rng.step(40, 300, 2), d = rng.step(4, 40, 2);
         var big = (total + d) / 2, small = (total - d) / 2;
         return T.word(
-          L(k[0] + " и " + k[1] + " заедно имат " + total + " стикера. " + k[0] + " има с " + d +
-            " повече от " + k[1] + ". По колко стикера има всеки? (запиши първо колко има " + k[0] + ")",
-            k[0] + " and " + k[1] + " have " + total + " stickers together. " + k[0] + " has " + d +
-            " more than " + k[1] + ". How many does each have? (write " + k[0] + "'s number)"),
+          Z.m("word.sumDiff", { k0: k[0], k1: k[1], total: total, d: d }),
           big,
           { work: 3, sol: "(" + total + " + " + d + ") : 2 = " + big + "; " + k[1] + ": " + small }
         );
@@ -213,10 +191,9 @@
         var eh = Math.floor(tot / 60) % 24, em = tot % 60;
         var f = function (a, b) { return (a < 10 ? "0" + a : a) + ":" + (b < 10 ? "0" + b : b); };
         return T.word(
-          L("Филмът започва в " + f(h, m) + " ч. и трае " + dur + " минути. В колко часа свършва? (чч:мм)",
-            "The film starts at " + f(h, m) + " and lasts " + dur + " minutes. What time does it end? (hh:mm)"),
+          Z.m("word.filmEnd", { start: f(h, m), dur: dur }),
           f(eh, em),
-          { kind: "text", alts: [eh + ":" + (em < 10 ? "0" + em : em)], sol: f(h, m) + " + " + dur + " min = " + f(eh, em) }
+          { kind: "text", alts: [eh + ":" + (em < 10 ? "0" + em : em)], sol: f(h, m) + " + " + dur + " " + Z.m("word.solMin") + " = " + f(eh, em) }
         );
       }
     },
@@ -225,10 +202,9 @@
         var speed = rng.pick([40, 50, 60, 70, 80, 90, 100]);
         var hours = rng.pick([2, 3, 4, 5, 1.5, 2.5]);
         return T.word(
-          L("Автомобил се движи със скорост " + speed + " км/ч в продължение на " + H.num(hours) +
-            " часа. Какво разстояние изминава?",
-            "A car travels at " + speed + " km/h for " + H.num(hours) + " hours. What distance does it cover?"),
-          speed * hours, { unit: "км", sol: speed + " · " + H.num(hours) + " = " + (speed * hours) + " km" }
+          Z.m("word.carDistance", { speed: speed, hours: H.num(hours) }),
+          speed * hours,
+          { unit: Z.m("word.unitKm"), sol: speed + " · " + H.num(hours) + " = " + (speed * hours) + " " + Z.m("word.solKm") }
         );
       }
     },
@@ -237,9 +213,8 @@
         var speed = rng.pick([45, 60, 75, 80, 90, 120]);
         var dist = speed * rng.pick([2, 3, 4]);
         return T.word(
-          L("Влак изминава " + dist + " км със средна скорост " + speed + " км/ч. За колко часа пътува?",
-            "A train covers " + dist + " km at an average speed of " + speed + " km/h. How many hours does it travel?"),
-          dist / speed, { unit: L("ч", "h"), sol: dist + " : " + speed + " = " + (dist / speed) }
+          Z.m("word.trainTime", { dist: dist, speed: speed }),
+          dist / speed, { unit: Z.m("word.unitH"), sol: dist + " : " + speed + " = " + (dist / speed) }
         );
       }
     },
@@ -252,8 +227,7 @@
         var whole = d * rng.int(3, 20);
         var th = Z.pickThing(rng);
         return T.word(
-          L("В магазина има " + Z.qty(whole, th) + ". Продадени са " + H.frac(n, d) + " от тях. Колко " + th[1] + " са продадени?",
-            "A shop has " + whole + " " + th[1] + ". " + H.frac(n, d) + " of them were sold. How many were sold?"),
+          Z.m("word.fractionSold", { whole: whole, th: th, frac: H.frac(n, d) }),
           (whole / d) * n,
           { work: 2, sol: whole + " : " + d + " · " + n + " = " + (whole / d) * n }
         );
@@ -266,8 +240,7 @@
         var part = rng.int(2, 15) * n;
         var whole = (part / n) * d;
         return T.word(
-          L(H.frac(n, d) + " от едно число е " + part + ". Кое е числото?",
-            H.frac(n, d) + " of a number is " + part + ". What is the number?"),
+          Z.m("word.fractionWhole", { frac: H.frac(n, d), part: part }),
           whole, { work: 2, sol: part + " : " + n + " · " + d + " = " + whole }
         );
       }
@@ -279,9 +252,9 @@
         var p = rng.pick([5, 10, 15, 20, 25, 40, 50, 60, 75]);
         var base = rng.step(40, 800, 20);
         return T.word(
-          L("Колко е " + p + "% от " + base + "?", "What is " + p + "% of " + base + "?"),
+          Z.m("word.pctOf", { p: p, base: base }),
           Math.round(base * p) / 100,
-          { work: 1, sol: base + " · " + p + " : 100 = " + (Math.round(base * p) / 100) }
+          { work: 1, sol: base + " · " + p + " : 100 = " + H.num(Math.round(base * p) / 100) }
         );
       }
     },
@@ -291,10 +264,9 @@
         var price = rng.step(30, 300, 10);
         var final = price * (100 - p) / 100;
         return T.word(
-          L("Яке струва " + money(price) + ". В разпродажба цената пада с " + p + "%. Колко струва якето след намалението?",
-            "A jacket costs " + money(price) + ". In a sale the price drops by " + p + "%. What is the new price?"),
+          Z.m("word.saleJacket", { price: Z.money(price), p: p }),
           ansMoney(final),
-          { unit: cur(), work: 3, sol: price + " · " + (100 - p) + " : 100 = " + ansMoney(final) + " " + cur() }
+          { unit: Z.cur(), work: 3, sol: price + " · " + (100 - p) + " : 100 = " + Z.money(final) }
         );
       }
     },
@@ -302,10 +274,9 @@
       g: [6, 7], f: function (rng, ctx) {
         var part = rng.int(3, 60), whole = part * rng.pick([2, 4, 5, 10, 20]);
         return T.word(
-          L("От " + whole + " ученици " + part + " спортуват. Колко процента са те?",
-            "Out of " + whole + " students, " + part + " do sports. What percentage is that?"),
+          Z.m("word.pctStudents", { whole: whole, part: part }),
           Math.round((part / whole) * 10000) / 100,
-          { unit: "%", work: 2, sol: part + " : " + whole + " · 100 = " + (Math.round((part / whole) * 10000) / 100) + "%" }
+          { unit: "%", work: 2, sol: part + " : " + whole + " · 100 = " + H.num(Math.round((part / whole) * 10000) / 100) + "%" }
         );
       }
     },
@@ -316,11 +287,8 @@
         var workers = rng.int(2, 6), days = rng.int(4, 15);
         var k = rng.pick([2, 3]);
         return T.word(
-          L(workers + " работници завършват работа за " + (days * k) + " дни. За колко дни ще я завършат " +
-            (workers * k) + " работници, ако работят еднакво бързо?",
-            workers + " workers finish a job in " + (days * k) + " days. How many days will " +
-            (workers * k) + " workers need, working at the same rate?"),
-          days, { unit: L("дни", "days"), work: 2, sol: (workers * days * k) + " : " + (workers * k) + " = " + days }
+          Z.m("word.workers", { workers: workers, days: days * k, more: workers * k }),
+          days, { unit: Z.m("word.unitDays"), work: 2, sol: (workers * days * k) + " : " + (workers * k) + " = " + days }
         );
       }
     },
@@ -329,10 +297,7 @@
         var child = rng.int(8, 16), mult = rng.int(2, 4), years = rng.int(3, 12);
         var parent = child * mult;
         return T.word(
-          L("Днес майката е " + mult + " пъти по-възрастна от сина си, който е на " + child +
-            " години. На колко години ще бъде майката след " + years + " години?",
-            "Today the mother is " + mult + " times older than her son, who is " + child +
-            ". How old will the mother be in " + years + " years?"),
+          Z.m("word.motherAge", { mult: mult, child: child, years: years }),
           parent + years,
           { work: 2, sol: child + " · " + mult + " = " + parent + "; " + parent + " + " + years + " = " + (parent + years) }
         );
@@ -343,8 +308,7 @@
         var n = rng.int(4, 40);
         var sum = n + (n + 1) + (n + 2);
         return T.word(
-          L("Сборът на три последователни естествени числа е " + sum + ". Кое е най-малкото от тях?",
-            "The sum of three consecutive natural numbers is " + sum + ". What is the smallest of them?"),
+          Z.m("word.consecutive", { sum: sum }),
           n, { work: 2, sol: "x + (x+1) + (x+2) = " + sum + " → 3x = " + (sum - 3) + " → x = " + n }
         );
       }
@@ -355,10 +319,7 @@
         var per1 = rng.int(2, 9), per2 = rng.int(2, 9);
         var total = a * per1 + b * per2;
         return T.word(
-          L("В една кутия има " + a + " пакета по " + per1 + " моливa и " + b + " пакета по " + per2 +
-            " молива. Колко молива има в кутията?",
-            "A box holds " + a + " packs of " + per1 + " pencils and " + b + " packs of " + per2 +
-            " pencils. How many pencils are in the box?"),
+          Z.m("word.pencilPacks", { a: a, per1: per1, b: b, per2: per2 }),
           total,
           { work: 3, sol: a + " · " + per1 + " + " + b + " · " + per2 + " = " + total }
         );
@@ -368,12 +329,9 @@
       g: [3, 4, 5], f: function (rng, ctx) {
         var small = rng.int(4, 30), times = rng.int(2, 6);
         return T.word(
-          L("Едно дърво е високо " + small + " м, а второто е " + times + " пъти по-високо. С колко метра " +
-            "второто дърво е по-високо от първото?",
-            "One tree is " + small + " m tall, the second is " + times + " times taller. By how many metres " +
-            "is the second tree taller than the first?"),
+          Z.m("word.treeTaller", { small: small, times: times }),
           small * times - small,
-          { unit: "м", work: 2, sol: small + " · " + times + " − " + small + " = " + (small * times - small) }
+          { unit: Z.m("word.unitM"), work: 2, sol: small + " · " + times + " − " + small + " = " + (small * times - small) }
         );
       }
     }
@@ -384,9 +342,6 @@
     icon: "📖",
     grades: [0, 1, 2, 3, 4, 5, 6, 7],
     cols: 1,
-    name: { bg: "Текстови задачи", en: "Word problems" },
-    desc: { bg: "Житейски ситуации, които искат мислене", en: "Real-life situations that need thinking" },
-    instr: { bg: "Прочети внимателно и реши.", en: "Read carefully and solve." },
     make: function (rng, ctx) {
       var pool = TPL.filter(function (t) { return t.g.indexOf(ctx.grade) !== -1; });
       if (!pool.length) pool = TPL.filter(function (t) { return t.g.indexOf(4) !== -1; });

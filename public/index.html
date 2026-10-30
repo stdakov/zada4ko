@@ -11,6 +11,16 @@
 <link rel="canonical" href="https://zada4ko.com/">
 <link rel="alternate" hreflang="bg" href="https://zada4ko.com/">
 <link rel="alternate" hreflang="en" href="https://zada4ko.com/?lang=en">
+<link rel="alternate" hreflang="de" href="https://zada4ko.com/?lang=de">
+<link rel="alternate" hreflang="fr" href="https://zada4ko.com/?lang=fr">
+<link rel="alternate" hreflang="it" href="https://zada4ko.com/?lang=it">
+<link rel="alternate" hreflang="es" href="https://zada4ko.com/?lang=es">
+<link rel="alternate" hreflang="pt" href="https://zada4ko.com/?lang=pt">
+<link rel="alternate" hreflang="nl" href="https://zada4ko.com/?lang=nl">
+<link rel="alternate" hreflang="sv" href="https://zada4ko.com/?lang=sv">
+<link rel="alternate" hreflang="el" href="https://zada4ko.com/?lang=el">
+<link rel="alternate" hreflang="ro" href="https://zada4ko.com/?lang=ro">
+<link rel="alternate" hreflang="pl" href="https://zada4ko.com/?lang=pl">
 <link rel="alternate" hreflang="x-default" href="https://zada4ko.com/">
 
 <meta property="og:type" content="website">
@@ -34,9 +44,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="media/css/base.css?v=9">
-<link rel="stylesheet" href="media/css/app.css?v=9">
-<link rel="stylesheet" href="media/css/print.css?v=9">
+<link rel="stylesheet" href="media/css/base.css?v=10">
+<link rel="stylesheet" href="media/css/app.css?v=10">
+<link rel="stylesheet" href="media/css/print.css?v=10">
 
 <script type="application/ld+json">
 {
@@ -107,10 +117,7 @@
       <a href="#/teachers" data-i18n="navTeachers">За учители</a>
       <a href="#/progress" data-i18n="navProgress">Моят напредък</a>
       <a href="#/about" data-i18n="navAbout">Как работи</a>
-      <span class="langsw" id="langsw" style="margin-left:8px">
-        <button type="button" data-l="bg">BG</button>
-        <button type="button" data-l="en">EN</button>
-      </span>
+      <select class="inp lang-sel" id="langSel" aria-label="Език / Language" data-i18n-aria="language"></select>
     </nav>
   </div>
 </header>
@@ -589,17 +596,19 @@
 
 <div class="toast-wrap" id="toasts"></div>
 
-<script src="media/js/confetti.min.js?v=9"></script>
-<script src="media/js/core.js?v=9"></script>
-<script src="media/js/store.js?v=9"></script>
-<script src="media/js/gen/registry.js?v=9"></script>
-<script src="media/js/gen/arith.js?v=9"></script>
-<script src="media/js/gen/word.js?v=9"></script>
-<script src="media/js/gen/measure.js?v=9"></script>
-<script src="media/js/gen/advanced.js?v=9"></script>
-<script src="media/js/sheet.js?v=9"></script>
-<script src="media/js/solve.js?v=9"></script>
-<script src="media/js/app.js?v=9"></script>
+<script src="media/js/confetti.min.js?v=10"></script>
+<script src="media/js/core.js?v=10"></script>
+<script src="media/js/i18n/bg.js?v=10"></script>
+<script src="media/js/i18n/en.js?v=10"></script>
+<script src="media/js/store.js?v=10"></script>
+<script src="media/js/gen/registry.js?v=10"></script>
+<script src="media/js/gen/arith.js?v=10"></script>
+<script src="media/js/gen/word.js?v=10"></script>
+<script src="media/js/gen/measure.js?v=10"></script>
+<script src="media/js/gen/advanced.js?v=10"></script>
+<script src="media/js/sheet.js?v=10"></script>
+<script src="media/js/solve.js?v=10"></script>
+<script src="media/js/app.js?v=10"></script>
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {

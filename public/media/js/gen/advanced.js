@@ -5,7 +5,6 @@
 
 (function (Z) {
   var reg = Z.reg, T = Z.T, H = Z.H;
-  function L(bg, en) { return Z.i18n.lang === "en" ? en : bg; }
 
   function fr(n, d) { return H.frac(n, d); }
   /** Reduce a fraction to lowest terms. */
@@ -17,9 +16,6 @@
     icon: "🍕",
     grades: [4, 5, 6, 7],
     cols: 2,
-    name: { bg: "Обикновени дроби", en: "Fractions" },
-    desc: { bg: "Сравняване, съкращаване, събиране, изваждане", en: "Compare, simplify, add and subtract" },
-    instr: { bg: "Пресметни. Запиши дроб като 3/4.", en: "Calculate. Write a fraction as 3/4." },
     make: function (rng, ctx) {
       var modes = ctx.grade === 4 ? ["compare", "sameDen", "ofNumber"] :
                   ctx.grade === 5 ? ["sameDen", "simplify", "diffDen", "ofNumber", "mixed"] :
@@ -55,7 +51,7 @@
         var k = rng.int(2, 9);
         var nn = rng.int(1, base - 1);
         a = nn * k; d = base * k;
-        return { q: L("Съкрати: ", "Simplify: ") + fr(a, d), a: nn + "/" + base,
+        return { q: Z.m("adv.simplify", { f: fr(a, d) }), a: nn + "/" + base,
           kind: "text", layout: "expr", eq: true, sol: a + "/" + d + " = " + nn + "/" + base + "  (÷" + k + ")" };
       }
       if (mode === "diffDen") {
@@ -69,7 +65,7 @@
         var ansTxt = r[1] === 1 ? String(r[0]) : r[0] + "/" + r[1];
         return { q: fr(n1, d1) + " + " + fr(n2, dd2), a: ansTxt, alts: [sum + "/" + lcm],
           kind: "text", layout: "expr", eq: true,
-          sol: L("Общ знаменател ", "Common denominator ") + lcm + ": " + (n1 * lcm / d1) + "/" + lcm + " + " + (n2 * lcm / dd2) + "/" + lcm + " = " + ansTxt };
+          sol: Z.m("adv.commonDenSol", { lcm: lcm, a: n1 * lcm / d1, b: n2 * lcm / dd2, ans: ansTxt }) };
       }
       if (mode === "multiply") {
         var an = rng.int(1, 7), ad = rng.int(an + 1, 9), bn = rng.int(1, 7), bd = rng.int(bn + 1, 9);
@@ -87,20 +83,20 @@
       if (mode === "mixed") {
         var w = rng.int(1, 6); d = rng.pick([2, 3, 4, 5, 6, 8]); a = rng.int(1, d - 1);
         if (rng.bool()) {
-          return { q: L("Превърни в неправилна дроб: ", "Write as an improper fraction: ") + H.frac(a, d, w),
+          return { q: Z.m("adv.toImproper", { f: H.frac(a, d, w) }),
             a: (w * d + a) + "/" + d, kind: "text", layout: "expr", eq: true,
             sol: w + " · " + d + " + " + a + " = " + (w * d + a) + " → " + (w * d + a) + "/" + d };
         }
         var imp = w * d + a;
-        return { q: L("Превърни в смесено число: ", "Write as a mixed number: ") + fr(imp, d),
-          a: w + " " + a + "/" + d, alts: [w + a + "/" + d, w + "и" + a + "/" + d],
-          kind: "text", layout: "expr", eq: true, sol: imp + " : " + d + " = " + w + " " + L("цяло и остатък", "whole, remainder") + " " + a + " → " + w + " " + a + "/" + d };
+        return { q: Z.m("adv.toMixed", { f: fr(imp, d) }),
+          a: w + " " + a + "/" + d, alts: [w + a + "/" + d, Z.m("adv.mixedAltAnd", { w: w, n: a, d: d })],
+          kind: "text", layout: "expr", eq: true, sol: Z.m("adv.toMixedSol", { imp: imp, d: d, w: w, r: a }) };
       }
       // ofNumber
       d = rng.pick([2, 3, 4, 5, 6, 8, 10]);
       a = rng.int(1, d - 1);
       var whole = d * rng.int(2, 20);
-      return { q: L("Колко е ", "What is ") + fr(a, d) + L(" от ", " of ") + whole + "?",
+      return { q: Z.m("adv.fractionOf", { f: fr(a, d), n: whole }),
         a: String(whole / d * a), kind: "num", layout: "expr", eq: true,
         sol: whole + " : " + d + " · " + a + " = " + (whole / d * a) };
     }
@@ -112,9 +108,6 @@
     icon: "🔟",
     grades: [4, 5, 6, 7],
     cols: 3,
-    name: { bg: "Десетични дроби", en: "Decimal numbers" },
-    desc: { bg: "Действия с числа със запетая", en: "Arithmetic with decimal points" },
-    instr: { bg: "Пресметни.", en: "Calculate." },
     make: function (rng, ctx) {
       var dec = ctx.grade <= 4 ? 1 : (ctx.diff === 2 ? 3 : 2);
       var p = Math.pow(10, dec);
@@ -146,24 +139,21 @@
     icon: "％",
     grades: [5, 6, 7],
     cols: 2,
-    name: { bg: "Проценти", en: "Percentages" },
-    desc: { bg: "Процент от число, намаление, увеличение", en: "Percent of, discount, increase" },
-    instr: { bg: "Пресметни.", en: "Calculate." },
     make: function (rng, ctx) {
       var p = rng.pick([5, 10, 12, 15, 20, 25, 30, 40, 50, 60, 75, 80]);
       var base = rng.step(40, 1200, 20);
       var mode = rng.int(0, 3);
 
-      if (mode === 0) return { q: p + "% " + L("от", "of") + " " + base, a: String(Math.round(base * p) / 100),
+      if (mode === 0) return { q: Z.m("adv.percentOf", { p: p, n: base }), a: String(Math.round(base * p) / 100),
         kind: "num", layout: "expr", eq: true, sol: base + " · " + p + " : 100 = " + (Math.round(base * p) / 100) };
-      if (mode === 1) return { q: L("Намали ", "Decrease ") + base + L(" с ", " by ") + p + "%",
+      if (mode === 1) return { q: Z.m("adv.decreaseBy", { n: base, p: p }),
         a: String(Math.round(base * (100 - p)) / 100), kind: "num", layout: "expr", eq: true,
         sol: base + " − " + (base * p / 100) + " = " + (Math.round(base * (100 - p)) / 100) };
-      if (mode === 2) return { q: L("Увеличи ", "Increase ") + base + L(" с ", " by ") + p + "%",
+      if (mode === 2) return { q: Z.m("adv.increaseBy", { n: base, p: p }),
         a: String(Math.round(base * (100 + p)) / 100), kind: "num", layout: "expr", eq: true,
         sol: base + " + " + (base * p / 100) + " = " + (Math.round(base * (100 + p)) / 100) };
       var part = Math.round(base * p) / 100;
-      return { q: L("Колко процента е " + part + " от " + base + "?", "What percent of " + base + " is " + part + "?"),
+      return { q: Z.m("adv.whatPercent", { part: part, n: base }),
         a: String(p), kind: "num", layout: "expr", eq: true, unit: "%",
         sol: part + " : " + base + " · 100 = " + p + "%" };
     }
@@ -175,12 +165,10 @@
     icon: "🔍",
     grades: [4, 5, 6],
     cols: 2,
-    name: { bg: "Делимост и делители", en: "Divisibility & factors" },
-    desc: { bg: "Признаци за делимост, прости числа, НОД и НОК", en: "Divisibility rules, primes, GCD and LCM" },
-    instr: { bg: "Отговори на въпроса.", en: "Answer the question." },
     make: function (rng, ctx) {
       var mode = ctx.grade === 4 ? 0 : rng.int(0, 3);
       var a, b;
+      var yes = Z.m("adv.yes"), no = Z.m("adv.no");
 
       if (mode === 0) {
         var d = rng.pick(ctx.grade <= 4 ? [2, 5, 10] : [2, 3, 4, 5, 9, 10]);
@@ -193,10 +181,10 @@
           do { n = rng.int(12, 400); } while (n % d === 0);
         }
         return T.choice(
-          L("Делимо ли е " + n + " на " + d + "?", "Is " + n + " divisible by " + d + "?"),
-          n % d === 0 ? L("да", "yes") : L("не", "no"),
-          [L("да", "yes"), L("не", "no")],
-          { sol: n + " : " + d + (n % d === 0 ? " = " + n / d : " → " + L("остатък ", "remainder ") + (n % d)) }
+          Z.m("adv.isDivisible", { n: n, d: d }),
+          n % d === 0 ? yes : no,
+          [yes, no],
+          { sol: n % d === 0 ? n + " : " + d + " = " + n / d : Z.m("adv.divRemainderSol", { n: n, d: d, r: n % d }) }
         );
       }
       if (mode === 1) {
@@ -209,23 +197,23 @@
         }
         var isP = H.isPrime(m);
         return T.choice(
-          L("Просто число ли е " + m + "?", "Is " + m + " a prime number?"),
-          isP ? L("да", "yes") : L("не", "no"),
-          [L("да", "yes"), L("не", "no")],
-          { sol: isP ? L(m + " се дели само на 1 и на себе си.", m + " is divisible only by 1 and itself.")
-                     : L(m + " се дели и на " + H.divisors(m)[1] + ".", m + " is also divisible by " + H.divisors(m)[1] + ".") }
+          Z.m("adv.isPrime", { n: m }),
+          isP ? yes : no,
+          [yes, no],
+          { sol: isP ? Z.m("adv.primeSol", { n: m })
+                     : Z.m("adv.compositeSol", { n: m, d: H.divisors(m)[1] }) }
         );
       }
       if (mode === 2) {
         a = rng.int(8, 60); b = rng.int(8, 60);
-        return { q: L("НОД", "GCD") + "(" + a + ", " + b + ")",
+        return { q: Z.m("adv.gcdOf", { a: a, b: b }),
           a: String(H.gcd(a, b)), kind: "num", layout: "expr", eq: true,
-          sol: L("Общите делители дават ", "The greatest common divisor is ") + H.gcd(a, b) };
+          sol: Z.m("adv.gcdSol", { v: H.gcd(a, b) }) };
       }
       a = rng.int(3, 20); b = rng.int(3, 20);
-      return { q: L("НОК", "LCM") + "(" + a + ", " + b + ")",
+      return { q: Z.m("adv.lcmOf", { a: a, b: b }),
         a: String(H.lcm(a, b)), kind: "num", layout: "expr", eq: true,
-        sol: L("Най-малкото общо кратно е ", "The least common multiple is ") + H.lcm(a, b) };
+        sol: Z.m("adv.lcmSol", { v: H.lcm(a, b) }) };
     }
   });
 
@@ -235,9 +223,6 @@
     icon: "⚡",
     grades: [5, 6, 7],
     cols: 3,
-    name: { bg: "Степени и корени", en: "Powers & roots" },
-    desc: { bg: "Квадрати, кубове, квадратен корен", en: "Squares, cubes and square roots" },
-    instr: { bg: "Пресметни.", en: "Calculate." },
     make: function (rng, ctx) {
       var mode = rng.int(0, 3);
       var a;
@@ -262,9 +247,6 @@
     icon: "🌡️",
     grades: [6, 7],
     cols: 3,
-    name: { bg: "Отрицателни числа", en: "Negative numbers" },
-    desc: { bg: "Действия с цели числа", en: "Operations with integers" },
-    instr: { bg: "Пресметни.", en: "Calculate." },
     make: function (rng, ctx) {
       var max = ctx.diff === 2 ? 60 : 25;
       var a = rng.int(-max, max), b = rng.int(-max, max);
@@ -283,9 +265,6 @@
     icon: "🧠",
     grades: [5, 6, 7],
     cols: 2,
-    name: { bg: "Уравнения", en: "Equations" },
-    desc: { bg: "Намери х — от прости до двустранни", en: "Solve for x — simple to two-sided" },
-    instr: { bg: "Реши уравнението. Намери х.", en: "Solve the equation. Find x." },
     make: function (rng, ctx) {
       var x = rng.int(2, ctx.grade >= 6 ? 25 : 15);
       if (ctx.grade >= 6 && rng.bool(0.3)) x = -x;
@@ -330,9 +309,6 @@
     icon: "🅧",
     grades: [7],
     cols: 2,
-    name: { bg: "Изрази и формули", en: "Expressions & identities" },
-    desc: { bg: "Разкриване на скоби, съкратено умножение", en: "Expanding brackets, special products" },
-    instr: { bg: "Пресметни стойността при дадените числа.", en: "Evaluate for the given values." },
     make: function (rng, ctx) {
       var a = rng.int(2, 12), b = rng.int(2, 12);
       var mode = rng.int(0, 3);
@@ -343,7 +319,7 @@
       if (mode === 2) return { q: "(" + a + " − " + b + ") · (" + a + " + " + b + ")", a: String(a * a - b * b),
         kind: "num", layout: "expr", eq: true, sol: a + "² − " + b + "² = " + (a * a - b * b) };
       var x = rng.int(1, 8), m = rng.int(2, 6), n = rng.int(2, 9);
-      return { q: L("При x = " + x + " пресметни ", "For x = " + x + " evaluate ") + m + "x + " + n,
+      return { q: Z.m("adv.evaluateAt", { x: x, expr: m + "x + " + n }),
         a: String(m * x + n), kind: "num", layout: "expr", eq: true, sol: m + " · " + x + " + " + n + " = " + (m * x + n) };
     }
   });
@@ -354,15 +330,12 @@
     icon: "📊",
     grades: [7],
     cols: 2,
-    name: { bg: "Питагорова теорема", en: "Pythagorean theorem" },
-    desc: { bg: "Правоъгълен триъгълник — намери страна", en: "Right triangle — find the missing side" },
-    instr: { bg: "Намери неизвестната страна.", en: "Find the missing side." },
     make: function (rng, ctx) {
       var triples = [[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15], [8, 15, 17], [7, 24, 25], [20, 21, 29], [12, 16, 20]];
       var t = rng.pick(triples);
       var k = ctx.diff === 2 ? rng.int(1, 3) : 1;
       var a = t[0] * k, b = t[1] * k, c = t[2] * k;
-      var u = L("см", "cm");
+      var u = Z.m("adv.unitCm");
       var svg = '<svg class="shape-svg" viewBox="0 0 170 120" width="170" role="img">' +
         '<polygon points="26,96 146,96 26,20" fill="none" stroke="#111" stroke-width="2.6"/>' +
         '<rect x="26" y="86" width="10" height="10" fill="none" stroke="#111" stroke-width="1.3"/>' +
@@ -395,9 +368,6 @@
     icon: "🏛",
     grades: [3, 4, 5],
     cols: 3,
-    name: { bg: "Римски цифри", en: "Roman numerals" },
-    desc: { bg: "От I до MMXXV и обратно", en: "From I to MMXXV and back" },
-    instr: { bg: "Запиши с арабски или римски цифри.", en: "Write in Arabic or Roman numerals." },
     make: function (rng, ctx) {
       var max = ctx.grade === 3 ? 39 : (ctx.diff === 2 ? 2500 : 400);
       var n = rng.int(1, max);
@@ -414,9 +384,6 @@
     icon: "💡",
     grades: [2, 3, 4, 5, 6, 7],
     cols: 1,
-    name: { bg: "Занимателни задачи", en: "Brain teasers" },
-    desc: { bg: "Ребуси, намислени числа, логика", en: "Riddles, hidden numbers, logic" },
-    instr: { bg: "Помисли добре и намери отговора.", en: "Think it through and find the answer." },
     make: function (rng, ctx) {
       var mode = rng.int(0, 3);
 
@@ -424,10 +391,7 @@
         var x = rng.int(2, ctx.grade <= 3 ? 12 : 40);
         var m = rng.int(2, ctx.grade <= 3 ? 4 : 9);
         var add = rng.int(1, 30);
-        return { q: L("Намислих число, умножих го по " + m + " и прибавих " + add + ". Получих " +
-                      (x * m + add) + ". Кое число намислих?",
-                      "I thought of a number, multiplied it by " + m + " and added " + add + ". I got " +
-                      (x * m + add) + ". What was my number?"),
+        return { q: Z.m("adv.thinkOfNumber", { m: m, add: add, res: x * m + add }),
           a: String(x), kind: "num", layout: "text", eq: false, work: 2,
           sol: (x * m + add) + " − " + add + " = " + (x * m) + "; " + (x * m) + " : " + m + " = " + x };
       }
@@ -436,13 +400,9 @@
         var heads = rng.int(6, ctx.grade <= 3 ? 12 : 30);
         var b = rng.int(1, heads - 1), a = heads - b;
         var legs = a * legsA + b * legsB;
-        return { q: L("В двора има кокошки и зайци — общо " + heads + " глави и " + legs +
-                      " крака. Колко са зайците?",
-                      "A yard has chickens and rabbits — " + heads + " heads and " + legs +
-                      " legs in total. How many rabbits are there?"),
+        return { q: Z.m("adv.chickensRabbits", { heads: heads, legs: legs }),
           a: String(b), kind: "num", layout: "text", eq: false, work: 3,
-          sol: L("Ако всички бяха кокошки: ", "If all were chickens: ") + (heads * 2) + L(" крака. Разликата ", " legs. The difference ") +
-               (legs - heads * 2) + " : 2 = " + b };
+          sol: Z.m("adv.chickensRabbitsSol", { legs: heads * 2, diff: legs - heads * 2, b: b }) };
       }
       if (mode === 2) {
         // 3x3 magic square: every row, column and diagonal adds up to 3c.
@@ -468,21 +428,15 @@
           tbl += "</tr>";
         }
         tbl += "</table>";
-        return { q: L("Магически квадрат: сборът по всеки ред, стълб и диагонал е " + sum +
-                      ". Кое число липсва?",
-                      "Magic square: every row, column and diagonal adds up to " + sum +
-                      ". Which number is missing?") + tbl,
+        return { q: Z.m("adv.magicSquare", { sum: sum }) + tbl,
           a: String(missing), kind: "num", layout: "block", eq: false,
-          sol: L("Сбор на реда ", "Row sum ") + sum + " → " + missing };
+          sol: Z.m("adv.magicSquareSol", { sum: sum, v: missing }) };
       }
       var pages = rng.int(3, 9), tot = rng.int(20, 90);
       var k = Z.pickKid(rng);
-      return { q: L(k + " реди " + tot + " кубчета на кули по " + pages + " кубчета. Колко пълни кули " +
-                    "получава и колко кубчета остават? (запиши броя на кулите)",
-                    k + " stacks " + tot + " cubes into towers of " + pages + ". How many full towers " +
-                    "are built? (write the number of towers)"),
+      return { q: Z.m("adv.towers", { kid: k, n: tot, per: pages }),
         a: String(Math.floor(tot / pages)), kind: "num", layout: "text", eq: false, work: 2,
-        sol: tot + " : " + pages + " = " + Math.floor(tot / pages) + L(" ост. ", " r ") + (tot % pages) };
+        sol: Z.m("adv.towersSol", { n: tot, per: pages, q: Math.floor(tot / pages), r: tot % pages }) };
     }
   });
 })(window.Z);

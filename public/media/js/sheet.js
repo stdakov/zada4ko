@@ -67,7 +67,7 @@
         task.q = String(task.q).replace(/([.!?])\.(?=\s|<|$)/g, "$1");
         task.no = ++n;
         task.gen = gen.id;
-        task.genName = Z.i18n.pick(gen.name);
+        task.genName = Z.i18n.gen(gen, "name");
         tasks.push(task);
       }
       if (tasks.length) sections.push({ gen: gen, tasks: tasks });
@@ -125,7 +125,7 @@
   function answerLine(task) {
     if (hasOwnSlot(task)) return "";
     return '<div class="sh-answer"><span class="sh-nb"><b>' +
-      (Z.i18n.lang === "bg" ? "Отговор:" : "Answer:") + "</b> " + blank(task) + "</span></div>";
+      Z.t("answerLabel") + "</b> " + blank(task) + "</span></div>";
   }
 
   /**
@@ -298,11 +298,10 @@
     return out;
   };
 
-  var LETTERS = ["А", "Б", "В", "Г"];
-  var LETTERS_EN = ["A", "B", "C", "D"];
 
   Sheet.variantLetter = function (i) {
-    return (Z.i18n.lang === "bg" ? LETTERS : LETTERS_EN)[i] || String(i + 1);
+    // variant letters follow the alphabet: А Б В Г, A B C D, Α Β Γ Δ
+    return Z.t("variantLetters").split("")[i] || String(i + 1);
   };
 
   /** Render one printable A4 sheet as an HTML string. */
@@ -340,9 +339,9 @@
       var boxCls = Sheet.boxClass(sec.tasks);
       var pts = cfg.points ? sec.tasks.length * cfg.points : 0;
       html += '<section class="sh-sec">';
-      html += '<div class="sh-sec-hd"><h3>' + (si + 1) + ". " + Z.i18n.pick(sec.gen.name) + "</h3>" +
+      html += '<div class="sh-sec-hd"><h3>' + (si + 1) + ". " + Z.i18n.gen(sec.gen, "name") + "</h3>" +
         (pts ? '<span class="pts">' + pts + " " + t("pts") + "</span>" : "") + "</div>";
-      html += '<p class="sh-instr">' + Z.i18n.pick(sec.gen.instr) + "</p>";
+      html += '<p class="sh-instr">' + Z.i18n.gen(sec.gen, "instr") + "</p>";
 
       // Explicit rows rather than CSS columns: Safari collapses a multi-column
       // container to a single column when it paginates, so a sheet that looked
@@ -399,7 +398,7 @@
       row.forEach(function (task) {
         if (!task) { html += '<div class="sh-cell empty"></div>'; return; }
         html += '<div class="sh-cell"><span class="no">' + task.no + '.</span>' +
-          '<span class="q">' + H.esc(task.a) + "</span></div>";
+          '<span class="q">' + H.esc(H.showAnswer(task.a)) + "</span></div>";
       });
       html += "</div>";
     });

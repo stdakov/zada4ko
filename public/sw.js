@@ -5,7 +5,7 @@
    ========================================================================== */
 "use strict";
 
-var CACHE = "zada4ko-v9";
+var CACHE = "zada4ko-v10";
 
 var SHELL = [
   "./",
@@ -15,6 +15,8 @@ var SHELL = [
   "media/css/print.css",
   "media/js/confetti.min.js",
   "media/js/core.js",
+  "media/js/i18n/bg.js",
+  "media/js/i18n/en.js",
   "media/js/store.js",
   "media/js/gen/registry.js",
   "media/js/gen/arith.js",

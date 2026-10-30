@@ -43,7 +43,8 @@ public/
     app.css             components and layout
     print.css           A4 print rules
   media/js/
-    core.js             seeded RNG, helpers, i18n dictionaries
+    core.js             seeded RNG, helpers, i18n lookup and loading
+    i18n/<code>.js      all text of one language (see Languages)
     store.js            local progress and badges
     sheet.js            sheet model, paper rendering, URL encoding
     solve.js            interactive solving and answer checking
@@ -54,6 +55,27 @@ public/
       word.js           word problems
       measure.js        time, units, money, geometry
       advanced.js       fractions, decimals, algebra, number theory
+```
+
+## Languages
+
+Every word the app shows lives in `public/media/js/i18n/<code>.js`, one file
+per language: interface labels, topic names, the sentences of every task,
+nouns with their plural forms, children's names and number/money formatting.
+Generators never contain text; they ask for a sentence by key
+(`Z.m("word.giveAway", { k: name, a: 5, b: 2, th: noun })`), and a language
+can answer with a template string or a small function when its grammar needs
+one (Polish plurals, Romanian "20 de mere", Greek cases…).
+
+`en.js` is the reference — anything a language lacks falls back to English.
+Bulgarian and English ship with the page; the others are fetched when chosen.
+
+To add a language: copy `en.js` to `xx.js`, translate it, add the code to
+`LANGS` in `core.js` and an `hreflang` line in `index.html`, then check it:
+
+```
+node tools/check-i18n.js xx      # missing keys, broken text, answers ≠ English
+node tools/sample-i18n.js xx     # print sample tasks to read the grammar
 ```
 
 ## Landing pages (SEO)

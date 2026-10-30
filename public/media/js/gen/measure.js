@@ -5,7 +5,6 @@
 
 (function (Z) {
   var reg = Z.reg, T = Z.T, H = Z.H;
-  function L(bg, en) { return Z.i18n.lang === "en" ? en : bg; }
 
   /* ------------------------------ Clock face ----------------------------- */
   function clockSVG(h, m) {
@@ -43,9 +42,6 @@
     icon: "🕐",
     grades: [1, 2, 3, 4],
     cols: 3,
-    name: { bg: "Часовник", en: "Telling the time" },
-    desc: { bg: "Чети стрелките и записвай часа", en: "Read the hands and write the time" },
-    instr: { bg: "Колко часа показва часовникът? Запиши като чч:мм.", en: "What time is it? Write as hh:mm." },
     make: function (rng, ctx) {
       var mins;
       if (ctx.grade === 1) mins = ctx.diff === 0 ? [0] : [0, 30];
@@ -60,58 +56,59 @@
         var tot = h * 60 + m + dur, eh = Math.floor(tot / 60) % 12 || 12, em = tot % 60;
         return {
           q: clockSVG(h, m) + '<div style="font-size:.9em;font-weight:700;margin-top:4px;max-width:15em">' +
-             L("Колко ще е часът след " + dur + " минути?", "What time will it be in " + dur + " minutes?") + "</div>",
+             Z.m("measure.clockLater", { n: dur }) + "</div>",
           a: pad(eh) + ":" + pad(em), kind: "text", layout: "block", eq: false,
           alts: [eh + ":" + pad(em)],
-          sol: pad(h) + ":" + pad(m) + " + " + dur + " min = " + pad(eh) + ":" + pad(em)
+          sol: Z.m("measure.clockLaterSol", { from: pad(h) + ":" + pad(m), n: dur, to: pad(eh) + ":" + pad(em) })
         };
       }
       return {
         q: clockSVG(h, m), a: pad(h) + ":" + pad(m), kind: "text", layout: "block", eq: false,
         alts: [h + ":" + pad(m)],
-        sol: L("Часовникът показва ", "The clock shows ") + pad(h) + ":" + pad(m)
+        sol: Z.m("measure.clockShows", { time: pad(h) + ":" + pad(m) })
       };
     }
   });
 
   /* ------------------------------ Unit conversion ------------------------- */
+  // [unit id, size in the family's smallest unit]. The abbreviation shown is
+  // the message "measure.unit.<id>"; the family name is "measure.family.<key>".
   var UNITS = {
-    len: { bg: "дължина", en: "length", steps: [["мм", "mm", 1], ["см", "cm", 10], ["дм", "dm", 100], ["м", "m", 1000], ["км", "km", 1000000]] },
-    mass: { bg: "маса", en: "mass", steps: [["г", "g", 1], ["кг", "kg", 1000], ["т", "t", 1000000]] },
-    vol: { bg: "обем", en: "volume", steps: [["мл", "ml", 1], ["л", "l", 1000]] },
-    time: { bg: "време", en: "time", steps: [["сек", "s", 1], ["мин", "min", 60], ["ч", "h", 3600], ["ден", "day", 86400]] }
+    len: { steps: [["mm", 1], ["cm", 10], ["dm", 100], ["m", 1000], ["km", 1000000]] },
+    mass: { steps: [["g", 1], ["kg", 1000], ["t", 1000000]] },
+    vol: { steps: [["ml", 1], ["l", 1000]] },
+    time: { steps: [["s", 1], ["min", 60], ["h", 3600], ["day", 86400]] }
   };
+  /** A unit label; `n` is the number in front of it, so "1 ден" / "5 дни" can agree. */
+  function unit(id, n) { return Z.m("measure.unit." + id, { n: n }); }
 
   reg.add({
     id: "units",
     icon: "📏",
     grades: [2, 3, 4, 5, 6],
     cols: 3,
-    name: { bg: "Мерни единици", en: "Units of measure" },
-    desc: { bg: "Превръщане: см, м, км, г, кг, л, минути", en: "Convert cm, m, km, g, kg, l, minutes" },
-    instr: { bg: "Превърни в посочените мерни единици.", en: "Convert to the given units." },
     make: function (rng, ctx) {
       var keys = ctx.grade <= 2 ? ["len", "time"] : ["len", "mass", "vol", "time"];
       var fam = UNITS[rng.pick(keys)];
       var steps = fam.steps;
       var i = rng.int(1, steps.length - 1);
       var from = steps[i], to = steps[i - 1];
-      var factor = from[2] / to[2];
+      var factor = from[1] / to[1];
       var v = ctx.diff === 0 ? rng.int(1, 9) : rng.int(2, 60);
       var down = rng.bool(0.6);
 
       if (down) {
         return {
-          q: v + " " + L(from[0], from[1]) + " = <span class='sh-blank'></span> " + L(to[0], to[1]),
+          q: v + " " + unit(from[0], v) + " = <span class='sh-blank'></span> " + unit(to[0]),
           a: String(v * factor), kind: "num", layout: "expr", eq: false,
-          sol: v + " · " + factor + " = " + (v * factor) + " " + L(to[0], to[1])
+          sol: v + " · " + factor + " = " + (v * factor) + " " + unit(to[0], v * factor)
         };
       }
       var big = v * factor;
       return {
-        q: big + " " + L(to[0], to[1]) + " = <span class='sh-blank'></span> " + L(from[0], from[1]),
+        q: big + " " + unit(to[0], big) + " = <span class='sh-blank'></span> " + unit(from[0]),
         a: String(v), kind: "num", layout: "expr", eq: false,
-        sol: big + " : " + factor + " = " + v + " " + L(from[0], from[1])
+        sol: big + " : " + factor + " = " + v + " " + unit(from[0], v)
       };
     }
   });
@@ -122,16 +119,13 @@
     icon: "💰",
     grades: [1, 2, 3, 4],
     cols: 2,
-    name: { bg: "Пари", en: "Money" },
-    desc: { bg: "Евро и центове, ресто, покупки", en: "Euros and cents, change, shopping" },
-    instr: { bg: "Пресметни сумата.", en: "Work out the amount." },
     make: function (rng, ctx) {
       var mode = rng.int(0, 2);
       var coins = [1, 2, 5, 10, 20, 50];        // the euro cent coins
       var notes = [5, 10, 20, 50];              // the small euro notes
 
-      // "1 цент" but "5 цента"; "евро" never changes form in Bulgarian.
-      function cents(n) { return L(n === 1 ? "цент" : "цента", n === 1 ? "cent" : "cents"); }
+      // the word for n cents ("1 цент" but "5 цента"), as a unit after the answer
+      function cents(n) { return Z.m("measure.cents", { n: n }); }
 
       if (mode === 0) {
         var picks = rng.sample(coins, rng.int(2, 3));
@@ -139,22 +133,18 @@
         picks.forEach(function (c) {
           var n = rng.int(1, 5);
           total += n * c;
-          parts.push(L(n + (n === 1 ? " монета" : " монети") + " по " + c + " " + cents(c),
-                       n + " coin" + (n === 1 ? "" : "s") + " of " + c + "c"));
+          parts.push(Z.m("measure.coins", { n: n, c: c }));
         });
         return {
-          q: L("В касичката има " + Z.joinList(parts) + ". Колко цента има общо?",
-               "A money box holds " + Z.joinList(parts) + ". How many cents in total?"),
+          q: Z.m("measure.moneyBox", { list: Z.joinList(parts) }),
           a: String(total), kind: "num", layout: "text", eq: false, unit: cents(total), work: 1,
-          sol: String(total) + " " + cents(total)
+          sol: Z.m("measure.centsAmount", { n: total })
         };
       }
       if (mode === 1) {
         var eur = rng.int(1, 20), st = rng.pick([10, 20, 25, 40, 50, 60, 75, 80, 90]);
         return {
-          q: L(eur + " евро и " + st + " цента = <span class='sh-blank'></span> цента",
-               eur + " euro" + (eur === 1 ? "" : "s") + " and " + st +
-               " cents = <span class='sh-blank'></span> cents"),
+          q: Z.m("measure.eurToCents", { eur: eur, ct: st, blank: "<span class='sh-blank'></span>" }),
           a: String(eur * 100 + st), kind: "num", layout: "expr", eq: false,
           sol: eur + " · 100 + " + st + " = " + (eur * 100 + st)
         };
@@ -168,11 +158,8 @@
       } while ((price1 + price2 >= paid || price1 === price2) && guard < 40);
       if (price1 + price2 >= paid || price1 === price2) { price1 = 1; price2 = 2; }
       return {
-        q: L("Купуваме две неща за " + price1 + " € и " + price2 + " € и плащаме с банкнота от " +
-             paid + " €. Колко ресто получаваме?",
-             "We buy two items for €" + price1 + " and €" + price2 + " and pay with a €" + paid +
-             " note. How much change do we get?"),
-        a: String(paid - price1 - price2), kind: "num", layout: "text", eq: false, unit: "€", work: 2,
+        q: Z.m("measure.change", { p1: Z.money(price1), p2: Z.money(price2), paid: Z.money(paid) }),
+        a: String(paid - price1 - price2), kind: "num", layout: "text", eq: false, unit: Z.cur(), work: 2,
         sol: price1 + " + " + price2 + " = " + (price1 + price2) + "; " + paid + " − " + (price1 + price2) + " = " + (paid - price1 - price2)
       };
     }
@@ -180,22 +167,12 @@
 
   /* -------------------------------- Geometry ------------------------------- */
 
-  /**
-   * Bulgarian primary school (up to 4th grade) says "обиколка" and "лице";
-   * the words "периметър"/"P" and the symbol "S" only arrive in 5th grade.
+  /*
+   * Perimeter messages get the grade: Bulgarian primary school (up to 4th
+   * grade) says "обиколка", the word "периметър" only arrives in 5th grade.
    * Asking a 2nd-grader for "периметъра P" is jargon they have not met yet.
    */
-  function askPerimeter(grade) {
-    return Z.i18n.lang === "en"
-      ? "Find the perimeter (P)."
-      : (grade <= 4 ? "Намери обиколката (P)." : "Намери периметъра (P).");
-  }
-  function askArea(grade) {
-    return Z.i18n.lang === "en" ? "Find the area (S)." : "Намери лицето (S).";
-  }
-  function perimNoun(grade) {
-    return Z.i18n.lang === "en" ? "perimeter" : (grade <= 4 ? "обиколка" : "периметър");
-  }
+  function line(text) { return '<div style="font-size:.88em;font-weight:700">' + text + "</div>"; }
   /** A side length different from `from`, so a rectangle is never a square. */
   function otherSide(rng, lo, hi, from) {
     var v;
@@ -240,11 +217,8 @@
     icon: "📐",
     grades: [2, 3, 4, 5, 6, 7],
     cols: 2,
-    name: { bg: "Геометрия", en: "Geometry" },
-    desc: { bg: "Обиколка, лице и обем на фигури", en: "Perimeter, area and volume of shapes" },
-    instr: { bg: "Разгледай чертежа и пресметни.", en: "Look at the drawing and calculate." },
     make: function (rng, ctx) {
-      var u = L("см", "cm");
+      var u = unit("cm"), g = ctx.grade;
       // Rectangles are listed twice so squares stay about a third of the mix;
       // with one entry each, half of every geometry section came out square.
       var modes = [];
@@ -259,7 +233,7 @@
       switch (mode) {
         case "perimRect":
           a = rng.int(2, 24); b = otherSide(rng, 2, 24, a);
-          return { q: rectSVG(a, b, u) + '<div style="font-size:.88em;font-weight:700">' + askPerimeter(ctx.grade) + "</div>",
+          return { q: rectSVG(a, b, u) + line(Z.m("measure.askPerim", { grade: g })),
             a: String(2 * (a + b)), kind: "num", layout: "block", eq: false, unit: u,
             // primary school adds up the four sides; the formula comes later
             sol: ctx.grade <= 4
@@ -267,8 +241,7 @@
               : "P = 2 · (" + a + " + " + b + ") = " + 2 * (a + b) + " " + u };
         case "perimSquare":
           a = rng.int(2, 30);
-          return { q: rectSVG(a, a, u) + '<div style="font-size:.88em;font-weight:700">' +
-              L("Квадрат. ", "A square. ") + askPerimeter(ctx.grade) + "</div>",
+          return { q: rectSVG(a, a, u) + line(Z.m("measure.askPerimSquare", { grade: g })),
             a: String(4 * a), kind: "num", layout: "block", eq: false, unit: u,
             sol: ctx.grade <= 2
               ? "P = " + a + " + " + a + " + " + a + " + " + a + " = " + 4 * a + " " + u
@@ -276,49 +249,42 @@
         case "areaRect":
           a = rng.int(3, ctx.grade >= 4 ? 40 : 12);
           b = otherSide(rng, 3, ctx.grade >= 4 ? 30 : 12, a);
-          return { q: rectSVG(a, b, u) + '<div style="font-size:.88em;font-weight:700">' + askArea(ctx.grade) + "</div>",
+          return { q: rectSVG(a, b, u) + line(Z.m("measure.askArea", { grade: g })),
             a: String(a * b), kind: "num", layout: "block", eq: false, unit: u + "²",
             sol: "S = " + a + " · " + b + " = " + a * b + " " + u + "²" };
         case "areaSquare":
           a = rng.int(3, 20);
-          return { q: rectSVG(a, a, u) + '<div style="font-size:.88em;font-weight:700">' +
-              L("Квадрат. ", "A square. ") + askArea(ctx.grade) + "</div>",
+          return { q: rectSVG(a, a, u) + line(Z.m("measure.askAreaSquare", { grade: g })),
             a: String(a * a), kind: "num", layout: "block", eq: false, unit: u + "²",
             sol: "S = " + a + " · " + a + " = " + a * a + " " + u + "²" };
         case "sideFromPerim":
           a = rng.int(3, 25); b = otherSide(rng, 3, 25, a);
-          return { q: L("Правоъгълник има " + perimNoun(ctx.grade) + " P = " + 2 * (a + b) + " " + u +
-                         " и едната му страна е " + a + " " + u + ". Колко е другата страна?",
-                       "A rectangle has perimeter P = " + 2 * (a + b) + " " + u + " and one side of " +
-                         a + " " + u + ". How long is the other side?"),
+          return { q: Z.m("measure.sideFromPerim", { grade: g, p: 2 * (a + b), a: a, u: u }),
             a: String(b), kind: "num", layout: "text", eq: false, unit: u, work: 2,
             sol: (2 * (a + b)) + " : 2 − " + a + " = " + b + " " + u };
         case "areaTri":
           a = rng.step(4, 40, 2); b = rng.int(3, 24);
-          return { q: triSVG(a, b, u) + '<div style="font-size:.88em;font-weight:700">' + L("Намери лицето (S) на триъгълника.", "Find the area (S) of the triangle.") + "</div>",
+          return { q: triSVG(a, b, u) + line(Z.m("measure.askAreaTri", { grade: g })),
             a: String(a * b / 2), kind: "num", layout: "block", eq: false, unit: u + "²",
             sol: "S = a · h : 2 = " + a + " · " + b + " : 2 = " + (a * b / 2) + " " + u + "²" };
         case "volCube":
           a = rng.int(2, 12);
-          return { q: L("Куб има ръб " + a + " " + u + ". Намери обема (V).", "A cube has an edge of " + a + " " + u + ". Find the volume (V)."),
+          return { q: Z.m("measure.volCube", { a: a, u: u }),
             a: String(a * a * a), kind: "num", layout: "text", eq: false, unit: u + "³", work: 1,
             sol: "V = " + a + "³ = " + a * a * a + " " + u + "³" };
         case "volCuboid":
           a = rng.int(2, 15); b = rng.int(2, 15); c = rng.int(2, 15);
-          return { q: L("Правоъгълен паралелепипед с размери " + a + " × " + b + " × " + c + " " + u + ". Намери обема (V).",
-                       "A cuboid measures " + a + " × " + b + " × " + c + " " + u + ". Find the volume (V)."),
+          return { q: Z.m("measure.volCuboid", { dims: a + " × " + b + " × " + c, u: u }),
             a: String(a * b * c), kind: "num", layout: "text", eq: false, unit: u + "³", work: 1,
             sol: "V = " + a + " · " + b + " · " + c + " = " + a * b * c + " " + u + "³" };
         case "circumference":
           a = rng.int(2, 20);
-          return { q: circSVG(a, u, false) + '<div style="font-size:.88em;font-weight:700">' +
-              L("Намери дължината (C) на окръжността. Приеми π ≈ 3,14.", "Find the circumference (C). Take π ≈ 3.14.") + "</div>",
+          return { q: circSVG(a, u, false) + line(Z.m("measure.askCircumference", { pi: H.num(3.14) })),
             a: H.num(Math.round(2 * 3.14 * a * 100) / 100), kind: "num", layout: "block", eq: false, unit: u,
             sol: "C = 2πr = 2 · " + H.num(3.14) + " · " + a + " = " + H.num(Math.round(2 * 3.14 * a * 100) / 100) + " " + u };
         default:
           a = rng.int(2, 15);
-          return { q: circSVG(a, u, false) + '<div style="font-size:.88em;font-weight:700">' +
-              L("Намери лицето (S) на кръга. Приеми π ≈ 3,14.", "Find the area (S) of the circle. Take π ≈ 3.14.") + "</div>",
+          return { q: circSVG(a, u, false) + line(Z.m("measure.askAreaCircle", { pi: H.num(3.14) })),
             a: H.num(Math.round(3.14 * a * a * 100) / 100), kind: "num", layout: "block", eq: false, unit: u + "²",
             sol: "S = πr² = " + H.num(3.14) + " · " + a + "² = " + H.num(Math.round(3.14 * a * a * 100) / 100) + " " + u + "²" };
       }

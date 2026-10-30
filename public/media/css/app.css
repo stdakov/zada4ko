@@ -34,13 +34,6 @@
 .topnav a:hover { background: rgba(36, 27, 69, 0.08); color: var(--ink); }
 .topnav a.on { background: var(--ink); color: var(--cream); }
 
-.langsw { display: flex; border: 2.5px solid var(--line); border-radius: 999px; overflow: hidden; }
-.langsw button {
-  border: 0; background: var(--paper); padding: 0.35em 0.7em;
-  font-family: var(--f-display); font-weight: 700; font-size: 0.8rem; cursor: pointer;
-}
-.langsw button.on { background: var(--ink); color: var(--cream); }
-
 .burger { display: none; }
 
 @media (max-width: 900px) {
@@ -555,3 +548,12 @@
 .lp-other .chip { margin: 0 4px 8px 0; text-decoration: none; white-space: normal; max-width: 100%; }
 .home-links { display: flex; flex-wrap: wrap; gap: 8px; }
 .home-links .chip { text-decoration: none; }
+
+/* ---------------- Language ---------------- */
+.lang-sel { width: auto; margin-left: 8px; padding: 0.35em 0.6em; font-size: 0.88rem; font-weight: 800; }
+.lang-hint {
+  position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 140;
+  display: flex; gap: 6px; align-items: center; padding: 8px; border-radius: 999px;
+  background: var(--paper); border: 3px solid var(--line); box-shadow: var(--pop);
+  animation: toastIn 0.3s var(--ease);
+}

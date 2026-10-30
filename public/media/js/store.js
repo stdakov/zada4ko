@@ -7,18 +7,18 @@
   var KEY = "z4_progress_v1";
 
   var BADGES = [
-    { id: "first",    icon: "🌱", name: { bg: "Първа стъпка", en: "First step" },        test: function (s) { return s.solved >= 1; } },
-    { id: "ten",      icon: "⭐", name: { bg: "10 верни", en: "10 correct" },            test: function (s) { return s.correct >= 10; } },
-    { id: "fifty",    icon: "🌟", name: { bg: "50 верни", en: "50 correct" },            test: function (s) { return s.correct >= 50; } },
-    { id: "hundred",  icon: "🏆", name: { bg: "100 верни", en: "100 correct" },          test: function (s) { return s.correct >= 100; } },
-    { id: "fivehund", icon: "👑", name: { bg: "500 верни", en: "500 correct" },          test: function (s) { return s.correct >= 500; } },
-    { id: "streak5",  icon: "🔥", name: { bg: "Серия от 5", en: "Streak of 5" },         test: function (s) { return s.bestStreak >= 5; } },
-    { id: "streak15", icon: "🚀", name: { bg: "Серия от 15", en: "Streak of 15" },       test: function (s) { return s.bestStreak >= 15; } },
-    { id: "perfect",  icon: "💯", name: { bg: "Перфектен лист", en: "Perfect sheet" },   test: function (s) { return s.perfects >= 1; } },
-    { id: "perfect5", icon: "🎖️", name: { bg: "5 перфектни листа", en: "5 perfect sheets" }, test: function (s) { return s.perfects >= 5; } },
-    { id: "explorer", icon: "🧭", name: { bg: "Изследовател", en: "Explorer" },          test: function (s) { return Object.keys(s.topics).length >= 5; } },
-    { id: "master",   icon: "🎓", name: { bg: "Всички теми", en: "All topics" },         test: function (s) { return Object.keys(s.topics).length >= 12; } },
-    { id: "printer",  icon: "🖨️", name: { bg: "Печатар", en: "Printer" },               test: function (s) { return s.printed >= 1; } }
+    { id: "first",    icon: "🌱", test: function (s) { return s.solved >= 1; } },
+    { id: "ten",      icon: "⭐", test: function (s) { return s.correct >= 10; } },
+    { id: "fifty",    icon: "🌟", test: function (s) { return s.correct >= 50; } },
+    { id: "hundred",  icon: "🏆", test: function (s) { return s.correct >= 100; } },
+    { id: "fivehund", icon: "👑", test: function (s) { return s.correct >= 500; } },
+    { id: "streak5",  icon: "🔥", test: function (s) { return s.bestStreak >= 5; } },
+    { id: "streak15", icon: "🚀", test: function (s) { return s.bestStreak >= 15; } },
+    { id: "perfect",  icon: "💯", test: function (s) { return s.perfects >= 1; } },
+    { id: "perfect5", icon: "🎖️", test: function (s) { return s.perfects >= 5; } },
+    { id: "explorer", icon: "🧭", test: function (s) { return Object.keys(s.topics).length >= 5; } },
+    { id: "master",   icon: "🎓", test: function (s) { return Object.keys(s.topics).length >= 12; } },
+    { id: "printer",  icon: "🖨️", test: function (s) { return s.printed >= 1; } }
   ];
 
   function blank() {

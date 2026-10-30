@@ -198,11 +198,11 @@
     var fb = H.$(".q-fb", cardEl);
     fb.innerHTML = ok
       ? "✅ " + t("correct") + (task.sol ? '<span class="sol">' + task.sol + "</span>" : "")
-      : "❌ " + t("wrong") + " " + t("correctIs") + " <b>" + H.esc(task.a) + "</b>" +
+      : "❌ " + t("wrong") + " " + t("correctIs") + " <b>" + H.esc(H.showAnswer(task.a)) + "</b>" +
         (task.sol ? '<span class="sol">' + task.sol + "</span>" : "");
 
     var fresh = Z.Store.answer(task.gen, ok, st.streak);
-    fresh.forEach(function (b) { Z.toast(b.icon + " " + Z.i18n.pick(b.name) + "!"); });
+    fresh.forEach(function (b) { Z.toast(b.icon + " " + Z.i18n.badge(b.id) + "!"); });
 
     updateHud();
     if (ok && st.streak > 0 && st.streak % 5 === 0) burst(0.35);
