@@ -12,6 +12,7 @@
     return {
       grade: 2,
       diff: 1,
+      max: 0,              // "numbers up to" for grades 0–1; 0 = follow the grade
       topics: [],          // [{ id, count }]
       title: "",
       cols: 0,             // 0 = auto
@@ -22,6 +23,15 @@
       mode: "solve",       // solve | print — carried in the shared link
       seed: Z.newSeed()
     };
+  };
+
+  /** Grades whose sheets can be limited to "numbers up to N". */
+  Sheet.MAX_GRADES = [0, 1];
+  Sheet.MAX_CHOICES = [3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 30, 50, 100];
+
+  /** The active "numbers up to" limit, or 0 when the grade's own range applies. */
+  Sheet.maxFor = function (cfg) {
+    return Sheet.MAX_GRADES.indexOf(cfg.grade) !== -1 && cfg.max ? cfg.max : 0;
   };
 
   /* ------------------------------ Building ------------------------------- */
@@ -39,8 +49,10 @@
     cfg.topics.forEach(function (t) {
       var gen = reg.get(t.id);
       if (!gen || t.count < 1) return;
-      var rng = new Z.RNG(cfg.seed + vs + "|" + t.id + "|" + cfg.grade + "|" + cfg.diff);
-      var ctx = { grade: cfg.grade, diff: cfg.diff };
+      var max = Sheet.maxFor(cfg);
+      // the limit joins the seed only when set, so older shared links still rebuild the same sheet
+      var rng = new Z.RNG(cfg.seed + vs + "|" + t.id + "|" + cfg.grade + "|" + cfg.diff + (max ? "|n" + max : ""));
+      var ctx = { grade: cfg.grade, diff: cfg.diff, max: max };
       var tasks = [];
       var guard = 0;
       var seen = {};
@@ -412,6 +424,7 @@
     var p = [];
     p.push("g=" + cfg.grade);
     p.push("d=" + cfg.diff);
+    if (Sheet.maxFor(cfg)) p.push("n=" + cfg.max);
     p.push("s=" + encodeURIComponent(cfg.seed));
     p.push("t=" + cfg.topics.map(function (x) { return x.id + "." + x.count; }).join("_"));
     if (cfg.title) p.push("h=" + encodeURIComponent(cfg.title));
@@ -435,6 +448,7 @@
       switch (k) {
         case "g": cfg.grade = H.clamp(H.toInt(v, 2), 0, 7); got = true; break;
         case "d": cfg.diff = H.clamp(H.toInt(v, 1), 0, 2); break;
+        case "n": cfg.max = H.clamp(H.toInt(v, 0), 0, 100); break;
         case "s": if (v) cfg.seed = v.slice(0, 24); break;
         case "h": cfg.title = v.slice(0, 90); break;
         case "c": cfg.cols = H.clamp(H.toInt(v, 0), 0, 4); break;

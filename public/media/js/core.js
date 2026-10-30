@@ -8,7 +8,7 @@ window.Z = window.Z || {};
 /* Asset version. Keep in step with the ?v= query on the CSS/JS URLs in
    index.html and with CACHE in sw.js — it is printed in the sheet footer so a
    screenshot always says which build produced it. */
-window.Z.VERSION = "8";
+window.Z.VERSION = "9";
 
 /* ------------------------------ Seeded RNG ------------------------------ */
 (function (Z) {
@@ -220,6 +220,8 @@ window.Z.VERSION = "8";
       titlePlaceholder: "Контролна работа по математика",
       difficulty: "Трудност",
       diffEasy: "Лесно", diffNormal: "Нормално", diffHard: "Трудно",
+      maxNum: "Числата до",
+      maxAuto: "Според класа",
       columns: "Колони при печат",
       auto: "Автоматично",
       colsAuto: "Автоматично",
@@ -341,6 +343,7 @@ window.Z.VERSION = "8";
       countLabel: "Tasks", totalTasks: "Total tasks",
       titleLabel: "Sheet title", titlePlaceholder: "Maths test",
       difficulty: "Difficulty", diffEasy: "Easy", diffNormal: "Normal", diffHard: "Hard",
+      maxNum: "Numbers up to", maxAuto: "By grade",
       colsAuto: "Automatic",
       cols1: "1 column", cols2: "2 columns", cols3: "3 columns", cols4: "4 columns",
       columns: "Print columns", auto: "Auto",

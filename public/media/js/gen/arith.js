@@ -6,8 +6,10 @@
 (function (Z) {
   var reg = Z.reg, T = Z.T, H = Z.H;
 
-  /** Working range for a grade, nudged by the difficulty slider. */
-  function range(grade, diff) {
+  /** Working range for a grade, nudged by the difficulty slider.
+      An explicit "numbers up to" limit (grades 0–1) wins over both. */
+  function range(grade, diff, max) {
+    if (max) return max;
     var base = [10, 20, 100, 1000, 10000, 100000, 1000, 1000][grade] || 100;
     if (diff === 0) base = Math.max(5, Math.round(base / 2));
     if (diff === 2) base = base * 2;
@@ -26,7 +28,8 @@
     make: function (rng, ctx) {
       var thing = Z.pickThing(rng, rng.bool(0.5) ? "things" : "animals");
       var max = ctx.grade === 0 ? (ctx.diff === 0 ? 6 : 10) : (ctx.diff === 2 ? 20 : 14);
-      var n = rng.int(2, max);
+      if (ctx.max) max = Math.min(ctx.max, 20);   // past 20 a row of pictures is a chore, not a lesson
+      var n = rng.int(ctx.max ? 1 : 2, max);
       var row = "";
       for (var i = 0; i < n; i++) {
         row += '<span style="font-size:1.5em;letter-spacing:2px">' + thing[2] + "</span>";
@@ -49,7 +52,15 @@
     name: { bg: "Събиране и изваждане", en: "Addition & subtraction" },
     desc: { bg: "Основните действия в границите на класа", en: "The core operations within the grade range" },
     make: function (rng, ctx) {
-      var max = range(ctx.grade, ctx.diff);
+      var max = range(ctx.grade, ctx.diff, ctx.max);
+
+      // Children meet the numbers one at a time, so when the limit is set a
+      // good share of the tasks are about the newest number itself: 3 + 4 = 7, 7 − 2 = 5.
+      if (ctx.max && rng.bool(0.4)) {
+        var part = rng.int(0, max);
+        return rng.bool() ? T.expr(part + " + " + (max - part), max) : T.expr(max + " − " + part, max - part);
+      }
+
       var threeTerms = ctx.grade >= 2 && ctx.diff === 2 && rng.bool(0.4);
       var a, b, c, q, ans;
 
@@ -62,7 +73,7 @@
         if (ans < 0) { q = a + " + " + b + " + " + c; ans = a + b + c; }
       } else if (rng.bool()) {
         // addition, preferring a carry on higher difficulty
-        b = rng.int(1, Math.max(2, Math.floor(max / 2)));
+        b = rng.int(1, Math.max(1, Math.min(max - 1, Math.floor(max / 2))));
         a = rng.int(1, max - b);
         if (ctx.diff === 2 && ctx.grade >= 2 && (a % 10) + (b % 10) < 10) {
           a = a - (a % 10) + rng.int(5, 9);
@@ -221,7 +232,7 @@
     desc: { bg: "□ + 7 = 15 — кое число се крие", en: "□ + 7 = 15 — which number is hiding" },
     instr: { bg: "Намери числото, което липсва.", en: "Find the missing number." },
     make: function (rng, ctx) {
-      var max = range(ctx.grade, ctx.diff);
+      var max = range(ctx.grade, ctx.diff, ctx.max);
       var box = '<span class="sh-box">?</span>';
       var mode = ctx.grade >= 2 && rng.bool(0.4) ? "mul" : "add";
       var a, b, r;
@@ -257,7 +268,7 @@
     desc: { bg: "Постави &lt;, &gt; или =", en: "Put &lt;, &gt; or =" },
     instr: { bg: "Постави знак &lt;, &gt; или = .", en: "Insert &lt;, &gt; or = ." },
     make: function (rng, ctx) {
-      var max = range(ctx.grade, ctx.diff);
+      var max = range(ctx.grade, ctx.diff, ctx.max);
       var left, right, lv, rv;
 
       if (ctx.grade <= 1 && ctx.diff === 0) {
@@ -299,7 +310,15 @@
                                   ["add", "sub", "mul", "square", "fib"];
       kind = rng.pick(pool);
 
-      if (kind === "mul") {
+      if (ctx.max) {
+        // counting forwards or backwards without leaving 0…max
+        var len = Math.min(6, ctx.max + 1);
+        step = rng.int(1, Math.max(1, Math.min(5, Math.floor(ctx.max / (len - 1)))));
+        start = rng.int(0, ctx.max - (len - 1) * step);
+        for (i = 0; i < len; i++) seq.push(start + i * step);
+        kind = rng.bool(0.35) ? "sub" : "add";
+        if (kind === "sub") seq.reverse();
+      } else if (kind === "mul") {
         start = rng.int(1, 4); step = rng.int(2, 3);
         for (i = 0; i < 6; i++) seq.push(start * Math.pow(step, i));
       } else if (kind === "square") {
@@ -319,7 +338,8 @@
         for (i = 0; i < 6; i++) seq.push(start + i * step);
       }
 
-      var hideAt = ctx.diff === 0 ? 5 : rng.int(3, 5);
+      var last = seq.length - 1;
+      var hideAt = ctx.diff === 0 ? last : rng.int(Math.max(1, last - 2), last);
       var answer = seq[hideAt];
       var shown = seq.map(function (v, idx) {
         return idx === hideAt ? '<span class="sh-box">?</span>' : v;

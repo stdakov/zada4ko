@@ -24,6 +24,7 @@
         var k = Z.pickKids(rng, 2), th = Z.pickThing(rng);
         var max = ctx.grade <= 1 ? 10 : (ctx.grade === 2 ? 40 : 200);
         var a = rng.int(2, max), b = rng.int(2, max);
+        if (ctx.max) { if (ctx.max < 4) return null; a = rng.int(2, ctx.max - 2); b = rng.int(2, ctx.max - a); }
         return T.word(
           L(k[0] + " има " + Z.qty(a, th) + ", а " + k[1] + " има " + Z.qty(b, th) +
             ". Колко " + th[1] + " имат двамата заедно?",
@@ -38,6 +39,7 @@
         var k = Z.pickKid(rng), th = Z.pickThing(rng);
         var max = ctx.grade <= 1 ? 12 : (ctx.grade === 2 ? 60 : 300);
         var a = rng.int(5, max), b = rng.int(1, a - 1);
+        if (ctx.max) { a = rng.int(2, ctx.max); b = rng.int(1, a - 1); }
         return T.word(
           L(k + " има " + Z.qty(a, th) + " и подарява " + b + " на приятел. Колко " + th[1] + " му остават?",
             k + " has " + a + " " + th[1] + " and gives " + b + " to a friend. How many " + th[1] + " are left?"),
@@ -50,6 +52,12 @@
         var k = Z.pickKids(rng, 2), th = Z.pickThing(rng);
         var max = ctx.grade === 1 ? 10 : (ctx.grade === 2 ? 40 : 150);
         var a = rng.int(3, max), d = rng.int(2, Math.max(3, Math.floor(max / 3)));
+        if (ctx.max) {
+          // the total is a + (a + d), and it must not pass the limit
+          if (ctx.max < 4) return null;
+          a = rng.int(1, Math.floor((ctx.max - 1) / 2));
+          d = rng.int(1, ctx.max - 2 * a);
+        }
         return T.word(
           L(k[0] + " има " + Z.qty(a, th) + ". " + k[1] + " има с " + d + " повече. Колко " + th[1] + " имат общо?",
             k[0] + " has " + a + " " + th[1] + ". " + k[1] + " has " + d + " more. How many do they have in total?"),
@@ -62,6 +70,7 @@
         var th = Z.pickThing(rng, "animals");
         var legs = rng.pick([2, 4]);
         var n = rng.int(3, ctx.grade === 1 ? 6 : 12);
+        if (ctx.max) { if (ctx.max < 2 * legs) return null; n = rng.int(1, Math.floor(ctx.max / legs)); }
         return T.word(
           L("В двора има " + Z.qty(n, th) + ". Всяко животно има по " + legs + " крака. Колко крака има общо?",
             "There are " + n + " " + th[1] + " in the yard. Each has " + legs + " legs. How many legs in total?"),
@@ -381,7 +390,10 @@
     make: function (rng, ctx) {
       var pool = TPL.filter(function (t) { return t.g.indexOf(ctx.grade) !== -1; });
       if (!pool.length) pool = TPL.filter(function (t) { return t.g.indexOf(4) !== -1; });
-      var t = rng.pick(pool).f(rng, ctx);
+      // a template may decline when the "numbers up to" limit is too small for it
+      var t = null;
+      for (var tries = 0; !t && tries < 20; tries++) t = rng.pick(pool).f(rng, ctx);
+      if (!t) return null;
       t.layout = "text";
       if (t.work === undefined) t.work = 2;
       return t;

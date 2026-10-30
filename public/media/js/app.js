@@ -153,6 +153,7 @@
           if (!App.cfg.topics.length) App.cfg.topics = starterConfig(g.g).topics;
           App.dirty = true;
           renderTopics();
+          renderMaxPicker();
           refresh();
         }
       }));
@@ -226,6 +227,7 @@
     renderTopics();
     $("#optTitle").value = App.cfg.title;
     $("#optDiff").value = String(App.cfg.diff);
+    renderMaxPicker();
     $("#optCols").value = String(App.cfg.cols);
     $("#optKey").value = App.cfg.key;
     $("#optPoints").value = String(App.cfg.points);
@@ -234,12 +236,25 @@
     $("#seedBox").textContent = App.cfg.seed;
   }
 
+  /** "Numbers up to" only makes sense while children still learn the numbers one by one. */
+  function renderMaxPicker() {
+    var sel = $("#optMax");
+    if (sel.options.length === 1) {
+      Sheet.MAX_CHOICES.forEach(function (n) { sel.appendChild(el("option", { value: n, text: String(n) })); });
+    }
+    sel.value = String(App.cfg.max || 0);
+    $("#rowMax").classList.toggle("hidden", Sheet.MAX_GRADES.indexOf(App.cfg.grade) === -1);
+  }
+
   function bindPanel() {
     $("#optTitle").addEventListener("input", function (e) {
       App.cfg.title = e.target.value.slice(0, 90); syncUrl(); softRefresh();
     });
     $("#optDiff").addEventListener("change", function (e) {
       App.cfg.diff = H.toInt(e.target.value, 1); App.dirty = true; refresh();
+    });
+    $("#optMax").addEventListener("change", function (e) {
+      App.cfg.max = H.toInt(e.target.value, 0); App.dirty = true; refresh();
     });
     $("#optCols").addEventListener("change", function (e) {
       App.cfg.cols = H.toInt(e.target.value, 0); softRefresh();
