@@ -313,6 +313,9 @@ window.Z.VERSION = "10";
       // an explicit ?lang=bg wins, so a shared link keeps its language
       var m = location.search.match(/[?&]lang=([a-z]{2})/i);
       if (m && i18n.supported(m[1].toLowerCase())) return m[1].toLowerCase();
+      // each language has its own address: /fr/, /de/, … (Bulgarian is "/")
+      var p = i18n.fromPath();
+      if (p) return p;
       var saved = localStorage.getItem("z4_lang");
       if (saved && i18n.supported(saved)) return saved;
       // No guessing from navigator.language: Googlebot renders pages with an
@@ -320,6 +323,15 @@ window.Z.VERSION = "10";
       // page in English. The app offers the visitor's language instead.
       return "bg";
     },
+
+    /** The language named by the address, e.g. "fr" for /fr/; null on "/". */
+    fromPath: function () {
+      var m = location.pathname.match(/^\/([a-z]{2})\/?$/);
+      return m && i18n.supported(m[1]) ? m[1] : null;
+    },
+
+    /** The address of a language's home page. */
+    path: function (code) { return code === "bg" ? "/" : "/" + code + "/"; },
 
     /** The visitor's browser language, when we have it and it is not the current one. */
     suggest: function () {

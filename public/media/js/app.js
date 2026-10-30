@@ -473,10 +473,19 @@
   }
 
   /* ----------------------------- Language -------------------------------- */
-  /** The English view lives at ?lang=en, so it must not claim the Bulgarian URL as canonical. */
-  function setCanonical(lang) {
+  /**
+   * Keep the address on the language's own page (/fr/, /de/, "/" for
+   * Bulgarian), so a copied link or a bookmark opens in the same language.
+   * Only the path changes; the "#/studio?…" part stays as it is.
+   */
+  function syncLangUrl(lang) {
+    var path = Z.i18n.path(lang);
+    var search = location.search.replace(/[?&]lang=[a-z]{2}/i, "").replace(/^&/, "?");
+    if (location.pathname !== path || search !== location.search) {
+      history.replaceState(null, "", path + search + location.hash);
+    }
     var link = $('link[rel="canonical"]');
-    if (link) link.href = location.origin + "/" + (lang === "bg" ? "" : "?lang=" + lang);
+    if (link) link.href = location.origin + path;
   }
 
   /** Switch language; other than bg/en the words are fetched first. */
@@ -496,7 +505,7 @@
   function applyLang() {
     var lang = Z.i18n.lang;
     document.documentElement.setAttribute("lang", lang);
-    setCanonical(lang);
+    syncLangUrl(lang);
     Z.i18n.apply();
     var sel = $("#langSel");
     if (sel) sel.value = lang;
@@ -537,7 +546,7 @@
     var code = Z.i18n.suggest();
     var asked = false;
     try { asked = !!localStorage.getItem("z4_lang") || !!localStorage.getItem("z4_lang_hint"); } catch (e) { }
-    if (!code || asked || /[?&]lang=/.test(location.search)) return;
+    if (!code || asked || /[?&]lang=/.test(location.search) || Z.i18n.fromPath()) return;
     var l = Z.i18n.LANGS.filter(function (x) { return x.code === code; })[0];
     var close = function () { bar.remove(); try { localStorage.setItem("z4_lang_hint", "1"); } catch (e) { } };
     var bar = el("div", { class: "lang-hint noprint", id: "langHint" }, [

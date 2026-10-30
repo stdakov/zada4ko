@@ -37,6 +37,21 @@ Z.i18n.add("nl", {
 /* ---- Interface --------------------------------------------------------- */
 Z.i18n.add("nl", {
   ui: {
+    /* teachers: ready-made tests · about: privacy note */
+    readyT1: "Groep 3–4",
+    readyT2: "Groep 5–6",
+    readyT3: "Groep 7–8",
+    readyT4: "Brugklas",
+    readyD1: "Plussen en minnen tot 100, vergelijken, verhaaltjessommen, klokkijken.",
+    readyD2: "Keersommen en deelsommen, volgorde van bewerkingen, maten, oppervlakte en omtrek.",
+    readyD3: "Breuken, kommagetallen, procenten, vergelijkingen, inhoud en oppervlakte.",
+    readyD4: "Vergelijkingen, formules, machten, stelling van Pythagoras, verhaaltjessommen.",
+    btnOpen: "Openen",
+    privacyT: "Geen account, geen reclame in de sommen.",
+    privacyD: "De voortgang blijft alleen in de browser van dit apparaat en verlaat de computer nooit. Na de eerste keer laden werkt de site ook offline.",
+    /* search engines: title and description of /nl/ */
+    seoTitle: "Rekensommen voor kinderen, groep 3 tot de brugklas — printen en online | zada4ko",
+    seoDesc: "zada4ko is een gratis generator van rekensommen voor kinderen, van de kleuters tot de brugklas: plus- en minsommen, tafels, breuken, verhaaltjessommen, meetkunde. Online oefenen of een werkblad met antwoorden printen.",
     docTitle: "zada4ko — rekensommen voor kinderen",
     language: "Taal",
     gshort0: "Kl.", gshort1: "Gr3", gshort2: "Gr4", gshort3: "Gr5", gshort4: "Gr6", gshort5: "Gr7", gshort6: "Gr8", gshort7: "Brug",

@@ -18,6 +18,13 @@
     RewriteCond %{HTTPS} off
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+    # Each language has its own address. Old "?lang=xx" links move there for good,
+    # so search engines index /fr/ instead of a duplicate of the home page.
+    RewriteCond %{QUERY_STRING} (^|&)lang=bg(&|$) [NC]
+    RewriteRule ^(index\.html)?$ /? [R=301,L]
+    RewriteCond %{QUERY_STRING} (^|&)lang=(en|de|fr|it|es|pt|nl|sv|el|ro|pl)(&|$) [NC]
+    RewriteRule ^(index\.html)?$ /%2/? [R=301,L]
+
     # strip a trailing slash unless it is a real directory
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$

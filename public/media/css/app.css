@@ -547,6 +547,8 @@
 .lp-faq p { margin: 10px 0 0; color: var(--ink-2); }
 .lp-list { padding-left: 1.2em; line-height: 1.9; font-weight: 600; }
 .lp-other .chip { margin: 0 4px 8px 0; text-decoration: none; white-space: normal; max-width: 100%; }
+/* links to the Bulgarian SEO pages only make sense on the Bulgarian page */
+html:not([lang="bg"]) .bg-only { display: none; }
 .home-links { display: flex; flex-wrap: wrap; gap: 8px; }
 .home-links .chip { text-decoration: none; }
 

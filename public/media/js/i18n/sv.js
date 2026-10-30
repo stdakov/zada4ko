@@ -35,6 +35,21 @@ Z.i18n.add("sv", {
 /* ---- Interface --------------------------------------------------------- */
 Z.i18n.add("sv", {
   ui: {
+    /* teachers: ready-made tests · about: privacy note */
+    readyT1: "Årskurs 1–2",
+    readyT2: "Årskurs 3–4",
+    readyT3: "Årskurs 5–6",
+    readyT4: "Årskurs 7",
+    readyD1: "Addition och subtraktion upp till 100, jämförelser, textuppgifter, klockan.",
+    readyD2: "Multiplikation och division, räkneordning, enheter, area och omkrets.",
+    readyD3: "Bråk, decimaltal, procent, ekvationer, volym och area.",
+    readyD4: "Ekvationer, uttryck, potenser, Pythagoras sats, textuppgifter.",
+    btnOpen: "Öppna",
+    privacyT: "Ingen registrering, ingen reklam i uppgifterna.",
+    privacyD: "Framstegen sparas bara i webbläsaren på den här enheten och lämnar aldrig datorn. När sidan har laddats en gång fungerar den även offline.",
+    /* search engines: title and description of /sv/ */
+    seoTitle: "Matteuppgifter för barn, årskurs 1–7 — skriv ut eller lös online | zada4ko",
+    seoDesc: "zada4ko är en gratis generator av matteuppgifter för barn från förskola till årskurs 7: addition och subtraktion, multiplikationstabeller, bråk, textuppgifter, geometri. Lös online eller skriv ut ett arbetsblad med facit.",
     docTitle: "zada4ko — matteuppgifter för barn",
     language: "Språk",
     gshort0: "F", gshort1: "Åk1", gshort2: "Åk2", gshort3: "Åk3", gshort4: "Åk4", gshort5: "Åk5", gshort6: "Åk6", gshort7: "Åk7",

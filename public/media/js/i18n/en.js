@@ -32,6 +32,21 @@ Z.i18n.add("en", {
 /* ---- Interface --------------------------------------------------------- */
 Z.i18n.add("en", {
   ui: {
+    /* teachers: ready-made tests · about: privacy note */
+    readyT1: "Grades 1–2",
+    readyT2: "Grades 3–4",
+    readyT3: "Grades 5–6",
+    readyT4: "Grade 7",
+    readyD1: "Addition and subtraction up to 100, comparing, word problems, telling the time.",
+    readyD2: "Multiplication and division, order of operations, units of measure, area and perimeter.",
+    readyD3: "Fractions, decimals, percentages, equations, volume and area.",
+    readyD4: "Equations, expressions, powers, the Pythagorean theorem, word problems.",
+    btnOpen: "Open",
+    privacyT: "No sign-up, no ads in the tasks.",
+    privacyD: "Progress is kept only in this device's browser and never leaves the computer. Once loaded, the site also works offline.",
+    /* search engines: title and description of /en/ */
+    seoTitle: "Maths worksheets for kids, grades 1–7 — print or solve online | zada4ko",
+    seoDesc: "zada4ko is a free maths worksheet generator for kids from preschool to grade 7: addition and subtraction, times tables, fractions, word problems, geometry. Solve online or print a test with an answer key.",
     docTitle: "zada4ko — maths tasks for kids",
     language: "Language",
     gshort0: "Pre", gshort1: "G1", gshort2: "G2", gshort3: "G3", gshort4: "G4", gshort5: "G5", gshort6: "G6", gshort7: "G7",

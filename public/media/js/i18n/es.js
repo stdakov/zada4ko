@@ -43,6 +43,21 @@ Z.i18n.add("es", {
 /* ---- Interface --------------------------------------------------------- */
 Z.i18n.add("es", {
   ui: {
+    /* teachers: ready-made tests · about: privacy note */
+    readyT1: "1.º–2.º de primaria",
+    readyT2: "3.º–4.º de primaria",
+    readyT3: "5.º–6.º de primaria",
+    readyT4: "1.º de ESO",
+    readyD1: "Sumas y restas hasta 100, comparar, problemas, la hora.",
+    readyD2: "Multiplicación y división, orden de las operaciones, unidades de medida, área y perímetro.",
+    readyD3: "Fracciones, decimales, porcentajes, ecuaciones, volumen y área.",
+    readyD4: "Ecuaciones, expresiones, potencias, teorema de Pitágoras, problemas.",
+    btnOpen: "Abrir",
+    privacyT: "Sin registro y sin anuncios en los ejercicios.",
+    privacyD: "El progreso se guarda solo en el navegador de este dispositivo y nunca sale del ordenador. Una vez cargado, el sitio también funciona sin conexión.",
+    /* search engines: title and description of /es/ */
+    seoTitle: "Fichas de matemáticas para niños de primaria — para imprimir y online | zada4ko",
+    seoDesc: "zada4ko es un generador gratuito de ejercicios de matemáticas para niños, de infantil a 1.º de ESO: sumas y restas, tablas de multiplicar, fracciones, problemas, geometría. Resuélvelos online o imprime una ficha con soluciones.",
     docTitle: "zada4ko — fichas de matemáticas para niños",
     language: "Idioma",
     gshort0: "Inf", gshort1: "1.º", gshort2: "2.º", gshort3: "3.º", gshort4: "4.º", gshort5: "5.º", gshort6: "6.º", gshort7: "ESO",

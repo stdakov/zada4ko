@@ -42,6 +42,21 @@ Z.i18n.add("fr", {
 /* ---- Interface --------------------------------------------------------- */
 Z.i18n.add("fr", {
   ui: {
+    /* teachers: ready-made tests · about: privacy note */
+    readyT1: "CP–CE1",
+    readyT2: "CE2–CM1",
+    readyT3: "CM2–6e",
+    readyT4: "5e",
+    readyD1: "Additions et soustractions jusqu'à 100, comparaisons, problèmes, lecture de l'heure.",
+    readyD2: "Multiplications et divisions, priorités des opérations, unités de mesure, aire et périmètre.",
+    readyD3: "Fractions, nombres décimaux, pourcentages, équations, volume et aire.",
+    readyD4: "Équations, expressions, puissances, théorème de Pythagore, problèmes.",
+    btnOpen: "Ouvrir",
+    privacyT: "Sans inscription, sans publicité dans les exercices.",
+    privacyD: "La progression reste uniquement dans le navigateur de cet appareil et ne quitte jamais l'ordinateur. Une fois chargé, le site fonctionne aussi hors ligne.",
+    /* search engines: title and description of /fr/ */
+    seoTitle: "Exercices de maths pour enfants, du CP à la 5e — à imprimer et en ligne | zada4ko",
+    seoDesc: "zada4ko est un générateur gratuit d'exercices de maths pour les enfants, de la maternelle à la 5e : additions et soustractions, tables de multiplication, fractions, problèmes, géométrie. À faire en ligne ou à imprimer avec le corrigé.",
     docTitle: "zada4ko — exercices de maths pour enfants",
     language: "Langue",
     gshort0: "Mat", gshort1: "CP", gshort2: "CE1", gshort3: "CE2", gshort4: "CM1", gshort5: "CM2", gshort6: "6e", gshort7: "5e",

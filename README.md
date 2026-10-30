@@ -70,8 +70,15 @@ one (Polish plurals, Romanian "20 de mere", Greek cases…).
 `en.js` is the reference — anything a language lacks falls back to English.
 Bulgarian and English ship with the page; the others are fetched when chosen.
 
-To add a language: copy `en.js` to `xx.js`, translate it, add the code to
-`LANGS` in `core.js` and an `hreflang` line in `index.html`, then check it:
+Each language has its own address — `/` for Bulgarian, `/en/`, `/fr/`, … —
+generated from `index.html` by `tools/build-pages.js` with the right `lang`,
+canonical, `hreflang`, title, description and pre-translated menu text, so
+search engines index every language as its own page. **After editing
+`index.html`, run the build again** so the language copies follow.
+
+To add a language: copy `en.js` to `xx.js`, translate it (including
+`seoTitle` / `seoDesc`), add the code to `LANGS` in `core.js` and to the
+`?lang=` redirect in `.htaccess`, run `node tools/build-pages.js`, then check it:
 
 ```
 node tools/check-i18n.js xx      # missing keys, broken text, answers ≠ English

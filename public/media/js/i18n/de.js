@@ -35,6 +35,21 @@ Z.i18n.add("de", {
 /* ---- Interface --------------------------------------------------------- */
 Z.i18n.add("de", {
   ui: {
+    /* teachers: ready-made tests · about: privacy note */
+    readyT1: "1.–2. Klasse",
+    readyT2: "3.–4. Klasse",
+    readyT3: "5.–6. Klasse",
+    readyT4: "7. Klasse",
+    readyD1: "Plus und Minus bis 100, Vergleichen, Textaufgaben, Uhrzeit.",
+    readyD2: "Mal und Geteilt, Rechenreihenfolge, Maßeinheiten, Fläche und Umfang.",
+    readyD3: "Brüche, Dezimalzahlen, Prozente, Gleichungen, Volumen und Fläche.",
+    readyD4: "Gleichungen, Terme, Potenzen, Satz des Pythagoras, Textaufgaben.",
+    btnOpen: "Öffnen",
+    privacyT: "Ohne Anmeldung, ohne Werbung in den Aufgaben.",
+    privacyD: "Der Fortschritt bleibt nur im Browser dieses Geräts und verlässt den Computer nie. Nach dem ersten Laden funktioniert die Seite auch offline.",
+    /* search engines: title and description of /de/ */
+    seoTitle: "Matheaufgaben für Kinder, 1. bis 7. Klasse — zum Ausdrucken und online | zada4ko",
+    seoDesc: "zada4ko ist ein kostenloser Generator für Matheaufgaben für Kinder von der Vorschule bis zur 7. Klasse: Plus und Minus, Einmaleins, Brüche, Textaufgaben, Geometrie. Online lösen oder als Arbeitsblatt mit Lösungen ausdrucken.",
     docTitle: "zada4ko — Matheaufgaben für Kinder",
     language: "Sprache",
     gshort0: "Vor", gshort1: "1.", gshort2: "2.", gshort3: "3.", gshort4: "4.", gshort5: "5.", gshort6: "6.", gshort7: "7.",

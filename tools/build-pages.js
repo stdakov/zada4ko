@@ -31,7 +31,8 @@ var sandbox = {
 };
 sandbox.window = sandbox;
 vm.createContext(sandbox);
-["core", "i18n/bg", "i18n/en", "gen/registry", "gen/arith", "gen/word", "gen/measure", "gen/advanced", "sheet"].forEach(function (f) {
+["core"].concat(fs.readdirSync(path.join(ROOT, "media/js/i18n")).filter(function (f) { return /^[a-z]{2}\.js$/.test(f); })
+  .map(function (f) { return "i18n/" + f.replace(/\.js$/, ""); })).concat(["gen/registry", "gen/arith", "gen/word", "gen/measure", "gen/advanced", "sheet"]).forEach(function (f) {
   vm.runInContext(fs.readFileSync(path.join(ROOT, "media/js", f + ".js"), "utf8"), sandbox, { filename: f + ".js" });
 });
 var Z = sandbox.Z;
@@ -358,13 +359,84 @@ fs.writeFileSync(home, fs.readFileSync(home, "utf8").replace(
     }).join("") + end;
   }));
 
-var urls = [["/", "1.0"]]
+/* --------------------------- language home pages ------------------------ */
+/*
+   Each language gets a real address — /en/, /fr/, … — whose HTML already
+   says lang="fr", carries a French title and description, a canonical that
+   points at itself and the menu text in French. Serving every language from
+   "/?lang=fr" with the Bulgarian HTML made Google file them all as duplicates
+   of the home page ("Alternate page with proper canonical tag").
+*/
+var LANGS = Z.i18n.LANGS.map(function (l) { return l.code; });
+var OG_LOCALE = { bg: "bg_BG", en: "en_GB", de: "de_DE", fr: "fr_FR", it: "it_IT", es: "es_ES", pt: "pt_PT",
+  nl: "nl_NL", sv: "sv_SE", el: "el_GR", ro: "ro_RO", pl: "pl_PL" };
+function langPath(code) { return code === "bg" ? "/" : "/" + code + "/"; }
+
+var hreflang = LANGS.map(function (c) {
+  return '<link rel="alternate" hreflang="' + c + '" href="' + SITE + langPath(c) + '">';
+}).concat(['<link rel="alternate" hreflang="x-default" href="' + SITE + '/">']).join("\n");
+
+function attr(v) { return esc(v).replace(/'/g, "&#39;"); }
+
+/** The home page HTML in one language. */
+function langHome(html, code) {
+  Z.i18n.lang = code;
+  var t = Z.i18n.t, url = SITE + langPath(code);
+  html = html
+    .replace(/(<!-- hreflang:start[^>]*-->)[\s\S]*?(<!-- hreflang:end -->)/, function (m, a, b) { return a + "\n" + hreflang + "\n" + b; });
+  if (code === "bg") return html;
+  html = html
+    .replace(/[ \t]*<!-- bg-only:start[\s\S]*?<!-- bg-only:end -->\n?/g, "")
+    // Bulgarian keywords and the Cyrillic brand belong to the Bulgarian page only
+    .replace(/<meta name="keywords"[^>]*>\n/, "")
+    .replace(/(<meta property="og:site_name" content=")[^"]*(">)/, "$1zada4ko$2")
+    .replace(/"name": "Задачко",/g, '"name": "zada4ko",')
+    .replace(/("@type": "WebApplication",[\s\S]*?"description": ")[^"]*(")/, function (m, a, b) {
+      return a + t("seoDesc").replace(/"/g, '\\"') + b;
+    })
+    // the no-JavaScript note is Bulgarian + English; other languages keep the English line
+    .replace(/(<noscript>[\s\S]*?)\s*<p><strong>За да[\s\S]*?<\/p>/, "$1")
+    .replace(/<html lang="[^"]*">/, '<html lang="' + code + '">')
+    .replace(/<title>[^<]*<\/title>/, "<title>" + esc(t("seoTitle")) + "</title>")
+    .replace(/(<meta name="description" content=")[^"]*(">)/, "$1" + attr(t("seoDesc")) + "$2")
+    .replace(/(<meta property="og:title" content=")[^"]*(">)/, "$1" + attr(t("docTitle")) + "$2")
+    .replace(/(<meta property="og:description" content=")[^"]*(">)/, "$1" + attr(t("seoDesc")) + "$2")
+    .replace(/(<link rel="canonical" href=")[^"]*(">)/, "$1" + url + "$2")
+    .replace(/(<meta property="og:url" content=")[^"]*(">)/, "$1" + url + "$2")
+    .replace(/(<meta property="og:locale" content=")[^"]*(">)/, "$1" + OG_LOCALE[code] + "$2")
+    .replace(/("@type": "WebSite",[\s\S]*?"url": ")[^"]*(",\s*"inLanguage": ")[^"]*(")/, "$1" + url + "$2" + code + "$3")
+    // the visible text, so the page reads in its language before any script runs
+    .replace(/(<[^>]*\sdata-i18n="(\w+)"[^>]*>)([^<]*)(<)/g, function (m, open, key, txt, close) {
+      return open + esc(t(key)) + close;
+    })
+    .replace(/(<[^>]*\sdata-i18n-ph="(\w+)"[^>]*>)/g, function (tag, all, key) {
+      return tag.replace(/placeholder="[^"]*"/, 'placeholder="' + attr(t(key)) + '"');
+    })
+    .replace(/(<[^>]*\sdata-i18n-aria="(\w+)"[^>]*>)/g, function (tag, all, key) {
+      return tag.replace(/aria-label="[^"]*"/, 'aria-label="' + attr(t(key)) + '"');
+    });
+  return html;
+}
+
+var homeSrc = fs.readFileSync(home, "utf8");
+fs.writeFileSync(home, langHome(homeSrc, "bg"));
+LANGS.filter(function (c) { return c !== "bg"; }).forEach(function (c) { write(c, langHome(homeSrc, c)); });
+Z.i18n.lang = "bg";
+
+/* -------------------------------- sitemap -------------------------------- */
+var alternates = LANGS.map(function (c) {
+  return '<xhtml:link rel="alternate" hreflang="' + c + '" href="' + SITE + langPath(c) + '"/>';
+}).join("") + '<xhtml:link rel="alternate" hreflang="x-default" href="' + SITE + '/"/>';
+
+var urls = LANGS.map(function (c) { return [langPath(c), c === "bg" ? "1.0" : "0.9", alternates]; })
   .concat(GRADES.map(function (G) { return [gradeUrl(G), "0.9"]; }))
   .concat(TOPICS.map(function (t) { return [topicUrl(t), "0.7"]; }));
 fs.writeFileSync(path.join(ROOT, "sitemap.xml"),
-  '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+  '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" ' +
+  'xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' +
   urls.map(function (u) {
-    return "  <url><loc>" + SITE + u[0] + "</loc><lastmod>" + TODAY + "</lastmod><priority>" + u[1] + "</priority></url>";
+    return "  <url><loc>" + SITE + u[0] + "</loc>" + (u[2] || "") + "<lastmod>" + TODAY + "</lastmod><priority>" + u[1] + "</priority></url>";
   }).join("\n") + "\n</urlset>\n");
 
-console.log("wrote " + GRADES.length + " grade pages, " + TOPICS.length + " topic pages and sitemap.xml");
+console.log("wrote " + (LANGS.length - 1) + " language home pages, " + GRADES.length + " grade pages, " +
+  TOPICS.length + " topic pages and sitemap.xml");

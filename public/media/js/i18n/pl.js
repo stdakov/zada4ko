@@ -66,6 +66,21 @@
   /* ---- Interface ------------------------------------------------------- */
   Z.i18n.add("pl", {
     ui: {
+      /* teachers: ready-made tests · about: privacy note */
+      readyT1: "Klasy 1–2",
+      readyT2: "Klasy 3–4",
+      readyT3: "Klasy 5–6",
+      readyT4: "Klasa 7",
+      readyD1: "Dodawanie i odejmowanie do 100, porównywanie, zadania tekstowe, zegar.",
+      readyD2: "Mnożenie i dzielenie, kolejność działań, jednostki miary, pole i obwód.",
+      readyD3: "Ułamki, liczby dziesiętne, procenty, równania, objętość i pole.",
+      readyD4: "Równania, wyrażenia, potęgi, twierdzenie Pitagorasa, zadania tekstowe.",
+      btnOpen: "Otwórz",
+      privacyT: "Bez rejestracji, bez reklam w zadaniach.",
+      privacyD: "Postępy są zapisywane tylko w przeglądarce tego urządzenia i nigdy nie opuszczają komputera. Po pierwszym załadowaniu strona działa także offline.",
+      /* search engines: title and description of /pl/ */
+      seoTitle: "Zadania z matematyki dla dzieci, klasy 1–7 — do druku i online | zada4ko",
+      seoDesc: "zada4ko to darmowy generator zadań z matematyki dla dzieci od zerówki do 7. klasy: dodawanie i odejmowanie, tabliczka mnożenia, ułamki, zadania tekstowe, geometria. Rozwiązuj online lub wydrukuj kartę pracy z odpowiedziami.",
       docTitle: "zada4ko — zadania z matematyki dla dzieci",
       language: "Język",
       gshort0: "0", gshort1: "Kl.1", gshort2: "Kl.2", gshort3: "Kl.3", gshort4: "Kl.4", gshort5: "Kl.5", gshort6: "Kl.6", gshort7: "Kl.7",

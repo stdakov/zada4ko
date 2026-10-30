@@ -45,6 +45,21 @@ Z.i18n.add("it", {
 /* ---- Interface --------------------------------------------------------- */
 Z.i18n.add("it", {
   ui: {
+    /* teachers: ready-made tests · about: privacy note */
+    readyT1: "1ª–2ª elementare",
+    readyT2: "3ª–4ª elementare",
+    readyT3: "5ª elementare – 1ª media",
+    readyT4: "2ª media",
+    readyD1: "Addizioni e sottrazioni fino a 100, confronti, problemi, l'orologio.",
+    readyD2: "Moltiplicazioni e divisioni, ordine delle operazioni, unità di misura, area e perimetro.",
+    readyD3: "Frazioni, numeri decimali, percentuali, equazioni, volume e area.",
+    readyD4: "Equazioni, espressioni, potenze, teorema di Pitagora, problemi.",
+    btnOpen: "Apri",
+    privacyT: "Senza registrazione, senza pubblicità negli esercizi.",
+    privacyD: "I progressi restano solo nel browser di questo dispositivo e non lasciano mai il computer. Dopo il primo caricamento il sito funziona anche offline.",
+    /* search engines: title and description of /it/ */
+    seoTitle: "Esercizi di matematica per bambini, dalla 1ª elementare alla 2ª media — da stampare e online | zada4ko",
+    seoDesc: "zada4ko è un generatore gratuito di esercizi di matematica per bambini, dalla scuola dell'infanzia alla 2ª media: addizioni e sottrazioni, tabelline, frazioni, problemi, geometria. Da risolvere online o da stampare con le soluzioni.",
     docTitle: "zada4ko — esercizi di matematica per bambini",
     language: "Lingua",
     gshort0: "Inf", gshort1: "1ª", gshort2: "2ª", gshort3: "3ª", gshort4: "4ª", gshort5: "5ª", gshort6: "1ªM", gshort7: "2ªM",

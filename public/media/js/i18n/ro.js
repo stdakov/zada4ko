@@ -64,6 +64,21 @@ Z.i18n.add("ro", {
 /* ---- Interface --------------------------------------------------------- */
 Z.i18n.add("ro", {
   ui: {
+    /* teachers: ready-made tests · about: privacy note */
+    readyT1: "Clasele I–II",
+    readyT2: "Clasele III–IV",
+    readyT3: "Clasele V–VI",
+    readyT4: "Clasa a VII-a",
+    readyD1: "Adunări și scăderi până la 100, comparații, probleme, ceasul.",
+    readyD2: "Înmulțiri și împărțiri, ordinea operațiilor, unități de măsură, arie și perimetru.",
+    readyD3: "Fracții, numere zecimale, procente, ecuații, volum și arie.",
+    readyD4: "Ecuații, expresii, puteri, teorema lui Pitagora, probleme.",
+    btnOpen: "Deschide",
+    privacyT: "Fără cont, fără reclame în exerciții.",
+    privacyD: "Progresul se păstrează doar în browserul acestui dispozitiv și nu părăsește niciodată calculatorul. După prima încărcare, site-ul funcționează și offline.",
+    /* search engines: title and description of /ro/ */
+    seoTitle: "Exerciții de matematică pentru copii, clasele I–VII — de printat și online | zada4ko",
+    seoDesc: "zada4ko este un generator gratuit de exerciții de matematică pentru copii, de la preșcolar la clasa a VII-a: adunări și scăderi, tabla înmulțirii, fracții, probleme, geometrie. Rezolvă online sau printează o fișă cu răspunsuri.",
     docTitle: "zada4ko — exerciții de matematică pentru copii",
     language: "Limba",
     gshort0: "Preș.", gshort1: "I", gshort2: "II", gshort3: "III", gshort4: "IV", gshort5: "V", gshort6: "VI", gshort7: "VII",

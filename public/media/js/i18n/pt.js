@@ -43,6 +43,21 @@ Z.i18n.add("pt", {
 /* ---- Interface --------------------------------------------------------- */
 Z.i18n.add("pt", {
   ui: {
+    /* teachers: ready-made tests · about: privacy note */
+    readyT1: "1.º–2.º ano",
+    readyT2: "3.º–4.º ano",
+    readyT3: "5.º–6.º ano",
+    readyT4: "7.º ano",
+    readyD1: "Somas e subtrações até 100, comparações, problemas, as horas.",
+    readyD2: "Multiplicação e divisão, ordem das operações, unidades de medida, área e perímetro.",
+    readyD3: "Frações, números decimais, percentagens, equações, volume e área.",
+    readyD4: "Equações, expressões, potências, teorema de Pitágoras, problemas.",
+    btnOpen: "Abrir",
+    privacyT: "Sem registo e sem publicidade nos exercícios.",
+    privacyD: "O progresso fica guardado apenas no navegador deste dispositivo e nunca sai do computador. Depois de carregado, o site também funciona offline.",
+    /* search engines: title and description of /pt/ */
+    seoTitle: "Fichas de matemática para crianças do 1.º ao 7.º ano — para imprimir e online | zada4ko",
+    seoDesc: "O zada4ko é um gerador gratuito de exercícios de matemática para crianças, do pré-escolar ao 7.º ano: somas e subtrações, tabuada, frações, problemas, geometria. Resolve online ou imprime uma ficha com as soluções.",
     docTitle: "zada4ko — fichas de matemática para crianças",
     language: "Língua",
     gshort0: "Pré", gshort1: "1.º", gshort2: "2.º", gshort3: "3.º", gshort4: "4.º", gshort5: "5.º", gshort6: "6.º", gshort7: "7.º",
