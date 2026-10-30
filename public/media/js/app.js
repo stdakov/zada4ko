@@ -504,13 +504,28 @@
     if (hint) hint.remove();
   }
 
-  function renderLangPicker() {
+  /**
+   * Closed, the picker shows only "🇳🇱 NL" so it fits in the top bar; while it
+   * is open the options read "🇳🇱 Nederlands", so the choice is still clear.
+   */
+  function renderLangPicker(current) {
     var sel = $("#langSel");
-    Z.i18n.LANGS.forEach(function (l) {
-      sel.appendChild(el("option", { value: l.code, text: l.flag + " " + l.name }));
+    var opts = Z.i18n.LANGS.map(function (l) {
+      var o = el("option", { value: l.code });
+      sel.appendChild(o);
+      return { o: o, l: l };
     });
-    sel.value = Z.i18n.lang;
-    sel.addEventListener("change", function () { setLang(sel.value); });
+    function label(full) {
+      opts.forEach(function (x) {
+        x.o.textContent = x.l.flag + " " + (full ? x.l.name : x.l.code.toUpperCase());
+      });
+    }
+    label(false);
+    sel.value = current;
+    sel.addEventListener("mousedown", function () { label(true); });
+    sel.addEventListener("focus", function () { label(true); });
+    sel.addEventListener("blur", function () { label(false); });
+    sel.addEventListener("change", function () { label(false); setLang(sel.value); });
   }
 
   /**
@@ -536,6 +551,8 @@
   /* -------------------------------- Init --------------------------------- */
   function init() {
     var want = Z.i18n.detect();
+    // the picker goes up at once, so it is never an empty box while a language downloads
+    renderLangPicker(want);
     // bg and en ship with the page; any other language is fetched before the first render
     Z.i18n.load(want).then(function () { start(want); }, function () { start("bg"); });
   }
@@ -544,7 +561,6 @@
     Z.i18n.lang = lang;
     Z.Store.load();
     applyLang();
-    renderLangPicker();
     offerLang();
 
     $("#burger").addEventListener("click", function () { $("#topnav").classList.toggle("open"); });

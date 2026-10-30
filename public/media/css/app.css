@@ -28,6 +28,7 @@
 
 .topnav { display: flex; gap: 4px; margin-left: auto; align-items: center; }
 .topnav a {
+  white-space: nowrap;
   padding: 0.5em 0.95em; border-radius: 999px; text-decoration: none;
   font-family: var(--f-display); font-weight: 700; font-size: 0.95rem; color: var(--ink-2);
 }
@@ -550,7 +551,12 @@
 .home-links .chip { text-decoration: none; }
 
 /* ---------------- Language ---------------- */
-.lang-sel { width: auto; margin-left: 8px; padding: 0.35em 0.6em; font-size: 0.88rem; font-weight: 800; }
+/* select.inp is width:100% for form fields — the header picker stays compact */
+select.inp.lang-sel {
+  width: auto; flex: 0 0 auto; margin-left: 6px;
+  padding: 0.3em 1.7em 0.3em 0.6em; background-position: right 0.5em center; background-size: 0.85em;
+  font-size: 0.85rem; font-weight: 800; border-radius: 999px; cursor: pointer;
+}
 .lang-hint {
   position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 140;
   display: flex; gap: 6px; align-items: center; padding: 8px; border-radius: 999px;
